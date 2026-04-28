@@ -11,6 +11,9 @@ api/.env
 *.key
 *credentials*
 
+# Stripe price IDs (output do script create_stripe_products.py)
+scripts/.stripe_price_ids.txt
+
 # Python
 __pycache__/
 *.py[cod]
