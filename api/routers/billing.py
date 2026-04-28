@@ -219,7 +219,9 @@ async def stripe_webhook(request: Request) -> dict:
     et = event["type"]
     obj = event["data"]["object"]
 
-    # ─── Checkout concluído (assinatura ou compra avulsa) ───
+    # ─── Checkout concluído (atualiza tier/customer apenas) ───
+    # Os créditos do plano são adicionados em invoice.paid (que dispara
+    # tanto no primeiro pagamento quanto nas renovações), pra evitar duplo crédito.
     if et == "checkout.session.completed":
         meta = obj.get("metadata", {}) or {}
         user_id = obj.get("client_reference_id") or meta.get("user_id")
@@ -227,14 +229,12 @@ async def stripe_webhook(request: Request) -> dict:
         if not user_id:
             return {"received": True}
 
-        # Assinatura
+        # Assinatura — atualiza tier e customer_id (créditos vêm em invoice.paid)
         if "tier_key" in meta:
             tier_key = meta["tier_key"]
             cfg = TIER_PRICES.get(tier_key, {})
             tier = cfg.get("tier", "")
             interval = cfg.get("interval", "month")
-            credits = cfg.get("credits", 0)
-            welcome_bonus = cfg.get("welcome_bonus", 0)
 
             with _engine.begin() as conn:
                 conn.execute(text("""
@@ -242,16 +242,14 @@ async def stripe_webhook(request: Request) -> dict:
                        SET tier = :t,
                            subscription_interval = :iv,
                            subscription_tier_key = :tk,
-                           credits = credits + :c,
                            stripe_customer_id = :cid
                      WHERE id = :u
                 """), {
                     "t": tier, "iv": interval, "tk": tier_key,
-                    "c": credits + welcome_bonus,
                     "cid": customer_id, "u": user_id,
                 })
 
-        # Top-up pack
+        # Top-up pack — credita imediatamente
         elif "pack" in meta:
             credits = int(meta.get("credits", 0))
             with _engine.begin() as conn:
@@ -259,7 +257,7 @@ async def stripe_webhook(request: Request) -> dict:
                     "UPDATE profiles SET credits = credits + :c, stripe_customer_id = :cid WHERE id = :u"
                 ), {"c": credits, "cid": customer_id, "u": user_id})
 
-        # Add-on one-shot
+        # Add-on one-shot — registra compra
         elif "addon" in meta:
             with _engine.begin() as conn:
                 conn.execute(text("""
@@ -271,28 +269,42 @@ async def stripe_webhook(request: Request) -> dict:
                     "s": obj.get("id", ""),
                 })
 
-    # ─── Renovação automática ───
-    # Mensais: créditos adicionados a cada invoice.paid
-    # Anuais : créditos adicionados via cron mensal (não aqui — ver workers.py)
+    # ─── Renovação automática (mensal e anual via Stripe recurring) ───
+    # Mensais : libera credits a cada invoice.paid (todo mês)
+    # Anuais  : libera credits × 12 + welcome_bonus a cada invoice.paid (todo ano)
+    # `billing_reason` distingue 1º pagamento ("subscription_create") de renovação ("subscription_cycle")
     elif et == "invoice.paid":
         sub_id = obj.get("subscription")
-        if sub_id:
-            sub = stripe.Subscription.retrieve(sub_id)
-            sub_meta = sub.get("metadata", {}) or {}
-            tier_key = sub_meta.get("tier_key", "")
-            user_id = sub_meta.get("user_id", "")
-            cfg = TIER_PRICES.get(tier_key, {})
+        if not sub_id:
+            return {"received": True}
 
-            # Só repõe créditos automaticamente em assinaturas mensais.
-            # Anuais são repostos pelo cron `refresh_yearly_credits` em workers.py
-            if cfg.get("interval") == "month" and user_id:
-                # Pular o primeiro pagamento (já creditado em checkout.session.completed)
-                billing_reason = obj.get("billing_reason", "")
-                if billing_reason not in ("subscription_create",):
-                    with _engine.begin() as conn:
-                        conn.execute(text(
-                            "UPDATE profiles SET credits = credits + :c WHERE id = :u"
-                        ), {"c": cfg["credits"], "u": user_id})
+        sub = stripe.Subscription.retrieve(sub_id)
+        sub_meta = sub.get("metadata", {}) or {}
+        tier_key = sub_meta.get("tier_key", "")
+        user_id = sub_meta.get("user_id", "")
+        cfg = TIER_PRICES.get(tier_key, {})
+        if not user_id or not cfg:
+            return {"received": True}
+
+        billing_reason = obj.get("billing_reason", "")
+        is_first_payment = billing_reason == "subscription_create"
+        interval = cfg.get("interval", "month")
+        credits = cfg.get("credits", 0)
+        welcome_bonus = cfg.get("welcome_bonus", 0)
+
+        # Quanto creditar nesta cobrança:
+        # - Mensal       : credits × 1 a cada mês
+        # - Anual        : credits × 12 a cada ano (pacote fechado)
+        # - Welcome bonus: só no primeiro pagamento (mensal e anual)
+        multiplier = 12 if interval == "year" else 1
+        amount_to_credit = credits * multiplier
+        if is_first_payment:
+            amount_to_credit += welcome_bonus
+
+        with _engine.begin() as conn:
+            conn.execute(text(
+                "UPDATE profiles SET credits = credits + :c WHERE id = :u"
+            ), {"c": amount_to_credit, "u": user_id})
 
     elif et == "customer.subscription.deleted":
         customer_id = obj.get("customer")

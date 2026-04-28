@@ -43,16 +43,13 @@ celery_app.conf.update(
 
 # Celery Beat schedule — tarefas periódicas
 celery_app.conf.beat_schedule = {
-    # Renova créditos mensais dos planos anuais (todo dia 1, 03:00)
-    "refresh-yearly-credits": {
-        "task": "refine.refresh_yearly_credits",
-        "schedule": {"hour": 3, "minute": 0, "day_of_month": 1},
-    },
     # Limpa registros de daily_usage > 7 dias (todo dia, 04:00)
     "cleanup-daily-usage": {
         "task": "refine.cleanup_daily_usage",
         "schedule": {"hour": 4, "minute": 0},
     },
+    # Anuais NÃO precisam de cron de reposição — créditos são liberados
+    # de uma vez via invoice.paid (Stripe dispara renovação anual sozinho).
 }
 
 # Sync engine pra workers (Celery não trabalha bem com asyncio)
@@ -621,36 +618,8 @@ def recreate_task(self, *, recreate_job_id: str, persona_id: str, persona_ref: s
 # ════════════════════════════════════════════════════════════════
 #                    BILLING / SUBSCRIPTION TASKS
 # ════════════════════════════════════════════════════════════════
-
-@celery_app.task(name="refine.refresh_yearly_credits")
-def refresh_yearly_credits():
-    """
-    Roda dia 1 de cada mês — adiciona créditos mensais aos clientes
-    com plano anual ativo. Plano anual paga uma vez por ano mas recebe
-    créditos mês a mês pra evitar queima total no início.
-    """
-    from .routers.billing import TIER_PRICES
-
-    with engine.begin() as conn:
-        rows = conn.execute(text("""
-            SELECT id, subscription_tier_key
-              FROM profiles
-             WHERE subscription_interval = 'year'
-               AND subscription_tier_key IS NOT NULL
-        """)).fetchall()
-
-        granted = 0
-        for r in rows:
-            tier_cfg = TIER_PRICES.get(r.subscription_tier_key, {})
-            credits = tier_cfg.get("credits", 0)
-            if credits:
-                conn.execute(text(
-                    "UPDATE profiles SET credits = credits + :c WHERE id = :u"
-                ), {"c": credits, "u": r.id})
-                granted += credits
-
-    return {"users_refreshed": len(rows), "credits_granted": granted}
-
+# Reposição de créditos é feita automaticamente pelo Stripe webhook
+# (invoice.paid) tanto pra mensais quanto anuais — não precisa de cron.
 
 @celery_app.task(name="refine.cleanup_daily_usage")
 def cleanup_daily_usage():
