@@ -332,6 +332,57 @@ class FreepikClient:
         r = await self._request("POST", "/v1/ai/video-upscaler", json=body)
         return r.get("data", {}).get("task_id") or r.get("task_id")
 
+    # ─────────────── AUDIO (ElevenLabs via Freepik) ───────────────
+
+    async def text_to_speech(
+        self,
+        text: str,
+        *,
+        voice_id: str,
+        model: str = "eleven_multilingual_v2",
+        stability: float = 0.5,
+        similarity_boost: float = 0.75,
+        style: float = 0.0,
+    ) -> str:
+        """TTS via Freepik (ElevenLabs powered). Suporta PT-BR."""
+        body = {
+            "text": text,
+            "voice_id": voice_id,
+            "model_id": model,
+            "voice_settings": {
+                "stability": stability,
+                "similarity_boost": similarity_boost,
+                "style": style,
+            },
+        }
+        r = await self._request("POST", "/v1/ai/text-to-speech", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def voice_clone(self, name: str, audio_sample_urls: list[str], *, description: str = "") -> str:
+        """Voice clone via Freepik. Recebe URLs de samples (não bytes)."""
+        body = {"name": name, "description": description, "samples": audio_sample_urls}
+        r = await self._request("POST", "/v1/ai/voice-clone", json=body)
+        return r.get("data", {}).get("voice_id") or r.get("voice_id")
+
+    async def list_voices(self) -> list[dict]:
+        """Lista vozes disponíveis (presets + clonadas pela conta)."""
+        r = await self._request("GET", "/v1/ai/voices")
+        return r.get("data", []) or r.get("voices", [])
+
+    async def music_generation(self, prompt: str, *, duration: int = 30) -> str:
+        """Music generation via Freepik."""
+        body = {"prompt": prompt, "duration_seconds": duration}
+        r = await self._request("POST", "/v1/ai/music-generation", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def sound_effect(self, prompt: str, *, duration: float | None = None) -> str:
+        """Sound effect via Freepik."""
+        body: dict = {"text": prompt}
+        if duration:
+            body["duration_seconds"] = duration
+        r = await self._request("POST", "/v1/ai/sound-generation", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
     # ════════════════════════════════════════════════════════════════
     #                          VIDEO
     # ════════════════════════════════════════════════════════════════
