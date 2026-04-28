@@ -371,36 +371,33 @@ def drive_import_task(self, *, drive_import_id: str, folder_url: str, user_id: s
 
 
 @celery_app.task(name="refine.style_learn", bind=True)
-def style_learn_task(self, *, learned_style_id: str, image_paths: list[str], user_id: str) -> dict:
-    """Claude Opus 4.7 vision analisa N imagens → style summary + prompt template."""
-    from .vision import analyze_style_batch
-
+def style_learn_task(self, *, learned_style_id: str, image_paths: list[str],
+                       user_description: str, user_id: str) -> dict:
+    """
+    Style learning manual: user descreve em texto o que quer reproduzir + lista
+    imagens de referência. Sistema monta prompt_template usando as primeiras
+    imagens como reference_images pro nano-banana-pro.
+    """
     with engine.begin() as conn:
-        conn.execute(text("UPDATE learned_styles SET status='analyzing' WHERE id=:id"),
-                     {"id": learned_style_id})
-
-    try:
-        analysis = _run(analyze_style_batch(image_paths))
-        with engine.begin() as conn:
-            conn.execute(text("""
-                UPDATE learned_styles SET
-                  status='ready', style_summary=:summary,
-                  prompt_template=:tpl, example_count=:n,
-                  example_paths=:paths
-                WHERE id=:id
-            """), {
-                "summary": analysis["summary_json"],
-                "tpl": analysis["prompt_template"],
-                "n": len(image_paths),
-                "paths": "{" + ",".join(image_paths) + "}",
-                "id": learned_style_id,
-            })
-        return analysis
-    except Exception:
-        with engine.begin() as conn:
-            conn.execute(text("UPDATE learned_styles SET status='failed' WHERE id=:id"),
-                         {"id": learned_style_id})
-        raise
+        # Monta prompt template com a descrição do user (nano-banana-pro aceita refs)
+        tpl = (user_description or "reproduce this style").strip()
+        summary = (
+            '{"description": "' + tpl.replace('"', '\\"') +
+            '", "reference_count": ' + str(len(image_paths)) +
+            ', "method": "manual + multi-reference"}'
+        )
+        conn.execute(text("""
+            UPDATE learned_styles SET
+              status='ready', style_summary=:summary::jsonb,
+              prompt_template=:tpl, example_count=:n,
+              example_paths=:paths
+            WHERE id=:id
+        """), {
+            "summary": summary, "tpl": tpl, "n": len(image_paths),
+            "paths": "{" + ",".join(image_paths) + "}",
+            "id": learned_style_id,
+        })
+    return {"learned_style_id": learned_style_id, "ready": True}
 
 
 @celery_app.task(name="refine.regen_previews", bind=True)

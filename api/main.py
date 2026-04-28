@@ -124,7 +124,6 @@ if settings.DATABASE_URL:
     from .routers import audio as r_audio
     from .routers import edit as r_edit
     from .routers import specialized as r_spec
-    from .routers import captions as r_cap
     from .routers import catalog as r_catalog
     from .routers import admin as r_admin
 
@@ -141,9 +140,8 @@ if settings.DATABASE_URL:
     app.include_router(r_edit.router)
     app.include_router(r_spec.router)
 
-    # AI text/audio
+    # AI audio
     app.include_router(r_audio.router)
-    app.include_router(r_cap.router)
 
     # Catalog
     app.include_router(r_catalog.worlds_router)

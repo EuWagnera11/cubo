@@ -1,11 +1,11 @@
 """
-Refine — Google Drive integration.
+Refine — Bulk import de imagens.
 
-Suporta:
-  - Pasta pública compartilhada (link "anyone with the link") via API key
-  - OAuth 2.0 pra pastas privadas (Token persistido por user)
+Ao invés de Google Drive API, agora aceita:
+  - Lista de URLs HTTP públicas (jpg/png/webp)
+  - Cada URL é baixada e re-uploadada pro Supabase Storage do user
 
-Baixa imagens da pasta + uploadeia pro Supabase Storage do user.
+Usuário pode colar links de qualquer lugar (Pinterest pin, image hosts, S3 público, etc).
 """
 from __future__ import annotations
 
@@ -18,89 +18,49 @@ import httpx
 
 from supabase import create_client
 
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", "")
-DRIVE_API = "https://www.googleapis.com/drive/v3"
-DRIVE_DOWNLOAD = "https://www.googleapis.com/drive/v3/files/{file_id}?alt=media"
-
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 
 
-def extract_folder_id(url: str) -> str | None:
-    """Extrai folderId de URL Drive (/folders/<id> ou /drive/folders/<id>)."""
-    m = re.search(r"/folders/([a-zA-Z0-9_-]+)", url)
-    return m.group(1) if m else None
+_IMAGE_EXT = re.compile(r"\.(jpg|jpeg|png|webp|gif)(?:\?|$)", re.IGNORECASE)
 
 
-async def list_drive_folder_files(folder_id: str, *, api_key: str = GOOGLE_API_KEY) -> list[dict]:
-    """Lista todos arquivos na pasta (paginated)."""
-    if not api_key:
-        raise RuntimeError("GOOGLE_API_KEY não configurada")
-
-    files: list[dict] = []
-    page_token: str | None = None
-
-    async with httpx.AsyncClient(timeout=60) as client:
-        while True:
-            params = {
-                "q": f"'{folder_id}' in parents and trashed=false",
-                "key": api_key,
-                "fields": "nextPageToken,files(id,name,mimeType,size,thumbnailLink)",
-                "pageSize": 1000,
-            }
-            if page_token:
-                params["pageToken"] = page_token
-
-            r = await client.get(f"{DRIVE_API}/files", params=params)
-            if r.status_code != 200:
-                raise RuntimeError(f"Drive list failed: {r.status_code} {r.text[:200]}")
-            data = r.json()
-            files.extend(data.get("files", []))
-            page_token = data.get("nextPageToken")
-            if not page_token:
-                break
-
-    # Só imagens / vídeos
-    return [
-        f for f in files
-        if (f.get("mimeType") or "").startswith(("image/", "video/"))
-    ]
+async def download_url(url: str) -> tuple[bytes, str]:
+    """Baixa imagem de uma URL pública, retorna (bytes, ext)."""
+    async with httpx.AsyncClient(timeout=120, follow_redirects=True) as c:
+        r = await c.get(url, headers={"User-Agent": "Refine/1.0"})
+        r.raise_for_status()
+        ct = (r.headers.get("content-type") or "").split(";")[0].lower()
+        ext = (
+            "jpg" if "jpeg" in ct else
+            "png" if "png" in ct else
+            "webp" if "webp" in ct else
+            "gif" if "gif" in ct else
+            "jpg"
+        )
+        return r.content, ext
 
 
-async def download_drive_file(file_id: str, *, api_key: str = GOOGLE_API_KEY) -> bytes:
-    """Baixa bytes de um arquivo público."""
-    async with httpx.AsyncClient(timeout=120) as client:
-        r = await client.get(DRIVE_DOWNLOAD.format(file_id=file_id), params={"key": api_key})
-        if r.status_code != 200:
-            raise RuntimeError(f"Drive download failed: {r.status_code}")
-        return r.content
-
-
-async def import_drive_folder(*, folder_url: str, user_id: str, import_id: str) -> dict:
+async def import_url_list(*, urls: list[str], user_id: str, import_id: str) -> dict:
     """
-    Baixa pasta inteira → upload Supabase Storage bucket 'drive-imports'.
-    Retorna {total, imported, paths}.
+    Baixa cada URL → upload Supabase Storage bucket 'drive-imports'.
+    Returns {total, imported, paths}.
     """
-    folder_id = extract_folder_id(folder_url)
-    if not folder_id:
-        raise ValueError(f"URL Drive inválida: {folder_url}")
+    if not SUPABASE_URL:
+        raise RuntimeError("SUPABASE_URL não configurada")
 
-    files = await list_drive_folder_files(folder_id)
-    total = len(files)
+    sb = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+    total = len(urls)
     if total == 0:
         return {"total": 0, "imported": 0, "paths": []}
 
-    sb = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
-    paths: list[str] = []
-    sem = asyncio.Semaphore(5)  # max 5 downloads paralelos
+    sem = asyncio.Semaphore(5)
 
-    async def upload_one(f: dict) -> str | None:
+    async def fetch_one(idx: int, url: str) -> str | None:
         async with sem:
             try:
-                content = await download_drive_file(f["id"])
-                ext = f["name"].split(".")[-1] if "." in f["name"] else "jpg"
-                storage_path = f"{user_id}/{import_id}/{f['id']}.{ext}"
-                # Supabase storage upload (sync client OK aqui — wrap em executor)
+                content, ext = await download_url(url)
+                storage_path = f"{user_id}/{import_id}/{idx:04d}.{ext}"
                 await asyncio.get_event_loop().run_in_executor(
                     None,
                     lambda: sb.storage.from_("drive-imports").upload(
@@ -109,9 +69,20 @@ async def import_drive_folder(*, folder_url: str, user_id: str, import_id: str) 
                 )
                 return storage_path
             except Exception as e:
-                print(f"[drive] failed {f['name']}: {e}")
+                print(f"[bulk-import] failed {url[:80]}: {e}")
                 return None
 
-    results = await asyncio.gather(*[upload_one(f) for f in files])
+    results = await asyncio.gather(*[fetch_one(i, u) for i, u in enumerate(urls)])
     paths = [p for p in results if p]
     return {"total": total, "imported": len(paths), "paths": paths}
+
+
+# Compat: workers.py ainda chama import_drive_folder
+async def import_drive_folder(*, folder_url: str, user_id: str, import_id: str) -> dict:
+    """
+    Compat wrapper. Antes era Google Drive — agora 'folder_url' é texto multilinha
+    com 1 URL por linha (ou separadas por vírgula).
+    """
+    raw = folder_url.strip()
+    urls = [u.strip() for u in re.split(r"[\n,]+", raw) if u.strip()]
+    return await import_url_list(urls=urls, user_id=user_id, import_id=import_id)

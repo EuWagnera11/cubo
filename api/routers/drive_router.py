@@ -1,4 +1,7 @@
-"""Drive imports + style learning + recreate routers."""
+"""Bulk imports + style learning + recreate routers.
+
+(Antes era Google Drive — agora aceita lista de URLs públicas direto.)
+"""
 from __future__ import annotations
 
 import os
@@ -6,27 +9,33 @@ from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
 from sqlalchemy import create_engine, text
 
 from ..auth_dep import get_current_user, AuthUser, deduct_credits
 from ..workers import drive_import_task, style_learn_task, recreate_task
-from ..drive import extract_folder_id
 
-router = APIRouter(prefix="/drive", tags=["drive"])
+router = APIRouter(prefix="/drive", tags=["bulk-imports"])
 _engine = create_engine(os.environ.get("DATABASE_URL", "").replace("+asyncpg", ""), pool_pre_ping=True)
 
 
 class DriveImportCreate(BaseModel):
-    source_url: HttpUrl
-    source_type: str = "google_drive"
+    """
+    Aceita 1 OU 2 formatos:
+      - source_urls: ["https://...", ...]   (lista de URLs)
+      - source_url:  "url1\nurl2\n..."        (multilinha, 1 por linha)
+    """
+    source_urls: Optional[list[str]] = None
+    source_url: Optional[str] = None
+    source_type: str = "manual_upload"
     folder_name: Optional[str] = None
 
 
 class StyleLearnCreate(BaseModel):
     drive_import_id: UUID
     name: str = Field(..., min_length=2, max_length=100)
-    description: Optional[str] = None
+    description: str = Field(..., min_length=10, max_length=2000,
+                              description="Descreva em texto o estilo a reproduzir (cores, mood, composição, lighting, outfits comuns, etc)")
 
 
 class RecreateCreate(BaseModel):
@@ -41,22 +50,29 @@ class RecreateCreate(BaseModel):
 
 @router.post("/imports")
 def create_drive_import(payload: DriveImportCreate, user: AuthUser = Depends(get_current_user)) -> dict:
-    if payload.source_type == "google_drive":
-        if not extract_folder_id(str(payload.source_url)):
-            raise HTTPException(400, "URL Google Drive inválida (formato esperado: /folders/<id>)")
+    # Resolve URLs (lista ou multiline)
+    urls: list[str] = []
+    if payload.source_urls:
+        urls = [u.strip() for u in payload.source_urls if u.strip()]
+    elif payload.source_url:
+        import re
+        urls = [u.strip() for u in re.split(r"[\n,]+", payload.source_url) if u.strip()]
+    if not urls:
+        raise HTTPException(400, "Forneça pelo menos 1 URL em source_urls ou source_url")
 
+    folder_url_text = "\n".join(urls)
     with _engine.begin() as conn:
         row = conn.execute(text("""
-            INSERT INTO drive_imports (user_id, source_type, source_url, folder_name, status)
-            VALUES (:u, :st, :url, :name, 'pending') RETURNING id
+            INSERT INTO drive_imports (user_id, source_type, source_url, folder_name, total_files, status)
+            VALUES (:u, :st, :url, :name, :tot, 'pending') RETURNING id
         """), {
             "u": user.user_id, "st": payload.source_type,
-            "url": str(payload.source_url), "name": payload.folder_name,
+            "url": folder_url_text, "name": payload.folder_name, "tot": len(urls),
         }).first()
         iid = str(row.id)
 
-    drive_import_task.delay(drive_import_id=iid, folder_url=str(payload.source_url), user_id=user.user_id)
-    return {"id": iid, "status": "pending"}
+    drive_import_task.delay(drive_import_id=iid, folder_url=folder_url_text, user_id=user.user_id)
+    return {"id": iid, "status": "pending", "url_count": len(urls)}
 
 
 @router.get("/imports")
@@ -83,7 +99,11 @@ def get_import(import_id: str, user: AuthUser = Depends(get_current_user)) -> di
 
 @router.post("/learn")
 def create_learned_style(payload: StyleLearnCreate, user: AuthUser = Depends(get_current_user)) -> dict:
-    cost = 30  # 1 análise vision = 30 créditos (Claude Opus 4.7 vision é caro)
+    """
+    Style learning manual: user descreve em texto o estilo + lista imagens ref.
+    Sistema usa essas refs como reference_images do nano-banana-pro.
+    """
+    cost = 5  # custo simbólico (sem Claude vision)
     if user.credits < cost:
         raise HTTPException(402, f"Créditos insuficientes ({user.credits}/{cost})")
 
@@ -96,8 +116,8 @@ def create_learned_style(payload: StyleLearnCreate, user: AuthUser = Depends(get
     if imp.status != "ready":
         raise HTTPException(400, f"Import ainda não está pronto (status: {imp.status})")
     paths = list(imp.storage_paths or [])
-    if len(paths) < 5:
-        raise HTTPException(400, f"Mínimo 5 imagens. Encontradas: {len(paths)}")
+    if len(paths) < 1:
+        raise HTTPException(400, f"Pelo menos 1 imagem necessária. Encontradas: {len(paths)}")
 
     with _engine.begin() as conn:
         row = conn.execute(text("""
@@ -112,8 +132,11 @@ def create_learned_style(payload: StyleLearnCreate, user: AuthUser = Depends(get
         sid = str(row.id)
 
     deduct_credits(user.user_id, cost)
-    style_learn_task.delay(learned_style_id=sid, image_paths=paths, user_id=user.user_id)
-    return {"id": sid, "status": "analyzing", "credits_used": cost}
+    style_learn_task.delay(
+        learned_style_id=sid, image_paths=paths,
+        user_description=payload.description, user_id=user.user_id,
+    )
+    return {"id": sid, "status": "ready", "credits_used": cost}
 
 
 @router.get("/learn")
