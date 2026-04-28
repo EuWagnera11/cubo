@@ -1,44 +1,42 @@
-# Deploy do Cubo API numa VPS
+# Deploy do Cubo API numa VPS (Supabase managed DB)
 
-Tutorial completo do zero. Tempo estimado: **30-45 minutos**.
+Tutorial atualizado pós-rebalance de pricing. Tempo estimado: **30-45 minutos**.
+
+> **Stack atual:** FastAPI + Celery + Redis + Caddy SSL + **Supabase managed** (DB + Storage + Auth)
+> Sem Postgres local, sem R2 — tudo Supabase.
 
 ---
 
 ## 0. Pré-requisitos
 
-- VPS Ubuntu 22.04 LTS (mín 2 vCPU, 4GB RAM, 40GB SSD)
-- Domínio comprado (`refinecubo.com.br`)
-- Acesso SSH ao VPS (`ssh root@SEU_IP`)
+- VPS Ubuntu 22.04+ (mín 2 vCPU, 4GB RAM, 40GB SSD)
+- Domínio `refinecubo.com.br` (ou seu)
+- Acesso SSH ao VPS
 
-**VPS recomendado pra Brasil:**
+**VPS recomendados pro Brasil:**
 - Hostinger KVM 2 (R$30-40/mês, SP)
 - Vultr High Frequency SP ($12/mês)
-- AWS Lightsail SP ($5-20/mês)
+- DigitalOcean Premium SP ($12/mês)
 
 ---
 
 ## 1. Setup inicial do VPS
 
 ```bash
-# SSH como root
 ssh root@SEU_IP
 
-# Update sistema
+# Update
 apt update && apt upgrade -y
 
-# Criar user não-root (boa prática)
+# User não-root
 adduser cubo
 usermod -aG sudo cubo
-
-# Copiar SSH keys pro user novo
 rsync --archive --chown=cubo:cubo ~/.ssh /home/cubo
 
-# Login como cubo daqui pra frente
+# Daqui pra frente, login como cubo
 exit
 ssh cubo@SEU_IP
 ```
-
----
 
 ## 2. Firewall
 
@@ -48,265 +46,182 @@ sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw allow 443/udp     # HTTP/3
 sudo ufw enable
-sudo ufw status
 ```
 
----
-
-## 3. Instalar Docker
+## 3. Docker
 
 ```bash
-# Docker Engine
 curl -fsSL https://get.docker.com | sudo sh
-
-# Docker Compose plugin
 sudo apt install -y docker-compose-plugin
-
-# Adicionar user ao grupo docker (sem precisar sudo)
 sudo usermod -aG docker $USER
-
-# Re-login pra aplicar
 exit
 ssh cubo@SEU_IP
 
 # Verificar
-docker --version
-docker compose version
+docker --version && docker compose version
 ```
 
----
+## 4. DNS — apontar `api.refinecubo.com.br` pro VPS
 
-## 4. DNS — apontar domínio pro VPS
-
-No painel do seu provedor de domínio (Registro.br, Cloudflare, etc):
+No painel do seu provedor (Cloudflare / Registro.br / etc):
 
 | Tipo | Nome | Valor | TTL |
 |---|---|---|---|
-| A | `api` | `SEU_VPS_IP` | 3600 |
-| A (futuro) | `app` | `IP_DO_VERCEL` | 3600 |
+| A | `api` | `SEU_VPS_IP` | 300 |
 
-Aguardar propagação (~5-30 min).
-Verifica com:
+Verifica:
 ```bash
 dig api.refinecubo.com.br +short
 # deve retornar SEU_VPS_IP
 ```
 
+> Se usar Cloudflare: deixa o proxy **OFF** (cinza) inicialmente pro Caddy conseguir gerar certificado. Depois pode ligar.
+
 ---
 
-## 5. Clonar o projeto
+## 5. Clonar projeto
 
 ```bash
-# Diretório padrão
 sudo mkdir -p /opt
 cd /opt
-
-# Clonar (assumindo que você subiu pro GitHub)
-sudo git clone https://github.com/SEU_USER/nano-banana-swap-v2.git cubo
+sudo git clone https://github.com/EuWagnera11/cubo.git cubo
 sudo chown -R $USER:$USER /opt/cubo
-cd /opt/cubo/api
+cd /opt/cubo
+
+# Trocar pra branch do pricing rebalance (até dar merge)
+git checkout feat/pricing-rebalance
 ```
 
-> **Se ainda não tem repo Git**: pode subir pro GitHub primeiro (`git init && git remote add origin ...`) ou copiar via `scp` os arquivos do `api/` pro VPS.
-
----
-
-## 6. Configurar variáveis
+## 6. Configurar `.env`
 
 ```bash
-cp .env.example .env
+cp api/.env.production.template .env
 nano .env
 ```
 
-**Mínimo obrigatório pra funcionar:**
+**Preencha as 4 chaves marcadas `<PREENCHER>`:**
 
-```env
-POSTGRES_PASSWORD=<gerar com: openssl rand -hex 16>
-JWT_SECRET=<gerar com: openssl rand -hex 32>
-FREEPIK_API_KEYS=FPSX_chave1,FPSX_chave2
-CORS_ORIGINS=https://app.refinecubo.com.br,https://soph.ia.com.br
-```
+| Variável | Onde pegar |
+|---|---|
+| `DATABASE_URL` | Supabase Dashboard → projeto `obxbwawlvtbfbxocnxzl` → Settings → Database → Connection String → URI |
+| `SUPABASE_JWT_SECRET` | Supabase Dashboard → Settings → API → JWT Settings → JWT Secret |
+| `SUPABASE_SERVICE_KEY` | Settings → API → service_role secret (a NOVA, depois de rotacionar) |
+| `JWT_SECRET` | Gere local com: `openssl rand -hex 32` |
+| `FREEPIK_API_KEYS` | Suas keys Freepik (`FPSX_xxx`) separadas por vírgula |
+| `STRIPE_SECRET_KEY` | Stripe Dashboard → Developers → API keys → secret (NOVA, depois da rotação) |
 
-Resto pode deixar vazio por enquanto (Stripe, Storage, etc — adiciona depois).
-
----
+> Os 18 `STRIPE_PRICE_*` já estão preenchidos (criei via script).
+> O `STRIPE_WEBHOOK_SECRET` também já está (criei o webhook automaticamente).
 
 ## 7. Build + Run
 
 ```bash
-cd /opt/cubo/api
-docker compose up -d --build
+cd /opt/cubo
+docker compose -f api/docker-compose.yml up -d --build
 ```
 
-Isso sobe 4 containers:
+Sobe 5 containers:
 - `cubo-api` (FastAPI)
-- `cubo-postgres` (DB)
-- `cubo-redis` (cache)
-- `cubo-caddy` (proxy + SSL automático Let's Encrypt)
+- `cubo-worker` (Celery worker — jobs Freepik)
+- `cubo-beat` (Celery beat — cron de cleanup diário)
+- `cubo-redis` (broker + cache)
+- `cubo-caddy` (proxy + SSL)
 
-**Aguarda ~1-2 min** Caddy pegar o certificado SSL.
-
----
+**Aguarde ~1-2 min** Caddy pegar o certificado Let's Encrypt.
 
 ## 8. Verificar
 
 ```bash
-# Status containers
-docker compose ps
+# Status
+docker compose -f api/docker-compose.yml ps
 
-# Logs (ctrl+c pra sair)
-docker compose logs -f api
-docker compose logs -f caddy
+# Logs
+docker compose -f api/docker-compose.yml logs -f api
+docker compose -f api/docker-compose.yml logs -f caddy
 
-# Health check
+# Health (após Caddy pegar SSL)
 curl https://api.refinecubo.com.br/health
-# deve retornar: {"ok": true, ...}
+# {"status":"ok","version":"1.0.0",...}
 
 # Swagger UI
 # Abrir no browser: https://api.refinecubo.com.br/docs
 ```
-
-Se tudo OK, o backend está no ar com SSL automático. 🎉
 
 ---
 
 ## 9. Atualizar (deploys futuros)
 
 ```bash
-cd /opt/cubo/api
-./deploy.sh
-```
-
-(O script faz `git pull` + rebuild + restart + health check.)
-
-Ou manualmente:
-```bash
+cd /opt/cubo
 git pull
-docker compose up -d --build api
+docker compose -f api/docker-compose.yml up -d --build api worker beat
 ```
+
+Ou rodar `./api/deploy.sh` (vou atualizar esse script).
 
 ---
 
-## 10. Backup automático Postgres
+## 10. Monitoramento
 
-Adicionar ao crontab (`crontab -e`):
+```bash
+docker stats                                            # CPU/RAM por container
+docker compose -f api/docker-compose.yml logs --tail=100 api
+free -m && df -h
+```
 
+### Health check periódico
+Adicione ao crontab (`crontab -e`):
 ```cron
-# Backup diário às 3am pro R2/S3
-0 3 * * * docker exec cubo-postgres pg_dump -U cubo cubo | gzip > /opt/cubo/backups/cubo-$(date +\%Y\%m\%d).sql.gz
-# Limpar backups com mais de 30 dias
-0 4 * * * find /opt/cubo/backups -name "cubo-*.sql.gz" -mtime +30 -delete
-```
-
-```bash
-mkdir -p /opt/cubo/backups
-```
-
-(Pra produção, sincronizar com R2/S3 — usar `rclone` ou `aws s3 sync`.)
-
----
-
-## 11. Monitoramento básico
-
-### Logs
-```bash
-docker compose logs -f api          # API logs
-docker compose logs -f caddy        # Access logs (HTTPS)
-docker compose logs --tail=100 api  # últimas 100 linhas
-```
-
-### Recursos
-```bash
-docker stats                        # CPU/RAM por container
-df -h                              # disco
-free -m                            # memória
-```
-
-### Health
-```bash
-curl https://api.refinecubo.com.br/health
+*/5 * * * * curl -f -s https://api.refinecubo.com.br/health > /dev/null || echo "API DOWN at $(date)" >> /var/log/cubo-health.log
 ```
 
 ---
 
-## 12. Troubleshooting
+## 11. Troubleshooting
 
-### Caddy não pega certificado SSL
-- Verificar DNS apontando: `dig api.refinecubo.com.br +short`
-- Verificar firewall: `sudo ufw status` (precisa 80 e 443 abertos)
-- Logs: `docker compose logs caddy`
+### Caddy não pega SSL
+- DNS apontando? `dig api.refinecubo.com.br +short`
+- Firewall: `sudo ufw status` (precisa 80 e 443 abertos)
+- Logs: `docker compose -f api/docker-compose.yml logs caddy`
+- Cloudflare proxy ligado bloqueia LE — desliga (proxy cinza)
 
-### API não conecta no Postgres
-- Verificar `.env`: `POSTGRES_PASSWORD` setado?
-- Logs: `docker compose logs postgres`
-- Restart: `docker compose restart api`
-
-### Out of memory
-- Ver: `free -m` e `docker stats`
-- Se Postgres consumindo muito: ajustar `shared_buffers` no postgres.conf
-- Se API consumindo muito: aumentar VPS
-
-### Logs ocupando disco
-- Truncar: `truncate -s 0 $(docker inspect -f '{{.LogPath}}' cubo-api)`
-- Configurar log rotation no Docker:
-  ```json
-  // /etc/docker/daemon.json
-  {
-    "log-driver": "json-file",
-    "log-opts": {
-      "max-size": "100m",
-      "max-file": "5"
-    }
-  }
+### API não conecta no Supabase
+- Verifica `DATABASE_URL` no `.env`
+- Testa conexão direta:
+  ```bash
+  docker run --rm postgres:16-alpine psql "$DATABASE_URL" -c "SELECT 1"
   ```
-  Depois: `sudo systemctl restart docker`
+- IP do VPS pode estar bloqueado pelo Supabase — checar Network Restrictions no Dashboard
+
+### Worker não dispara jobs
+- Verifica que Redis está OK: `docker compose -f api/docker-compose.yml logs redis`
+- Testa: `docker exec cubo-redis redis-cli PING` → deve retornar PONG
+- Logs do worker: `docker compose -f api/docker-compose.yml logs worker`
+
+### Stripe webhook 401
+- Confirma `STRIPE_WEBHOOK_SECRET` bate com o do Dashboard
+- Stripe → Developers → Webhooks → endpoint → "Signing secret"
 
 ---
 
-## 13. Performance tips
-
-### Pra escala (>1000 reqs/dia)
-
-1. **Postgres tuning** — adicionar volume com tunning:
-   ```yaml
-   postgres:
-     command: >
-       postgres
-       -c shared_buffers=256MB
-       -c work_mem=16MB
-       -c maintenance_work_mem=64MB
-   ```
-
-2. **Multiple workers FastAPI** — atualizar Dockerfile:
-   ```dockerfile
-   CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
-   ```
-
-3. **CDN pra static assets** — Cloudflare na frente do Caddy (proxy ON).
-
-4. **Postgres separado** — mover pra Supabase managed quando >5GB ou alta concorrência.
-
----
-
-## 14. Custos estimados
+## 12. Custos estimados
 
 | Item | Custo/mês |
 |---|---|
-| VPS Hostinger KVM 2 (BR SP) | R$30-40 |
-| Domínio refinecubo.com.br | R$40/ano (R$3.30/mês) |
-| Cloudflare R2 (storage) | $0-5 |
-| **Total infra MVP** | **~R$40/mês** |
+| VPS (Hostinger KVM 2 SP) | R$30-40 |
+| Domínio refinecubo.com.br | R$3,30 (R$40/ano) |
+| Supabase Pro (quando precisar) | $25 (~R$135) |
+| Freepik API (pay-per-use) | conforme uso |
+| **Total infra base** | **~R$45-180/mês** |
 
-Comparar com Railway: ~$25-50/mês (R$125-250). VPS é **5-6x mais barato**.
+> Supabase Free Plan funciona pra MVP até ~50k MAU.
 
 ---
 
-## 15. Próximos passos
+## 13. Próximos passos depois do deploy
 
-Depois que o backend estiver no ar:
-1. Adicionar `https://api.refinecubo.com.br` no Lovable como `NEXT_PUBLIC_API_URL`
-2. Importar tipos do `https://api.refinecubo.com.br/openapi.json` no Lovable
-3. Testar signup/login real
-4. Configurar Stripe + webhook
-5. Setup R2 storage pra uploads/gerações
-6. Implementar worker (Inngest) pro pipeline pesado
+1. ✅ Backend rodando em `https://api.refinecubo.com.br`
+2. ⏳ Frontend `lovable-cubo` apontando pro novo Supabase + nova API URL (já configurado no `.env`)
+3. ⏳ Stripe webhook apontando pro endpoint correto (já criado)
+4. ⏳ Habilitar Pix/Boleto no Stripe (precisa aprovação ~3 dias)
+5. ⏳ Testar fluxo completo: signup → checkout → webhook → créditos no DB

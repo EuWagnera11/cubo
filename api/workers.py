@@ -41,6 +41,17 @@ celery_app.conf.update(
     worker_max_tasks_per_child=50,
 )
 
+# Celery Beat schedule — tarefas periódicas
+celery_app.conf.beat_schedule = {
+    # Limpa registros de daily_usage > 7 dias (todo dia, 04:00)
+    "cleanup-daily-usage": {
+        "task": "refine.cleanup_daily_usage",
+        "schedule": {"hour": 4, "minute": 0},
+    },
+    # Anuais NÃO precisam de cron de reposição — créditos são liberados
+    # de uma vez via invoice.paid (Stripe dispara renovação anual sozinho).
+}
+
 # Sync engine pra workers (Celery não trabalha bem com asyncio)
 engine = create_engine(DATABASE_URL.replace("+asyncpg", ""), pool_pre_ping=True)
 
@@ -602,3 +613,20 @@ def recreate_task(self, *, recreate_job_id: str, persona_id: str, persona_ref: s
 
     job = group(subtasks).apply_async()
     return {"recreate_job_id": recreate_job_id, "total": len(subtasks)}
+
+
+# ════════════════════════════════════════════════════════════════
+#                    BILLING / SUBSCRIPTION TASKS
+# ════════════════════════════════════════════════════════════════
+# Reposição de créditos é feita automaticamente pelo Stripe webhook
+# (invoice.paid) tanto pra mensais quanto anuais — não precisa de cron.
+
+@celery_app.task(name="refine.cleanup_daily_usage")
+def cleanup_daily_usage():
+    """Remove registros de daily_usage com mais de 7 dias (não precisa pra cap)."""
+    with engine.begin() as conn:
+        result = conn.execute(text(
+            "DELETE FROM daily_usage WHERE used_at < NOW() - INTERVAL '7 days'"
+        ))
+    return {"deleted_rows": getattr(result, "rowcount", 0)}
+

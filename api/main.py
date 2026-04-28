@@ -149,6 +149,7 @@ if settings.DATABASE_URL:
     app.include_router(r_catalog.worlds_router)
     app.include_router(r_catalog.presets_router)
     app.include_router(r_catalog.music_router)
+    app.include_router(r_catalog.catalog_router)
 
     # Billing & uploads
     app.include_router(r_billing.router)

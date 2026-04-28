@@ -11,6 +11,13 @@ api/.env
 *.key
 *credentials*
 
+# Stripe price IDs (output do script create_stripe_products.py)
+scripts/.stripe_price_ids.txt
+scripts/.stripe_webhook_secret.txt
+
+# Template de produção com price_ids (não é secret, mas evita ruído)
+api/.env.production.template
+
 # Python
 __pycache__/
 *.py[cod]

@@ -74,3 +74,55 @@ def deduct_credits(user_id: str, amount: int):
         conn.execute(text(
             "UPDATE profiles SET credits = credits - :n WHERE id = :id AND credits >= :n"
         ), {"n": amount, "id": user_id})
+
+
+# ════════════════════════════════════════════════════════════════
+#                          DAILY CAPS
+# ════════════════════════════════════════════════════════════════
+# Limites diários por modelo+plano pra evitar abuso de margem.
+# Tabela definida em api/pricing.py:DAILY_CAPS.
+
+def check_daily_cap(user_id: str, tier: str, model: str) -> None:
+    """
+    Verifica se usuário ainda pode usar `model` hoje.
+    Levanta 429 se cap atingido.
+    Cap=0 → bloqueia totalmente. Cap=None → sem limite.
+    """
+    # Import lazy pra evitar circular
+    from .pricing import get_daily_cap
+
+    cap = get_daily_cap(tier, model)
+    if cap is None:
+        return  # ilimitado neste plano
+
+    if cap == 0:
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN,
+            f"Modelo '{model}' não disponível no plano {tier}. "
+            f"Faça upgrade ou compre add-on.",
+        )
+
+    # Conta usos do user nesse modelo nas últimas 24h
+    with _engine.connect() as conn:
+        row = conn.execute(text("""
+            SELECT COUNT(*) AS n FROM daily_usage
+             WHERE user_id = :u AND model = :m
+               AND used_at > NOW() - INTERVAL '24 hours'
+        """), {"u": user_id, "m": model}).first()
+    used_today = row.n if row else 0
+
+    if used_today >= cap:
+        raise HTTPException(
+            status.HTTP_429_TOO_MANY_REQUESTS,
+            f"Limite diário atingido neste modelo ({used_today}/{cap}). "
+            f"Volta amanhã ou compre Boost.",
+        )
+
+
+def record_usage(user_id: str, model: str) -> None:
+    """Registra uso do modelo pra contagem de cap diário."""
+    with _engine.begin() as conn:
+        conn.execute(text("""
+            INSERT INTO daily_usage (user_id, model, used_at)
+            VALUES (:u, :m, NOW())
+        """), {"u": user_id, "m": model})
