@@ -258,6 +258,80 @@ class FreepikClient:
         r = await self._request("POST", "/v1/ai/image-relight", json=body)
         return r.get("data", {}).get("task_id") or r.get("task_id")
 
+    # ─────────────── IMAGE EDIT (inpaint, outpaint, etc) ───────────────
+
+    async def inpaint(self, image_url: str, mask_url: str, prompt: str) -> str:
+        """Inpaint — pinta região marcada pela mask com novo conteúdo."""
+        body = {"image": image_url, "mask": mask_url, "prompt": prompt}
+        r = await self._request("POST", "/v1/ai/image-inpaint", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def outpaint(self, image_url: str, *, prompt: str = "",
+                       direction: Literal["all", "horizontal", "vertical", "left", "right", "top", "bottom"] = "all",
+                       expansion_factor: float = 1.5) -> str:
+        """Outpaint — expande canvas além do frame original."""
+        body = {
+            "image": image_url, "prompt": prompt,
+            "direction": direction, "expansion_factor": expansion_factor,
+        }
+        r = await self._request("POST", "/v1/ai/image-outpaint", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def remove_object(self, image_url: str, mask_url: str) -> str:
+        """Remove objeto sem deixar trace (content-aware fill)."""
+        body = {"image": image_url, "mask": mask_url}
+        r = await self._request("POST", "/v1/ai/image-object-removal", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def sketch_to_image(self, sketch_url: str, prompt: str, *,
+                              strength: float = 0.7) -> str:
+        """Sketch/rascunho → imagem realista guiada pelo prompt."""
+        body = {"sketch": sketch_url, "prompt": prompt, "strength": strength}
+        r = await self._request("POST", "/v1/ai/sketch-to-image", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def style_transfer(self, source_url: str, style_reference_url: str,
+                             prompt: str = "", *, strength: float = 0.7) -> str:
+        """Aplica estilo de uma imagem em outra (preserva conteúdo)."""
+        body = {
+            "source_image": source_url, "style_image": style_reference_url,
+            "prompt": prompt, "strength": strength,
+        }
+        r = await self._request("POST", "/v1/ai/style-transfer", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def replace_background(self, image_url: str, prompt: str) -> str:
+        """Substitui background mantendo subject (com alpha matting)."""
+        body = {"image": image_url, "prompt": prompt}
+        r = await self._request("POST", "/v1/ai/replace-background", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def expand_image(self, image_url: str, *, target_aspect_ratio: str = "16:9") -> str:
+        """Expande imagem pra novo aspect ratio (uncrop)."""
+        body = {"image": image_url, "target_aspect_ratio": target_aspect_ratio}
+        r = await self._request("POST", "/v1/ai/image-expand", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def colorize(self, image_url: str, prompt: str = "") -> str:
+        """P&B → colorido."""
+        body = {"image": image_url, "prompt": prompt}
+        r = await self._request("POST", "/v1/ai/colorize", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    # ─────────────── VIDEO EDIT ───────────────
+
+    async def lip_sync(self, video_url: str, audio_url: str) -> str:
+        """Lip sync — sincroniza boca do vídeo com áudio."""
+        body = {"video": video_url, "audio": audio_url}
+        r = await self._request("POST", "/v1/ai/lip-sync", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
+    async def video_upscale(self, video_url: str, *, scale: Literal[2, 4] = 2) -> str:
+        """Upscale de vídeo."""
+        body = {"video": video_url, "scale_factor": scale}
+        r = await self._request("POST", "/v1/ai/video-upscaler", json=body)
+        return r.get("data", {}).get("task_id") or r.get("task_id")
+
     # ════════════════════════════════════════════════════════════════
     #                          VIDEO
     # ════════════════════════════════════════════════════════════════

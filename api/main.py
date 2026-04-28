@@ -121,14 +121,35 @@ if settings.DATABASE_URL:
     from .routers import personas as r_personas
     from .routers import billing as r_billing
     from .routers import uploads as r_uploads
+    from .routers import audio as r_audio
+    from .routers import edit as r_edit
+    from .routers import specialized as r_spec
+    from .routers import captions as r_cap
+    from .routers import catalog as r_catalog
 
+    # Core
     app.include_router(r_gen.router)
+    app.include_router(r_personas.router)
+    app.include_router(r_personas.templates_router)
+
+    # Workflows
     app.include_router(r_swaps.router)
     app.include_router(r_batch.router)
     app.include_router(r_drive.router)
     app.include_router(r_enhance.router)
-    app.include_router(r_personas.router)
-    app.include_router(r_personas.templates_router)
+    app.include_router(r_edit.router)
+    app.include_router(r_spec.router)
+
+    # AI text/audio
+    app.include_router(r_audio.router)
+    app.include_router(r_cap.router)
+
+    # Catalog
+    app.include_router(r_catalog.worlds_router)
+    app.include_router(r_catalog.presets_router)
+    app.include_router(r_catalog.music_router)
+
+    # Billing & uploads
     app.include_router(r_billing.router)
     app.include_router(r_uploads.router)
 
