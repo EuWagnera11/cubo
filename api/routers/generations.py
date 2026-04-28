@@ -27,10 +27,15 @@ class GenerationCreate(BaseModel):
     media_type: Literal["image", "video"] = "image"
     enhance_skin: bool = True
     upscale: bool = False
+
+    # Modelo escolhido pelo usuário (default = Nano Banana Pro Flash 2K, melhor custo-benefício)
+    model: str = "nano-banana-pro-flash"
+
     # video-specific
     image_url: Optional[str] = None
-    video_engine: Literal["kling_v3", "kling_v2_1", "hailuo", "wan_2_1", "runway"] = "kling_v3"
-    duration: str = "5"
+    video_engine: str = "kling-v3-std"
+    duration: str = "5s"
+    with_audio: bool = False
 
 
 def _aspect_to_freepik(ratio: str) -> str:
@@ -41,12 +46,46 @@ def _aspect_to_freepik(ratio: str) -> str:
 
 
 def _cost(payload: GenerationCreate) -> int:
-    base = {"1k": 1, "2k": 2, "4k": 4}.get(payload.resolution, 2)
+    """
+    Calcula custo em créditos via lookup table central (api/pricing.py).
+    Pesos seguem multiplicador ×1.785 sobre custo USD Freepik (NB2 1K = 75 cred).
+    """
+    from ..pricing import get_image_cost, get_video_cost, ENHANCE_COSTS
+
     if payload.media_type == "video":
-        return 25 if payload.video_engine == "kling_v3" else 20
-    cost = base * payload.num_variations
+        cost = get_video_cost(
+            payload.video_engine,
+            duration=payload.duration,
+            audio=payload.with_audio,
+        )
+        if cost is None:
+            raise HTTPException(
+                400,
+                f"Combinação não suportada: {payload.video_engine} / "
+                f"{payload.duration} / audio={payload.with_audio}",
+            )
+        return cost
+
+    # Imagem
+    per_image = get_image_cost(payload.model, payload.resolution)
+    if per_image is None:
+        raise HTTPException(
+            400,
+            f"Modelo '{payload.model}' não suporta resolução '{payload.resolution}'.",
+        )
+
+    cost = per_image * payload.num_variations
+
+    # Upscale opcional (Magnific 2K→4K)
     if payload.upscale:
-        cost += 5 * payload.num_variations
+        upscale_key = f"magnific_{payload.resolution}_to_4k" if payload.resolution != "4k" else None
+        if upscale_key and upscale_key in ENHANCE_COSTS:
+            cost += ENHANCE_COSTS[upscale_key] * payload.num_variations
+
+    # Skin enhance opcional (Creative — default mais barato)
+    if payload.enhance_skin:
+        cost += ENHANCE_COSTS["skin_creative"] * payload.num_variations
+
     return cost
 
 

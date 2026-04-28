@@ -1,4 +1,14 @@
-"""Billing — Stripe checkout + webhook."""
+"""Billing — Stripe checkout + webhook.
+
+Estrutura de pricing (Cubo / Refine):
+  Planos mensais  : Starter R$27 / Creator R$59 / Pro R$129 / Studio R$799
+  Planos anuais   : -30% sobre 12× mensal + bônus boas-vindas (pago à vista)
+  Top-up packs    : Boost 3k / 8k / 25k / 80k
+  Add-ons one-shot: Kling V3 +áudio, Veo 4K +áudio, Magnific 8K, LoRA, Voice Clone
+
+Pesos de crédito por modelo seguem multiplicador ×1.785 sobre custo USD Freepik
+(NB2 1K = 75 cred, igual à plataforma web Freepik).
+"""
 from __future__ import annotations
 
 import os
@@ -18,27 +28,122 @@ stripe.api_key = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 APP_URL = os.environ.get("APP_URL", "https://app.refinecubo.com.br")
 
-# Map tier → Stripe price ID + créditos mensais
+
+# ════════════════════════════════════════════════════════════════
+#                         PLANOS MENSAIS / ANUAIS
+# ════════════════════════════════════════════════════════════════
+
 TIER_PRICES = {
-    "starter":    {"price_id": os.environ.get("STRIPE_PRICE_STARTER", ""),    "credits": 500,    "amount_brl": 47},
-    "creator":    {"price_id": os.environ.get("STRIPE_PRICE_CREATOR", ""),    "credits": 2500,   "amount_brl": 147},
-    "pro":        {"price_id": os.environ.get("STRIPE_PRICE_PRO", ""),        "credits": 7500,   "amount_brl": 297},
-    "agency":     {"price_id": os.environ.get("STRIPE_PRICE_AGENCY", ""),     "credits": 25000,  "amount_brl": 697},
-    "enterprise": {"price_id": os.environ.get("STRIPE_PRICE_ENTERPRISE", ""), "credits": 100000, "amount_brl": 0},  # custom
+    # ─── Mensais ───
+    "starter_monthly": {
+        "price_id": os.environ.get("STRIPE_PRICE_STARTER_MONTHLY", ""),
+        "credits": 10000, "amount_brl": 27, "interval": "month",
+        "tier": "starter",
+    },
+    "creator_monthly": {
+        "price_id": os.environ.get("STRIPE_PRICE_CREATOR_MONTHLY", ""),
+        "credits": 25000, "amount_brl": 59, "interval": "month",
+        "tier": "creator",
+    },
+    "pro_monthly": {
+        "price_id": os.environ.get("STRIPE_PRICE_PRO_MONTHLY", ""),
+        "credits": 60000, "amount_brl": 129, "interval": "month",
+        "tier": "pro",
+    },
+    "studio_monthly": {
+        "price_id": os.environ.get("STRIPE_PRICE_STUDIO_MONTHLY", ""),
+        "credits": 380000, "amount_brl": 799, "interval": "month",
+        "tier": "studio",
+    },
+
+    # ─── Anuais (-30% + bônus boas-vindas) ───
+    "starter_yearly": {
+        "price_id": os.environ.get("STRIPE_PRICE_STARTER_YEARLY", ""),
+        "credits": 10000, "amount_brl": 227, "interval": "year",
+        "tier": "starter", "welcome_bonus": 5000,
+    },
+    "creator_yearly": {
+        "price_id": os.environ.get("STRIPE_PRICE_CREATOR_YEARLY", ""),
+        "credits": 25000, "amount_brl": 496, "interval": "year",
+        "tier": "creator", "welcome_bonus": 12000,
+    },
+    "pro_yearly": {
+        "price_id": os.environ.get("STRIPE_PRICE_PRO_YEARLY", ""),
+        "credits": 60000, "amount_brl": 1084, "interval": "year",
+        "tier": "pro", "welcome_bonus": 30000,
+    },
+    "studio_yearly": {
+        "price_id": os.environ.get("STRIPE_PRICE_STUDIO_YEARLY", ""),
+        "credits": 380000, "amount_brl": 6712, "interval": "year",
+        "tier": "studio", "welcome_bonus": 200000,
+    },
 }
 
-# Top-up packs (compra avulsa)
+
+# ════════════════════════════════════════════════════════════════
+#                         TOP-UP PACKS (BOOSTS)
+# ════════════════════════════════════════════════════════════════
+
 CREDIT_PACKS = {
-    "500":   {"price_id": os.environ.get("STRIPE_PRICE_PACK_500", ""),   "credits": 500,   "amount_brl": 39},
-    "2000":  {"price_id": os.environ.get("STRIPE_PRICE_PACK_2000", ""),  "credits": 2000,  "amount_brl": 129},
-    "5000":  {"price_id": os.environ.get("STRIPE_PRICE_PACK_5000", ""),  "credits": 5000,  "amount_brl": 297},
-    "15000": {"price_id": os.environ.get("STRIPE_PRICE_PACK_15000", ""), "credits": 15000, "amount_brl": 797},
+    "boost_3k":  {"price_id": os.environ.get("STRIPE_PRICE_BOOST_3K", ""),  "credits": 3000,  "amount_brl": 19},
+    "boost_8k":  {"price_id": os.environ.get("STRIPE_PRICE_BOOST_8K", ""),  "credits": 8000,  "amount_brl": 39},
+    "boost_25k": {"price_id": os.environ.get("STRIPE_PRICE_BOOST_25K", ""), "credits": 25000, "amount_brl": 99},
+    "boost_80k": {"price_id": os.environ.get("STRIPE_PRICE_BOOST_80K", ""), "credits": 80000, "amount_brl": 279},
 }
 
+
+# ════════════════════════════════════════════════════════════════
+#                     ADD-ONS ONE-SHOT (não-créditos)
+# ════════════════════════════════════════════════════════════════
+
+ADDONS = {
+    "kling_v3_pro_10s_audio": {
+        "price_id": os.environ.get("STRIPE_PRICE_ADDON_KLING_V3_PRO_AUDIO", ""),
+        "amount_brl": 24.90,
+        "label": "Vídeo Kling V3 Pro 10s com áudio",
+    },
+    "veo_4k_audio": {
+        "price_id": os.environ.get("STRIPE_PRICE_ADDON_VEO_4K_AUDIO", ""),
+        "amount_brl": 24.90,
+        "label": "Vídeo Veo 3.1 4K 5s com áudio",
+    },
+    "magnific_8k": {
+        "price_id": os.environ.get("STRIPE_PRICE_ADDON_MAGNIFIC_8K", ""),
+        "amount_brl": 19.90,
+        "label": "Upscale Magnific 4K → 8K",
+    },
+    "lora_medium": {
+        "price_id": os.environ.get("STRIPE_PRICE_ADDON_LORA_MEDIUM", ""),
+        "amount_brl": 199.00,
+        "label": "Treino LoRA Medium (sua persona)",
+    },
+    "lora_ultra": {
+        "price_id": os.environ.get("STRIPE_PRICE_ADDON_LORA_ULTRA", ""),
+        "amount_brl": 349.00,
+        "label": "Treino LoRA Ultra (alta fidelidade)",
+    },
+    "voice_clone": {
+        "price_id": os.environ.get("STRIPE_PRICE_ADDON_VOICE_CLONE", ""),
+        "amount_brl": 39.00,
+        "label": "Voice Clone (cadastro de voz personalizada)",
+    },
+}
+
+
+# ════════════════════════════════════════════════════════════════
+#                            ENDPOINTS
+# ════════════════════════════════════════════════════════════════
 
 class CheckoutReq(BaseModel):
-    tier: Literal["starter", "creator", "pro", "agency", "enterprise"] | None = None
-    pack: Literal["500", "2000", "5000", "15000"] | None = None
+    tier: Literal[
+        "starter_monthly", "creator_monthly", "pro_monthly", "studio_monthly",
+        "starter_yearly",  "creator_yearly",  "pro_yearly",  "studio_yearly",
+    ] | None = None
+    pack: Literal["boost_3k", "boost_8k", "boost_25k", "boost_80k"] | None = None
+    addon: Literal[
+        "kling_v3_pro_10s_audio", "veo_4k_audio", "magnific_8k",
+        "lora_medium", "lora_ultra", "voice_clone",
+    ] | None = None
 
 
 @router.post("/checkout")
@@ -49,14 +154,26 @@ def create_checkout(payload: CheckoutReq, user: AuthUser = Depends(get_current_u
     if payload.tier:
         cfg = TIER_PRICES[payload.tier]
         mode = "subscription"
+        meta = {
+            "user_id": user.user_id, "tier_key": payload.tier,
+            "tier": cfg["tier"], "interval": cfg["interval"],
+            "credits": str(cfg["credits"]),
+            "welcome_bonus": str(cfg.get("welcome_bonus", 0)),
+        }
     elif payload.pack:
         cfg = CREDIT_PACKS[payload.pack]
         mode = "payment"
+        meta = {"user_id": user.user_id, "pack": payload.pack, "credits": str(cfg["credits"])}
+    elif payload.addon:
+        cfg = ADDONS[payload.addon]
+        mode = "payment"
+        meta = {"user_id": user.user_id, "addon": payload.addon, "label": cfg["label"]}
     else:
-        raise HTTPException(400, "tier ou pack obrigatório")
+        raise HTTPException(400, "tier, pack ou addon obrigatório")
 
     if not cfg["price_id"]:
-        raise HTTPException(503, f"Stripe price ID não configurado pra {payload.tier or payload.pack}")
+        ident = payload.tier or payload.pack or payload.addon
+        raise HTTPException(503, f"Stripe price ID não configurado pra {ident}")
 
     session = stripe.checkout.Session.create(
         client_reference_id=user.user_id,
@@ -65,12 +182,8 @@ def create_checkout(payload: CheckoutReq, user: AuthUser = Depends(get_current_u
         mode=mode,
         success_url=f"{APP_URL}/app/billing?success=1",
         cancel_url=f"{APP_URL}/app/billing?canceled=1",
-        metadata={
-            "user_id": user.user_id,
-            "tier": payload.tier or "",
-            "pack": payload.pack or "",
-            "credits": str(cfg["credits"]),
-        },
+        metadata=meta,
+        subscription_data={"metadata": meta} if mode == "subscription" else None,
     )
     return {"url": session.url, "session_id": session.id}
 
@@ -80,7 +193,6 @@ def billing_portal(user: AuthUser = Depends(get_current_user)) -> dict:
     """Stripe Customer Portal — gerenciar assinatura."""
     if not stripe.api_key:
         raise HTTPException(503)
-    # Buscar customer_id
     with _engine.connect() as conn:
         r = conn.execute(text(
             "SELECT stripe_customer_id FROM profiles WHERE id=:u"
@@ -95,7 +207,7 @@ def billing_portal(user: AuthUser = Depends(get_current_user)) -> dict:
 
 @router.post("/webhook")
 async def stripe_webhook(request: Request) -> dict:
-    """Recebe eventos Stripe → atualiza tier/credits."""
+    """Recebe eventos Stripe → atualiza tier/credits/anuais."""
     payload = await request.body()
     sig = request.headers.get("stripe-signature", "")
 
@@ -107,46 +219,88 @@ async def stripe_webhook(request: Request) -> dict:
     et = event["type"]
     obj = event["data"]["object"]
 
+    # ─── Checkout concluído (assinatura ou compra avulsa) ───
     if et == "checkout.session.completed":
-        user_id = obj.get("client_reference_id") or obj.get("metadata", {}).get("user_id")
-        tier = obj.get("metadata", {}).get("tier") or ""
-        pack = obj.get("metadata", {}).get("pack") or ""
-        credits = int(obj.get("metadata", {}).get("credits") or 0)
+        meta = obj.get("metadata", {}) or {}
+        user_id = obj.get("client_reference_id") or meta.get("user_id")
         customer_id = obj.get("customer", "")
+        if not user_id:
+            return {"received": True}
 
-        if user_id:
+        # Assinatura
+        if "tier_key" in meta:
+            tier_key = meta["tier_key"]
+            cfg = TIER_PRICES.get(tier_key, {})
+            tier = cfg.get("tier", "")
+            interval = cfg.get("interval", "month")
+            credits = cfg.get("credits", 0)
+            welcome_bonus = cfg.get("welcome_bonus", 0)
+
             with _engine.begin() as conn:
-                if tier:
-                    conn.execute(text("""
-                        UPDATE profiles SET tier=:t, credits=credits+:c, stripe_customer_id=:cid
-                        WHERE id=:u
-                    """), {"t": tier, "c": credits, "cid": customer_id, "u": user_id})
-                elif pack:
-                    conn.execute(text(
-                        "UPDATE profiles SET credits=credits+:c, stripe_customer_id=:cid WHERE id=:u"
-                    ), {"c": credits, "cid": customer_id, "u": user_id})
+                conn.execute(text("""
+                    UPDATE profiles
+                       SET tier = :t,
+                           subscription_interval = :iv,
+                           subscription_tier_key = :tk,
+                           credits = credits + :c,
+                           stripe_customer_id = :cid
+                     WHERE id = :u
+                """), {
+                    "t": tier, "iv": interval, "tk": tier_key,
+                    "c": credits + welcome_bonus,
+                    "cid": customer_id, "u": user_id,
+                })
 
+        # Top-up pack
+        elif "pack" in meta:
+            credits = int(meta.get("credits", 0))
+            with _engine.begin() as conn:
+                conn.execute(text(
+                    "UPDATE profiles SET credits = credits + :c, stripe_customer_id = :cid WHERE id = :u"
+                ), {"c": credits, "cid": customer_id, "u": user_id})
+
+        # Add-on one-shot
+        elif "addon" in meta:
+            with _engine.begin() as conn:
+                conn.execute(text("""
+                    INSERT INTO addon_purchases (user_id, addon_id, amount_brl, stripe_session_id)
+                    VALUES (:u, :a, :v, :s)
+                """), {
+                    "u": user_id, "a": meta["addon"],
+                    "v": ADDONS.get(meta["addon"], {}).get("amount_brl", 0),
+                    "s": obj.get("id", ""),
+                })
+
+    # ─── Renovação automática ───
+    # Mensais: créditos adicionados a cada invoice.paid
+    # Anuais : créditos adicionados via cron mensal (não aqui — ver workers.py)
     elif et == "invoice.paid":
-        # renewal mensal: top up dos créditos
         sub_id = obj.get("subscription")
         if sub_id:
             sub = stripe.Subscription.retrieve(sub_id)
-            tier = sub.get("metadata", {}).get("tier", "")
-            user_id = sub.get("metadata", {}).get("user_id", "")
-            credits = TIER_PRICES.get(tier, {}).get("credits", 0)
-            if user_id and credits:
-                with _engine.begin() as conn:
-                    conn.execute(text(
-                        "UPDATE profiles SET credits=credits+:c WHERE id=:u"
-                    ), {"c": credits, "u": user_id})
+            sub_meta = sub.get("metadata", {}) or {}
+            tier_key = sub_meta.get("tier_key", "")
+            user_id = sub_meta.get("user_id", "")
+            cfg = TIER_PRICES.get(tier_key, {})
+
+            # Só repõe créditos automaticamente em assinaturas mensais.
+            # Anuais são repostos pelo cron `refresh_yearly_credits` em workers.py
+            if cfg.get("interval") == "month" and user_id:
+                # Pular o primeiro pagamento (já creditado em checkout.session.completed)
+                billing_reason = obj.get("billing_reason", "")
+                if billing_reason not in ("subscription_create",):
+                    with _engine.begin() as conn:
+                        conn.execute(text(
+                            "UPDATE profiles SET credits = credits + :c WHERE id = :u"
+                        ), {"c": cfg["credits"], "u": user_id})
 
     elif et == "customer.subscription.deleted":
-        # downgrade pra free
         customer_id = obj.get("customer")
         if customer_id:
             with _engine.begin() as conn:
                 conn.execute(text(
-                    "UPDATE profiles SET tier='free' WHERE stripe_customer_id=:cid"
+                    "UPDATE profiles SET tier='free', subscription_interval=NULL, subscription_tier_key=NULL "
+                    "WHERE stripe_customer_id=:cid"
                 ), {"cid": customer_id})
 
     return {"received": True}
@@ -154,10 +308,22 @@ async def stripe_webhook(request: Request) -> dict:
 
 @router.get("/me")
 def my_billing(user: AuthUser = Depends(get_current_user)) -> dict:
+    """Dados de billing pra UI de planos."""
     return {
         "tier": user.tier,
         "credits": user.credits,
-        "tiers": {k: {"credits": v["credits"], "amount_brl": v["amount_brl"]}
-                  for k, v in TIER_PRICES.items()},
-        "packs": {k: v for k, v in CREDIT_PACKS.items()},
+        "tiers": {
+            k: {
+                "credits": v["credits"],
+                "amount_brl": v["amount_brl"],
+                "interval": v["interval"],
+                "tier": v["tier"],
+                "welcome_bonus": v.get("welcome_bonus", 0),
+            }
+            for k, v in TIER_PRICES.items()
+        },
+        "packs":  {k: {"credits": v["credits"], "amount_brl": v["amount_brl"]}
+                   for k, v in CREDIT_PACKS.items()},
+        "addons": {k: {"amount_brl": v["amount_brl"], "label": v["label"]}
+                   for k, v in ADDONS.items()},
     }

@@ -485,6 +485,380 @@ class FreepikClient:
             elapsed += interval_s
         raise FreepikError(f"Task {task_id} timeout after {max_wait_s}s")
 
+    # ════════════════════════════════════════════════════════════════
+    #              EXTENDED MODELS — Image (catálogo completo)
+    # ════════════════════════════════════════════════════════════════
+
+    async def _post_task(self, path: str, body: dict) -> str:
+        """Helper interno: POST + extrai task_id + registra endpoint pra polling."""
+        r = await self._request("POST", path, json=body)
+        tid = r.get("data", {}).get("task_id") or r.get("task_id")
+        if tid:
+            self._task_endpoints[tid] = path
+        return tid
+
+    # ─── Flux family ───
+    async def flux_2_turbo(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
+        return await self._post_task("/v1/ai/text-to-image/flux-2-turbo",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
+
+    async def flux_2_pro(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
+        return await self._post_task("/v1/ai/text-to-image/flux-2-pro",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
+
+    async def flux_2_klein(self, prompt: str, *, resolution: Literal["1k", "2k"] = "1k",
+                           aspect_ratio: str = "square_1_1") -> str:
+        return await self._post_task("/v1/ai/text-to-image/flux-2-klein",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio, "size": resolution})
+
+    async def flux_kontext_pro(self, prompt: str, *, reference_images: list[str] | None = None,
+                               aspect_ratio: str = "square_1_1") -> str:
+        body = {"prompt": prompt, "aspect_ratio": aspect_ratio}
+        if reference_images:
+            body["reference_images"] = reference_images
+        return await self._post_task("/v1/ai/text-to-image/flux-kontext-pro", body)
+
+    async def hyperflux(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
+        return await self._post_task("/v1/ai/text-to-image/hyperflux",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
+
+    async def reimagine_flux(self, image_url: str, *, prompt: str = "") -> str:
+        body = {"image": image_url}
+        if prompt:
+            body["prompt"] = prompt
+        return await self._post_task("/v1/ai/reimagine-flux", body)
+
+    # ─── Imagen family ───
+    async def imagen_4_fast(self, prompt: str, *, aspect_ratio: str = "square_1_1",
+                            num_images: int = 1) -> str:
+        return await self._post_task("/v1/ai/text-to-image/imagen-4-fast",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio,
+                                      "num_images": num_images})
+
+    async def imagen_4_ultra(self, prompt: str, *, aspect_ratio: str = "square_1_1",
+                             num_images: int = 1) -> str:
+        return await self._post_task("/v1/ai/text-to-image/imagen-4-ultra",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio,
+                                      "num_images": num_images})
+
+    # ─── Seedream family ───
+    async def seedream_v4(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
+        return await self._post_task("/v1/ai/text-to-image/seedream-v4",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
+
+    async def seedream_v4_5(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
+        return await self._post_task("/v1/ai/text-to-image/seedream-v4-5",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
+
+    async def seedream_v5_lite(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
+        return await self._post_task("/v1/ai/text-to-image/seedream-v5-lite",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
+
+    async def seedream_edit_v4(self, image_url: str, prompt: str) -> str:
+        return await self._post_task("/v1/ai/seedream-edit-v4",
+                                     {"image": image_url, "prompt": prompt})
+
+    async def seedream_edit_v4_5(self, image_url: str, prompt: str) -> str:
+        return await self._post_task("/v1/ai/seedream-edit-v4-5",
+                                     {"image": image_url, "prompt": prompt})
+
+    async def seedream_edit_v5_lite(self, image_url: str, prompt: str) -> str:
+        return await self._post_task("/v1/ai/seedream-edit-v5-lite",
+                                     {"image": image_url, "prompt": prompt})
+
+    # ─── Z-Image ───
+    async def z_image_turbo(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
+        return await self._post_task("/v1/ai/text-to-image/z-image-turbo",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
+
+    # ─── Nano Banana Pro Flash (variante mais barata da Pro) ───
+    async def nano_banana_pro_flash(
+        self, prompt: str, *,
+        reference_images: list[str] | None = None,
+        aspect_ratio: str = "square_1_1",
+        size: Literal["1k", "2k", "4k"] = "2k",
+        google_search: bool = False,
+    ) -> str:
+        body: dict = {"prompt": prompt, "aspect_ratio": aspect_ratio, "size": size}
+        if reference_images:
+            body["reference_images"] = reference_images
+        if google_search:
+            body["enable_google_search"] = True
+        return await self._post_task("/v1/ai/gemini-2-5-flash-image-pro-flash", body)
+
+    # ─── Runway T2I ───
+    async def runway_t2i(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
+        return await self._post_task("/v1/ai/text-to-image/runway",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
+
+    # ════════════════════════════════════════════════════════════════
+    #              EXTENDED MODELS — Edit / Inpaint / Expand
+    # ════════════════════════════════════════════════════════════════
+
+    async def image_expand_ideogram(self, image_url: str, *, target_aspect_ratio: str = "16:9") -> str:
+        return await self._post_task("/v1/ai/image-expand/ideogram",
+                                     {"image": image_url, "target_aspect_ratio": target_aspect_ratio})
+
+    async def image_expand_seedream(self, image_url: str, *, target_aspect_ratio: str = "16:9") -> str:
+        return await self._post_task("/v1/ai/image-expand/seedream-v4-5",
+                                     {"image": image_url, "target_aspect_ratio": target_aspect_ratio})
+
+    async def image_expand_flux(self, image_url: str, *, target_aspect_ratio: str = "16:9",
+                                 prompt: str = "") -> str:
+        body = {"image": image_url, "target_aspect_ratio": target_aspect_ratio}
+        if prompt:
+            body["prompt"] = prompt
+        return await self._post_task("/v1/ai/image-expand/flux", body)
+
+    async def inpaint_ideogram(
+        self, image_url: str, mask_url: str, prompt: str,
+        *, level: Literal["turbo", "default", "quality"] = "default",
+    ) -> str:
+        return await self._post_task(f"/v1/ai/image-inpaint/ideogram-{level}",
+                                     {"image": image_url, "mask": mask_url, "prompt": prompt})
+
+    async def change_camera(self, image_url: str, *, angle: str = "side") -> str:
+        return await self._post_task("/v1/ai/change-camera",
+                                     {"image": image_url, "angle": angle})
+
+    # ════════════════════════════════════════════════════════════════
+    #              EXTENDED MODELS — Magnific Precision
+    # ════════════════════════════════════════════════════════════════
+
+    async def magnific_precision_v1(
+        self, image_url: str, *, scale_factor: int = 2,
+        engine: Literal["magnific_sparkle", "magnific_illusio", "magnific_sharpy"] = "magnific_sparkle",
+    ) -> str:
+        body = {"image": image_url, "scale_factor": scale_factor, "engine": engine}
+        return await self._post_task("/v1/ai/image-upscaler-precision", body)
+
+    async def magnific_precision_v2(
+        self, image_url: str, *, scale_factor: int = 2,
+        flavor: Literal["sublime", "photo", "photo_denoiser"] = "photo",
+        sharpen: int = 7, smart_grain: int = 7, ultra_detail: int = 30,
+    ) -> str:
+        body = {
+            "image": image_url, "scale_factor": scale_factor, "flavor": flavor,
+            "sharpen": sharpen, "smart_grain": smart_grain, "ultra_detail": ultra_detail,
+        }
+        return await self._post_task("/v1/ai/image-upscaler-precision-v2", body)
+
+    # ─── Skin Enhancer Flexible (5 presets) ───
+    async def skin_enhancer_flexible(
+        self, image_url: str, *,
+        preset: Literal["enhance_skin", "improve_lighting", "enhance_everything",
+                        "transform_to_real", "no_make_up"] = "transform_to_real",
+        sharpen: int = 0, smart_grain: int = 2,
+    ) -> str:
+        body = {"image": image_url, "sharpen": sharpen, "smart_grain": smart_grain}
+        return await self._post_task(f"/v1/ai/skin-enhancer/flexible/{preset}", body)
+
+    async def skin_enhancer_creative(
+        self, image_url: str, *, sharpen: int = 0, smart_grain: int = 2,
+    ) -> str:
+        body = {"image": image_url, "sharpen": sharpen, "smart_grain": smart_grain}
+        return await self._post_task("/v1/ai/skin-enhancer/creative", body)
+
+    # ════════════════════════════════════════════════════════════════
+    #              EXTENDED MODELS — Video (catálogo completo)
+    # ════════════════════════════════════════════════════════════════
+
+    # ─── Hailuo (MiniMax) ───
+    async def hailuo_02(self, image_url: str, prompt: str, *,
+                        resolution: Literal["768p", "1080p"] = "768p",
+                        duration: Literal["6", "10"] = "6") -> str:
+        body = {"image": image_url, "prompt": prompt, "duration": duration}
+        path = f"/v1/ai/image-to-video/minimax-hailuo-02-{resolution}"
+        return await self._post_task(path, body)
+
+    async def hailuo_2_3(self, image_url: str, prompt: str, *,
+                         resolution: Literal["768p", "1080p"] = "768p",
+                         duration: str = "6", fast: bool = False) -> str:
+        suffix = "fast" if fast else "standard"
+        path = f"/v1/ai/image-to-video/minimax-hailuo-2-3-{suffix}-{resolution}"
+        return await self._post_task(path, {"image": image_url, "prompt": prompt, "duration": duration})
+
+    # ─── Pixverse ───
+    async def pixverse_v5(self, image_url: str, prompt: str, *,
+                          resolution: Literal["360p", "540p", "720p", "1080p"] = "720p",
+                          duration: int = 5) -> str:
+        path = f"/v1/ai/image-to-video/pixverse-v5-{resolution}"
+        return await self._post_task(path, {"image": image_url, "prompt": prompt, "duration": duration})
+
+    # ─── LTX 2.0 ───
+    async def ltx_2_fast(self, image_url: str, prompt: str, *,
+                         resolution: Literal["1080p", "1440p", "4k"] = "1080p",
+                         duration: int = 5) -> str:
+        path = f"/v1/ai/image-to-video/ltx-2-fast-{resolution}"
+        return await self._post_task(path, {"image": image_url, "prompt": prompt, "duration": duration})
+
+    async def ltx_2_pro(self, image_url: str, prompt: str, *,
+                        resolution: Literal["1080p", "1440p", "4k"] = "1080p",
+                        duration: int = 5) -> str:
+        path = f"/v1/ai/image-to-video/ltx-2-pro-{resolution}"
+        return await self._post_task(path, {"image": image_url, "prompt": prompt, "duration": duration})
+
+    # ─── Seedance ───
+    async def seedance_pro(self, image_url: str, prompt: str, *,
+                           resolution: Literal["480p", "720p", "1080p"] = "720p",
+                           duration: int = 5) -> str:
+        path = f"/v1/ai/image-to-video/seedance-pro-{resolution}"
+        return await self._post_task(path, {"image": image_url, "prompt": prompt, "duration": duration})
+
+    async def seedance_lite(self, image_url: str, prompt: str, *,
+                            resolution: Literal["480p", "720p", "1080p"] = "720p",
+                            duration: int = 5) -> str:
+        path = f"/v1/ai/image-to-video/seedance-lite-{resolution}"
+        return await self._post_task(path, {"image": image_url, "prompt": prompt, "duration": duration})
+
+    async def seedance_1_5_pro(self, image_url: str, prompt: str, *,
+                                resolution: Literal["480p", "720p", "1080p"] = "1080p",
+                                duration: int = 5, with_audio: bool = False) -> str:
+        suffix = "audio" if with_audio else "silent"
+        path = f"/v1/ai/image-to-video/seedance-1-5-pro-{resolution}-{suffix}"
+        return await self._post_task(path, {"image": image_url, "prompt": prompt, "duration": duration})
+
+    # ─── WAN ───
+    async def wan_2_6(self, image_url: str, prompt: str, *,
+                      resolution: Literal["480p", "720p", "1080p"] = "720p",
+                      duration: int = 5) -> str:
+        path = f"/v1/ai/image-to-video/wan-2-6-{resolution}"
+        return await self._post_task(path, {"image": image_url, "prompt": prompt, "duration": duration})
+
+    async def wan_2_7(self, image_url: str, prompt: str, *, duration: int = 5,
+                      mode: Literal["t2v", "i2v", "r2v"] = "i2v") -> str:
+        path = f"/v1/ai/{'text' if mode == 't2v' else 'image'}-to-video/wan-2-7-{mode}"
+        body = {"prompt": prompt, "duration": duration}
+        if mode != "t2v":
+            body["image"] = image_url
+        return await self._post_task(path, body)
+
+    # ─── Veo 3.1 ───
+    async def veo_3_1(self, image_url: str | None, prompt: str, *,
+                      resolution: Literal["1080p", "4k"] = "1080p",
+                      duration: int = 5, with_audio: bool = False,
+                      mode: Literal["t2v", "i2v", "r2v"] = "i2v") -> str:
+        suffix = "audio" if with_audio else "silent"
+        path = f"/v1/ai/{'text' if mode == 't2v' else 'image'}-to-video/veo-3-1-{resolution}-{suffix}"
+        body = {"prompt": prompt, "duration": duration}
+        if mode != "t2v" and image_url:
+            body["image"] = image_url
+        return await self._post_task(path, body)
+
+    async def veo_3_1_fast(self, image_url: str | None, prompt: str, *,
+                           resolution: Literal["1080p", "4k"] = "1080p",
+                           duration: int = 5, with_audio: bool = False) -> str:
+        suffix = "audio" if with_audio else "silent"
+        path = f"/v1/ai/image-to-video/veo-3-1-fast-{resolution}-{suffix}"
+        body = {"prompt": prompt, "duration": duration}
+        if image_url:
+            body["image"] = image_url
+        return await self._post_task(path, body)
+
+    # ─── Runway novos ───
+    async def runway_gen_4_5(self, image_url: str, prompt: str, *, duration: int = 5,
+                              mode: Literal["t2v", "i2v"] = "i2v") -> str:
+        path = f"/v1/ai/{'text' if mode == 't2v' else 'image'}-to-video/runway-gen-4-5"
+        body = {"prompt": prompt, "duration": duration}
+        if mode == "i2v":
+            body["image"] = image_url
+        return await self._post_task(path, body)
+
+    async def runway_gen_4_turbo(self, image_url: str, prompt: str, *, duration: int = 5) -> str:
+        return await self._post_task("/v1/ai/image-to-video/runway-gen-4-turbo",
+                                     {"image": image_url, "prompt": prompt, "duration": duration})
+
+    # ─── Kling extras ───
+    async def kling_pro_2_5_turbo(self, image_url: str, prompt: str, *, duration: str = "5") -> str:
+        return await self._post_task("/v1/ai/image-to-video/kling-pro-2-5-turbo",
+                                     {"image": image_url, "prompt": prompt, "duration": duration})
+
+    async def kling_v3_motion_control(self, image_url: str, prompt: str, *,
+                                       quality: Literal["std", "pro"] = "pro",
+                                       duration: str = "5") -> str:
+        return await self._post_task(f"/v1/ai/image-to-video/kling-v3-motion-control-{quality}",
+                                     {"image": image_url, "prompt": prompt, "duration": duration})
+
+    async def kling_v3_omni(self, image_url: str, prompt: str, *,
+                             quality: Literal["std", "pro"] = "pro",
+                             duration: str = "5") -> str:
+        return await self._post_task(f"/v1/ai/image-to-video/kling-v3-omni-{quality}",
+                                     {"image": image_url, "prompt": prompt, "duration": duration})
+
+    async def kling_o1(self, image_url: str, prompt: str, *,
+                        quality: Literal["std", "pro"] = "pro",
+                        duration: str = "5") -> str:
+        return await self._post_task(f"/v1/ai/image-to-video/kling-o1-{quality}",
+                                     {"image": image_url, "prompt": prompt, "duration": duration})
+
+    # ─── Specialty video ───
+    async def omnihuman_1_5(self, image_url: str, audio_url: str) -> str:
+        return await self._post_task("/v1/ai/image-to-video/omnihuman-1-5",
+                                     {"image": image_url, "audio": audio_url})
+
+    async def veed_fabric(self, video_url: str, audio_url: str, *, fast: bool = False) -> str:
+        path = "/v1/ai/lip-sync/veed-fabric-fast" if fast else "/v1/ai/lip-sync/veed-fabric"
+        return await self._post_task(path, {"video": video_url, "audio": audio_url})
+
+    async def latent_sync(self, video_url: str, audio_url: str) -> str:
+        return await self._post_task("/v1/ai/lip-sync/latent-sync",
+                                     {"video": video_url, "audio": audio_url})
+
+    async def video_vfx(self, video_url: str, prompt: str) -> str:
+        return await self._post_task("/v1/ai/video-vfx",
+                                     {"video": video_url, "prompt": prompt})
+
+    # ════════════════════════════════════════════════════════════════
+    #              EXTENDED MODELS — Audio (catálogo completo)
+    # ════════════════════════════════════════════════════════════════
+
+    async def audio_isolation(self, audio_url: str) -> str:
+        return await self._post_task("/v1/ai/audio-isolation",
+                                     {"audio": audio_url})
+
+    async def elevenlabs_music(self, prompt: str, *, duration: int = 30) -> str:
+        return await self._post_task("/v1/ai/music-generation/elevenlabs",
+                                     {"prompt": prompt, "duration_seconds": duration})
+
+    async def elevenlabs_sound_effect(self, prompt: str, *, duration: float | None = None) -> str:
+        body: dict = {"text": prompt}
+        if duration:
+            body["duration_seconds"] = duration
+        return await self._post_task("/v1/ai/sound-generation/elevenlabs-v2", body)
+
+    # ════════════════════════════════════════════════════════════════
+    #              EXTENDED — Video Upscaler
+    # ════════════════════════════════════════════════════════════════
+
+    async def video_upscaler_standard(
+        self, video_url: str, *,
+        resolution: Literal["720p", "1k", "2k", "4k"] = "2k",
+        creativity: int = 0, sharpen: int = 0, smart_grain: int = 0,
+        flavor: Literal["vivid", "natural"] = "vivid",
+        fps_boost: bool = False,
+    ) -> str:
+        body = {
+            "video": video_url, "resolution": resolution, "creativity": creativity,
+            "sharpen": sharpen, "smart_grain": smart_grain, "flavor": flavor,
+            "fps_boost": fps_boost,
+        }
+        return await self._post_task("/v1/ai/video-upscaler", body)
+
+    async def video_upscaler_turbo(
+        self, video_url: str, *,
+        resolution: Literal["720p", "1k", "2k", "4k"] = "2k",
+        flavor: Literal["vivid", "natural"] = "vivid",
+    ) -> str:
+        return await self._post_task("/v1/ai/video-upscaler/turbo",
+                                     {"video": video_url, "resolution": resolution, "flavor": flavor})
+
+    async def video_upscaler_precision(
+        self, video_url: str, *,
+        resolution: Literal["720p", "1k", "2k", "4k"] = "2k",
+    ) -> str:
+        return await self._post_task("/v1/ai/video-upscaler-precision",
+                                     {"video": video_url, "resolution": resolution})
+
     async def close(self):
         await self._client.aclose()
 
