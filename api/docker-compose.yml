@@ -1,14 +1,14 @@
-# Cubo Studio API — Docker Compose
-# Sobe FastAPI + Postgres + Redis + Caddy (SSL automático) numa stack só.
+# Cubo Studio API — Docker Compose (Supabase managed DB)
+# Sobe FastAPI + Celery worker + Celery beat + Redis + Caddy.
+# Postgres NÃO está aqui — usamos Supabase managed (DATABASE_URL no .env).
 #
 # Uso no VPS:
-#   1. clonar repo, cd /opt/cubo-api/api
-#   2. cp .env.example .env  &&  nano .env  (configurar)
-#   3. docker compose up -d
+#   1. cd /opt/cubo
+#   2. cp api/.env.production.template .env && nano .env (preencher)
+#   3. docker compose -f api/docker-compose.yml up -d
 #
 # Logs:    docker compose logs -f api
-# Restart: docker compose restart api
-# Update:  git pull && docker compose up -d --build api
+# Update:  git pull && docker compose up -d --build
 
 services:
   # ──────────────────────────────────────────────────────
@@ -18,15 +18,12 @@ services:
     build: .
     container_name: cubo-api
     restart: unless-stopped
-    env_file: .env
+    env_file: ../.env
     environment:
-      DATABASE_URL: postgresql://cubo:${POSTGRES_PASSWORD}@postgres:5432/cubo
       REDIS_URL: redis://redis:6379/0
     expose:
       - "8000"
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
     healthcheck:
@@ -39,38 +36,47 @@ services:
       - cubo-net
 
   # ──────────────────────────────────────────────────────
-  # Postgres (database)
+  # Celery worker (jobs assíncronos)
   # ──────────────────────────────────────────────────────
-  postgres:
-    image: postgres:16-alpine
-    container_name: cubo-postgres
+  worker:
+    build: .
+    container_name: cubo-worker
     restart: unless-stopped
+    env_file: ../.env
     environment:
-      POSTGRES_USER: cubo
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: cubo
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cubo"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      REDIS_URL: redis://redis:6379/0
+    command: celery -A api.workers:celery_app worker --loglevel=info --concurrency=4
+    depends_on:
+      redis:
+        condition: service_healthy
     networks:
       - cubo-net
-    # Não exponhe porta pra fora — só acessível internamente
-    # Pra debug local, descomentar:
-    # ports:
-    #   - "5432:5432"
 
   # ──────────────────────────────────────────────────────
-  # Redis (cache + rate limit + job queue)
+  # Celery beat (scheduler de tasks periódicas)
+  # ──────────────────────────────────────────────────────
+  beat:
+    build: .
+    container_name: cubo-beat
+    restart: unless-stopped
+    env_file: ../.env
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    command: celery -A api.workers:celery_app beat --loglevel=info
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - cubo-net
+
+  # ──────────────────────────────────────────────────────
+  # Redis (Celery broker + cache)
   # ──────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
     container_name: cubo-redis
     restart: unless-stopped
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
     volumes:
       - redis-data:/data
     healthcheck:
@@ -102,18 +108,11 @@ services:
     networks:
       - cubo-net
 
-# ──────────────────────────────────────────────────────
-# Volumes persistentes
-# ──────────────────────────────────────────────────────
 volumes:
-  postgres-data:
   redis-data:
   caddy-data:
   caddy-config:
 
-# ──────────────────────────────────────────────────────
-# Network isolada
-# ──────────────────────────────────────────────────────
 networks:
   cubo-net:
     driver: bridge
