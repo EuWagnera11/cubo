@@ -1,21 +1,40 @@
+# Refine Backend — requirements
+# Web
 fastapi==0.110.0
 uvicorn[standard]==0.27.0
 pydantic[email]==2.6.0
 python-multipart==0.0.9
+
+# Auth
+PyJWT==2.8.0
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
+
+# DB
 sqlalchemy==2.0.27
 alembic==1.13.1
 asyncpg==0.29.0
 psycopg2-binary==2.9.9
+
+# Cache + queue
 redis==5.0.1
+celery[redis]==5.3.6
+
+# Storage
+supabase==2.4.5
 boto3==1.34.34
-aioboto3==12.3.0
+
+# Payments
 stripe==8.5.0
+
+# HTTP + IA
 httpx==0.26.0
-opencv-python==4.9.0.80
+anthropic==0.40.0
+
+# Image processing (pra workers)
+opencv-python-headless==4.9.0.80
 numpy==1.26.3
 pillow==10.2.0
-imageio-ffmpeg==0.4.9
-inngest==0.4.0
+
+# Observability
 sentry-sdk[fastapi]==1.40.0
