@@ -400,6 +400,62 @@ def style_learn_task(self, *, learned_style_id: str, image_paths: list[str],
     return {"learned_style_id": learned_style_id, "ready": True}
 
 
+@celery_app.task(name="refine.calendar_generate", bind=True)
+def calendar_generate_task(self, *, calendar_id: str, persona_ref: str | None,
+                            prompts: list[dict], enhance_skin: bool = True,
+                            upscale: bool = False):
+    """Gera todas as imagens de um content_calendar em paralelo via subtasks."""
+    from celery import group
+    import json
+
+    with engine.begin() as conn:
+        conn.execute(text("UPDATE content_calendars SET status='processing' WHERE id=:id"),
+                     {"id": calendar_id})
+
+        # Cria 1 generation por post + dispara subtask
+        generation_ids = []
+        subtasks = []
+        updated_posts = []
+        for p in prompts:
+            row = conn.execute(text("""
+                INSERT INTO generations (user_id, persona_id, status, prompt, num_variations, credits_used)
+                SELECT user_id, persona_id, 'queued', :prompt, 1, 8
+                FROM content_calendars WHERE id = :cid
+                RETURNING id
+            """), {"prompt": p["prompt"], "cid": calendar_id}).first()
+            gid = str(row.id)
+            generation_ids.append(gid)
+            updated_posts.append({**p, "generation_id": gid})
+            subtasks.append(generate_image_task.s(
+                generation_id=gid,
+                prompt=p["prompt"],
+                persona_ref_url=persona_ref,
+                num_variations=1,
+                enhance_skin=enhance_skin,
+                upscale=upscale,
+            ))
+
+        conn.execute(text("""
+            UPDATE content_calendars SET
+              generation_ids = :ids,
+              posts = :posts::jsonb
+            WHERE id = :id
+        """), {
+            "ids": "{" + ",".join(generation_ids) + "}",
+            "posts": json.dumps(updated_posts),
+            "id": calendar_id,
+        })
+
+    # Dispatch as subtasks
+    job = group(subtasks).apply_async()
+
+    return {
+        "calendar_id": calendar_id,
+        "subtask_group": str(job.id),
+        "total_posts": len(prompts),
+    }
+
+
 @celery_app.task(name="refine.regen_previews", bind=True)
 def regen_previews_task(self, *, target: str = "all", limit: int | None = None):
     """

@@ -126,6 +126,7 @@ if settings.DATABASE_URL:
     from .routers import specialized as r_spec
     from .routers import catalog as r_catalog
     from .routers import admin as r_admin
+    from .routers import calendar as r_calendar
 
     # Core
     app.include_router(r_gen.router)
@@ -135,6 +136,7 @@ if settings.DATABASE_URL:
     # Workflows
     app.include_router(r_swaps.router)
     app.include_router(r_batch.router)
+    app.include_router(r_calendar.router)
     app.include_router(r_drive.router)
     app.include_router(r_enhance.router)
     app.include_router(r_edit.router)
