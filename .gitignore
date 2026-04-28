@@ -1,0 +1,99 @@
+# =====================================================
+# .gitignore — Cubo / nano-banana-swap-v2
+# =====================================================
+
+# Credenciais (NUNCA subir)
+.env
+.env.local
+.env.*.local
+api/.env
+*.pem
+*.key
+*credentials*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# =====================================================
+# Pesados / dataset (não subir)
+# =====================================================
+
+# Dataset de treino — Aitana 700 mídias (~1GB, copyright)
+treino/fit_aitana/
+
+# Frames extraídos (~100MB+)
+treino/aitana_video_frames/
+treino/pilot_frames/
+
+# Balaclava dataset
+treino/balaclava_dataset/
+treino/balaclava_audio/
+treino/balaclava_frames/
+
+# Outputs de geração (custaram créditos — local only)
+out/
+kling_out/
+kling_tmp/
+out_kling/
+out_outfit/
+out_scenes/
+tmp_*.txt
+tmp_*.jpg
+tmp_*.png
+
+# Refs Sophia (IP da Cubo — não subir)
+refs/
+
+# Zips antigos
+*.zip
+
+# 718 análises JSON (valor competitivo — só consolidações vão pro repo)
+treino/analysis/*.json
+# (mantém apenas treino/analysis/_*.md — consolidações)
+!treino/analysis/_*.md
+
+# Frames balaclava
+treino/balaclava_frames/
+
+# Metadata frames (já reconstrutível)
+treino/aitana_video_frames/_*.json
+
+# =====================================================
+# OK subir (mantém)
+# =====================================================
+# api/                         (código backend)
+# tools/                       (scripts utilitários)
+# treino/strategy/             (docs estratégicos)
+# treino/analysis/_*.md        (consolidações)
+# *.py (scripts pipeline)
+# README.md
+# requirements.txt
+
+# Análises individuais 718 JSONs — peso ~5MB total + valor competitivo
+# Pode subir (não é tão grande), mas comentar se quiser proteger:
+# treino/analysis/*.json

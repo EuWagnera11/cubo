@@ -1,0 +1,3075 @@
+{
+  "total_jsons_analyzed": 717,
+  "total_clusters": 59,
+  "clusters": [
+    {
+      "id": "tpl_001",
+      "name": "Filler — Other",
+      "category": "filler",
+      "description": "Conteúdo lifestyle sem pessoa. Tipo: other.",
+      "size": 101,
+      "media_ids": [
+        "anasandaloussii_1727200302_3464318505022994640_39506606898",
+        "fit_aitana_1688724932_3141574795853865484_60308417554",
+        "fit_aitana_1696524300_3206968069233667342_60308417554",
+        "fit_aitana_1712508300_3340981645526321563_60308417554",
+        "fit_aitana_1713878053_3352574565808687010_60308417554",
+        "fit_aitana_1715186365_3363548778556091932_60308417554",
+        "fit_aitana_1718804084_3393897107403938972_60308417554",
+        "fit_aitana_1718804084_3393897107412291166_60308417554",
+        "fit_aitana_1719582300_3400383743126132940_60308417554",
+        "fit_aitana_1720619289_3409124151754549234_60308417554",
+        "fit_aitana_1721915664_3419998933945600219_60308417554",
+        "fit_aitana_1722265898_3422936908303961841_60308417554",
+        "fit_aitana_1722615300_3424947907281018317_60308417554",
+        "fit_aitana_1723038300_3429326907765316226_60308417554",
+        "fit_aitana_1723038300_3429326907765376757_60308417554",
+        "fit_aitana_1723383745_3432313944130734211_60308417554",
+        "fit_aitana_1724075100_3437951777361329506_60308417554",
+        "fit_aitana_1725285014_3448263082886365971_60308417554",
+        "fit_aitana_1725285014_3448263082886552154_60308417554",
+        "fit_aitana_1725285014_3448263083062548485_60308417554"
+      ],
+      "tags": {
+        "type": "FILLER",
+        "details": [
+          "other"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "filler": 101
+        },
+        "top_styles": {
+          "no_subject": 101
+        },
+        "top_times": {
+          "unknown": 64,
+          "midday": 5,
+          "indoor-artificial": 4
+        },
+        "complexity_distribution": {
+          "easy": 48,
+          "very-hard": 6,
+          "medium": 16,
+          "hard": 11,
+          "easy-medium": 2,
+          "hard (pure environmental — no model)": 1,
+          "hard (pure environmental, requires real location or expensive stock)": 1,
+          "hard (long duration + lip sync + complex set + multiple Kling segments)": 1,
+          "medium-hard (4 distinct stills + lookbook editing)": 1,
+          "hard (7 anchors + 7 video clips + tight edit)": 1,
+          "trivial-repost": 4,
+          "moderate": 7,
+          "hard-with-real-location": 1,
+          "moderate-hard": 1
+        }
+      },
+      "example_media": {
+        "media_id": "anasandaloussii_1727200302_3464318505022994640_39506606898",
+        "pose_archetype": "",
+        "primary_hook": "",
+        "why_it_works": "",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_002",
+      "name": "Street Urban — Full Body",
+      "category": "img",
+      "description": "Modelo em street urban, framing full body.",
+      "size": 38,
+      "media_ids": [
+        "fit_aitana_1709226300_3313468315647831572_60308417554",
+        "fit_aitana_1709658668_3317179792071644038_60308417554",
+        "fit_aitana_1723038300_3429326907756970362_60308417554",
+        "fit_aitana_1728312221_3473657143293937024_60308417554",
+        "fit_aitana_1730991082_3496129057790634835_60308417554",
+        "fit_aitana_1730991082_3496129057790655826_60308417554",
+        "fit_aitana_1732650300_3509901573239612238_60308417554",
+        "fit_aitana_1732650300_3509901573239777878_60308417554",
+        "fit_aitana_1734031289_3521632160103183159_60308417554",
+        "fit_aitana_1739298267_3565814775771391337_60308417554",
+        "fit_aitana_1739298267_3565814775914103731_60308417554",
+        "fit_aitana_1743275100_3596765099220236837_60308417554",
+        "fit_aitana_1749398700_3648358907548097845_60308417554",
+        "fit_aitana_1759075295_3731718369654123250_60308417554",
+        "fit_aitana_1762796502_3762932258781555661_60308417554",
+        "fit_aitana_1762796502_3762932258789944683_60308417554",
+        "fit_aitana_1762796502_3762932259100311942_60308417554",
+        "fit_aitana_1762796503_3762932259427486876_60308417554",
+        "fit_aitana_1763917500_3772336083275627285_60308417554",
+        "fit_aitana_1764007200_3773088495158463654_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "street_urban",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 35,
+          "playful": 2,
+          "confident": 1
+        },
+        "top_styles": {
+          "streetstyle_european": 24,
+          "athleisure": 3,
+          "bodycon_brazilian": 3
+        },
+        "top_times": {
+          "midday": 11,
+          "night": 5,
+          "golden-hour": 3
+        },
+        "complexity_distribution": {
+          "easy": 1,
+          "medium": 28,
+          "high": 9
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1709226300_3313468315647831572_60308417554",
+        "pose_archetype": "back-view street-fitness pose, body turned away from camera, head twisted over right shoulder looking back at camera, weight on right leg with left leg lifted slightly behind, right hand on hip",
+        "primary_hook": "fitness-thirst-trap-street (back-pose athletic body display)",
+        "why_it_works": "Back-pose with over-shoulder glance is the most reliable thirst-trap formula on IG (showcases glutes + back muscles + face simultaneously). Pink + grey color story is feminine-athletic and Pinterest-coded. Street setting feels candid/active vs studio.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_003",
+      "name": "Filler — Food Flatlay",
+      "category": "filler",
+      "description": "Conteúdo lifestyle sem pessoa. Tipo: food_flatlay.",
+      "size": 26,
+      "media_ids": [
+        "fit_aitana_1692119702_3170052285425381434_60308417554",
+        "fit_aitana_1712508300_3340981645542978433_60308417554",
+        "fit_aitana_1719582300_3400383743126076591_60308417554",
+        "fit_aitana_1725285014_3448263082878088738_60308417554",
+        "fit_aitana_1725285014_3448263082886513897_60308417554",
+        "fit_aitana_1725285014_3448263083062630316_60308417554",
+        "fit_aitana_1730826462_3494748123111697467_60308417554",
+        "fit_aitana_1744741500_3610589151609088803_60308417554",
+        "fit_aitana_1747325400_3632907529181242033_60308417554",
+        "fit_aitana_1757261400_3714865297980135179_60308417554",
+        "fit_aitana_1759849075_3738207445068574432_60308417554",
+        "fit_aitana_1759849075_3738207445093739128_60308417554",
+        "fit_aitana_1762189551_3757840781344796741_60308417554",
+        "fit_aitana_1767806424_3804958525902880244_60308417554",
+        "fit_aitana_1770915769_3831040309081958713_60308417554",
+        "fit_aitana_1772558461_3844819549292132753_60308417554",
+        "fit_aitana_1773681172_3854237766993316599_60308417554",
+        "fit_aitana_1773681172_3854237811100620383_60308417554",
+        "fit_aitana_1774371600_3860001130239557606_60308417554",
+        "fit_aitana_1774371600_3860001130507970756_60308417554"
+      ],
+      "tags": {
+        "type": "FILLER",
+        "details": [
+          "food_flatlay"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "filler": 26
+        },
+        "top_styles": {
+          "no_subject": 26
+        },
+        "top_times": {
+          "midday": 3,
+          "night": 2,
+          "evening": 2
+        },
+        "complexity_distribution": {
+          "easy": 26
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1692119702_3170052285425381434_60308417554",
+        "pose_archetype": "",
+        "primary_hook": "food-porn-vacation-vibe (Mediterranean brunch shot)",
+        "why_it_works": "Filler/lifestyle content that humanizes the AI model profile — breaks up the constant model-portrait posts with relatable food photography. Suggests 'she has a real life, eats real food, travels' — strengthens the parasocial illusion that she's a real person. Pa amb tomàquet specifically signals Spain (geographic identity reinforcement).",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_004",
+      "name": "Other — Full Body",
+      "category": "img",
+      "description": "Modelo em other, framing full body.",
+      "size": 26,
+      "media_ids": [
+        "fit_aitana_1716818954_3377244624359371263_60308417554",
+        "fit_aitana_1727876519_3470002207721220947_60308417554",
+        "fit_aitana_1732045718_3504975980777938902_60308417554",
+        "fit_aitana_1734031289_3521632159750716164_60308417554",
+        "fit_aitana_1739298267_3565814775779930046_60308417554",
+        "fit_aitana_1740422612_3575246461399666093_60308417554",
+        "fit_aitana_1753716000_3682943796148977780_60308417554",
+        "fit_aitana_1753716000_3682943796149075353_60308417554",
+        "fit_aitana_1760630400_3744761837062253476_60308417554",
+        "fit_aitana_1768410952_3810029671266414821_60308417554",
+        "fit_aitana_1770141079_3824540983249872258_60308417554",
+        "fit_aitana_1772731571_3846273268877679831_60308417554",
+        "fit_aitana_1772731571_3846273276687452810_60308417554",
+        "fit_aitana_1772731571_3846273288968366772_60308417554",
+        "fit_aitana_1772731571_3846273295075271239_60308417554",
+        "fit_aitana_1774799401_3863605695820113462_60308417554",
+        "fit_aitana_1774973018_3865072849702682497_60308417554",
+        "fit_aitana_1775320377_3867989206391886652_60308417554",
+        "fit_aitana_1775320377_3867989216726618409_60308417554",
+        "fit_aitana_1775836800_3872215218432565301_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "other",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 23,
+          "confident": 1,
+          "playful": 1
+        },
+        "top_styles": {
+          "athleisure": 8,
+          "streetstyle_european": 6,
+          "editorial_studio": 6
+        },
+        "top_times": {
+          "indoor-artificial": 5,
+          "midday": 4,
+          "indoor-controlled": 3
+        },
+        "complexity_distribution": {
+          "medium": 14,
+          "high": 6,
+          "medium-hard": 1,
+          "easy": 3,
+          "low-medium": 2
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1753716000_3682943796148977780_60308417554",
+        "pose_archetype": "perched-on-bench-edge-1-foot-up, right knee bent up with foot flat on bench, left leg extended down to floor with knee bent at 45deg, holding iced coffee at chest level with both hands, sunglasses on, head turned toward camera",
+        "primary_hook": "matching-activewear-OOTD (head-to-toe pink + iced coffee)",
+        "why_it_works": "Monochromatic head-to-toe pink set is a viral activewear template. Iced coffee + duffel + sneakers tell a complete 'gym girl' story. Clean minimal background lets the outfit pop. Honey-blonde hair adds warm contrast to pink.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_005",
+      "name": "Other — Medium",
+      "category": "img",
+      "description": "Modelo em other, framing medium.",
+      "size": 24,
+      "media_ids": [
+        "fit_aitana_1692549534_3173657979986873221_60308417554",
+        "fit_aitana_1695229574_3196139784123937635_60308417554",
+        "fit_aitana_1695492001_3198341178864138994_60308417554",
+        "fit_aitana_1701623100_3249773034072548232_60308417554",
+        "fit_aitana_1705080600_3278776321646320383_60308417554",
+        "fit_aitana_1708190700_3303932685787988622_60308417554",
+        "fit_aitana_1717854267_3385929460171350374_60308417554",
+        "fit_aitana_1727876519_3470002207712752455_60308417554",
+        "fit_aitana_1728312221_3473657143294099082_60308417554",
+        "fit_aitana_1728931500_3478669760290908889_60308417554",
+        "fit_aitana_1728931500_3478669760291043008_60308417554",
+        "fit_aitana_1728931500_3478669760291077756_60308417554",
+        "fit_aitana_1728931500_3478669760349696006_60308417554",
+        "fit_aitana_1732045718_3504975981130223967_60308417554",
+        "fit_aitana_1739989332_3571611843505127411_60308417554",
+        "fit_aitana_1746375300_3625060267356905979_60308417554",
+        "fit_aitana_1749398700_3648358907556436616_60308417554",
+        "fit_aitana_1766682000_3795377779726916877_60308417554",
+        "fit_aitana_1766682000_3795377779726917014_60308417554",
+        "fit_aitana_1768410952_3810029671216105395_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "other",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 15,
+          "sensual": 9
+        },
+        "top_styles": {
+          "streetstyle_european": 9,
+          "editorial_studio": 4,
+          "evening_glam": 3
+        },
+        "top_times": {
+          "indoor-artificial": 6,
+          "indoor-studio": 2,
+          "indoor-natural": 2
+        },
+        "complexity_distribution": {
+          "easy": 13,
+          "medium": 9,
+          "high": 2
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1692549534_3173657979986873221_60308417554",
+        "pose_archetype": "frontal standing portrait, shoulders square to camera, head tilted slightly down with chin lowered creating 'innocent direct stare'",
+        "primary_hook": "beauty-portrait-sensual-clean",
+        "why_it_works": "Stripped-back styling (no jewelry except 1 delicate necklace, simple black sports bra, blank wall) puts 100% focus on face + hair. The pink-hair-on-cream-wall color story is feed-stopping. Simplicity reads as 'naturally beautiful' (low-effort flex).",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_006",
+      "name": "Beach — Full Body",
+      "category": "img",
+      "description": "Modelo em beach, framing full body.",
+      "size": 23,
+      "media_ids": [
+        "fit_aitana_1723038300_3429326908084092567_60308417554",
+        "fit_aitana_1730826462_3494748123111807696_60308417554",
+        "fit_aitana_1733082000_3512003905934886762_60308417554",
+        "fit_aitana_1733082000_3512003906270592987_60308417554",
+        "fit_aitana_1734465417_3525273890622822020_60308417554",
+        "fit_aitana_1734465417_3525273890623012525_60308417554",
+        "fit_aitana_1735501396_3533964307638969692_60308417554",
+        "fit_aitana_1735501396_3533964307680763862_60308417554",
+        "fit_aitana_1735501396_3533964307689323120_60308417554",
+        "fit_aitana_1745345100_3616539686680405205_60308417554",
+        "fit_aitana_1751300100_3666391293850514429_60308417554",
+        "fit_aitana_1757261400_3714865297963370197_60308417554",
+        "fit_aitana_1757261400_3714865297971745925_60308417554",
+        "fit_aitana_1757261400_3714865297980176631_60308417554",
+        "fit_aitana_1765731600_3787553743517002193_60308417554",
+        "fit_aitana_1768581859_3811463349930584179_60308417554",
+        "fit_aitana_1768581859_3811463349938947399_60308417554",
+        "fit_aitana_1771261584_3833938728100347797_60308417554",
+        "fit_aitana_1771606800_3836783899531860082_60308417554",
+        "fit_aitana_1771606800_3836783899531861661_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "beach",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 22,
+          "playful": 1
+        },
+        "top_styles": {
+          "swimwear_bikini": 8,
+          "streetstyle_european": 5,
+          "y2k_fashion": 2
+        },
+        "top_times": {
+          "midday": 3,
+          "midday-warm": 2,
+          "midday-bright": 2
+        },
+        "complexity_distribution": {
+          "medium": 17,
+          "high": 6
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1723038300_3429326908084092567_60308417554",
+        "pose_archetype": "kneeling-in-shallow-water-back-to-camera, body submerged from hips down, weight on knees, back arched naturally, head tilted slightly down, long hair flowing down back",
+        "primary_hook": "remote-paradise-bikini-back-shot (sensual travel hero)",
+        "why_it_works": "Back-shot bikini in turquoise water is a tested viral content format — high engagement male audience while staying technically modest (no face / no front exposure). Cathedral cliff framing is naturally cinematic. Color contrast (peach hair vs turquoise water) is feed-arresting. Implies exclusive private location.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_007",
+      "name": "Restaurant — Medium",
+      "category": "img",
+      "description": "Modelo em restaurant, framing medium.",
+      "size": 21,
+      "media_ids": [
+        "fit_aitana_1696093200_3203384568974560037_60308417554",
+        "fit_aitana_1696524300_3206968069225215918_60308417554",
+        "fit_aitana_1704129735_3270799741192146678_60308417554",
+        "fit_aitana_1712508300_3340981645517978630_60308417554",
+        "fit_aitana_1732477500_3508479435681098666_60308417554",
+        "fit_aitana_1732477500_3508479435681124065_60308417554",
+        "fit_aitana_1735846208_3536856801287965086_60308417554",
+        "fit_aitana_1735846208_3536856801296435718_60308417554",
+        "fit_aitana_1759849075_3738207445102152668_60308417554",
+        "fit_aitana_1762189551_3757840781344772646_60308417554",
+        "fit_aitana_1762189551_3757840781344782231_60308417554",
+        "fit_aitana_1766682000_3795377779718508651_60308417554",
+        "fit_aitana_1767278662_3800531341251496477_60308417554",
+        "fit_aitana_1767278662_3800531341285022872_60308417554",
+        "fit_aitana_1767278662_3800531341352111767_60308417554",
+        "fit_aitana_1767376800_3801315061592002623_60308417554",
+        "fit_aitana_1767376800_3801315061592029829_60308417554",
+        "fit_aitana_1769187410_3816543076118716332_60308417554",
+        "fit_aitana_1770141079_3824540987033127222_60308417554",
+        "fit_aitana_1774371600_3860001130189177787_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "restaurant",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 17,
+          "sensual": 2,
+          "relatable": 2
+        },
+        "top_styles": {
+          "streetstyle_european": 11,
+          "general": 3,
+          "evening_glam": 1
+        },
+        "top_times": {
+          "evening": 7,
+          "night": 5,
+          "indoor-evening-warm": 1
+        },
+        "complexity_distribution": {
+          "medium": 9,
+          "easy": 2,
+          "high": 10
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1696524300_3206968069225215918_60308417554",
+        "pose_archetype": "torso-twist look-back over right shoulder (back partly facing camera), head turned 3/4 toward camera with intense gaze",
+        "primary_hook": "look-back-over-shoulder-evening-mood",
+        "why_it_works": "Look-back-over-shoulder is high-engagement editorial pose. Evening hotel-bar mood is aspirational lifestyle content. Pink hair tousled in motion + intense direct gaze = irresistible thirst-engagement framing. Background context (track lights, red accent) reads expensive without being literal.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_008",
+      "name": "Street Urban — Medium",
+      "category": "img",
+      "description": "Modelo em street urban, framing medium.",
+      "size": 20,
+      "media_ids": [
+        "fit_aitana_1701279900_3246893831115451466_60308417554",
+        "fit_aitana_1703266500_3263558758863994676_60308417554",
+        "fit_aitana_1712334900_3339629796709834450_60308417554",
+        "fit_aitana_1713285257_3347601825762723284_60308417554",
+        "fit_aitana_1713878053_3352574565808722873_60308417554",
+        "fit_aitana_1730057400_3487284518661530242_60308417554",
+        "fit_aitana_1730826462_3494748123111676535_60308417554",
+        "fit_aitana_1730826462_3494748123120097109_60308417554",
+        "fit_aitana_1730991082_3496129057799066829_60308417554",
+        "fit_aitana_1734031289_3521632159750713516_60308417554",
+        "fit_aitana_1743017700_3596762315418701424_60308417554",
+        "fit_aitana_1746893700_3625693321704299693_60308417554",
+        "fit_aitana_1747929900_3637252014245734667_60308417554",
+        "fit_aitana_1750176600_3656126369486665971_60308417554",
+        "fit_aitana_1750176600_3656126369495119396_60308417554",
+        "fit_aitana_1765473883_3785391753239509723_60308417554",
+        "fit_aitana_1765473883_3785391753549849037_60308417554",
+        "fit_aitana_1771606800_3836783899531835979_60308417554",
+        "fit_aitana_1772382709_3843345841012645695_60308417554",
+        "fit_aitana_1776787729_3880299172154878568_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "street_urban",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 20
+        },
+        "top_styles": {
+          "streetstyle_european": 8,
+          "athleisure": 5,
+          "editorial_studio": 3
+        },
+        "top_times": {
+          "midday": 5,
+          "overcast-day": 2,
+          "indoor-natural / overcast": 2
+        },
+        "complexity_distribution": {
+          "easy": 5,
+          "medium": 10,
+          "high": 4,
+          "hard": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1701279900_3246893831115451466_60308417554",
+        "pose_archetype": "leaning back against city building wall in 'fitspo street' pose, head tilted slightly down with chin-tuck creating powerful gaze, frontal stance",
+        "primary_hook": "street-fitspo-athletic-european",
+        "why_it_works": "Street-fitspo content is huge engagement category. European urban setting adds aspirational lifestyle context. Nike branding adds credibility/luxe-athletic association. Body-on-display + powerful confident gaze = thirst-trap with athletic-aspirational framing (vs pure-sensual). Half-up topknot is highly trending hairstyle.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_009",
+      "name": "Filler — Fashion Detail",
+      "category": "filler",
+      "description": "Conteúdo lifestyle sem pessoa. Tipo: fashion_detail.",
+      "size": 20,
+      "media_ids": [
+        "fit_aitana_1714137075_3354747394671118408_60308417554",
+        "fit_aitana_1717515111_3383084413360984885_60308417554",
+        "fit_aitana_1719582300_3400383743126132819_60308417554",
+        "fit_aitana_1722615300_3424947907348005643_60308417554",
+        "fit_aitana_1728312221_3473657143285681582_60308417554",
+        "fit_aitana_1730057400_3487284518988632974_60308417554",
+        "fit_aitana_1732822500_3511168607793472401_60308417554",
+        "fit_aitana_1733686500_3516340144888718518_60308417554",
+        "fit_aitana_1737659825_3552070522927836486_60308417554",
+        "fit_aitana_1739298267_3565814775788084342_60308417554",
+        "fit_aitana_1740422612_3575246461357696433_60308417554",
+        "fit_aitana_1741105449_3580974511005310598_60308417554",
+        "fit_aitana_1743017700_3596762315410347432_60308417554",
+        "fit_aitana_1743017700_3596762315426957097_60308417554",
+        "fit_aitana_1743275100_3596765099228586826_60308417554",
+        "fit_aitana_1747325400_3632907529189713214_60308417554",
+        "fit_aitana_1747325400_3632907529206602994_60308417554",
+        "fit_aitana_1762189551_3757840781344779848_60308417554",
+        "fit_aitana_1772731572_3846273281879977478_60308417554",
+        "fit_aitana_1776096728_3874501947805979201_60308417554"
+      ],
+      "tags": {
+        "type": "FILLER",
+        "details": [
+          "fashion_detail"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "filler": 20
+        },
+        "top_styles": {
+          "no_subject": 20
+        },
+        "top_times": {
+          "midday": 3,
+          "indoor-natural": 3,
+          "indoor-artificial": 2
+        },
+        "complexity_distribution": {
+          "easy": 16,
+          "medium": 2,
+          "very-easy": 1,
+          "low-medium": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1714137075_3354747394671118408_60308417554",
+        "pose_archetype": "",
+        "primary_hook": "gym-prep POV lifestyle (about-to-train aesthetic)",
+        "why_it_works": "POV gym shot is high-relatable filler content — places viewer 'in her shoes' literally. White chunky sneakers + chrome dumbbells + AirPods = aesthetically curated gym vibes. Dark moody palette differentiates from bright gym selfies. Pairs perfectly with the squat pose shot (..._670990968) as same-session story carousel.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_010",
+      "name": "Filler — Pet Humanization",
+      "category": "filler",
+      "description": "Conteúdo lifestyle sem pessoa. Tipo: pet_humanization.",
+      "size": 16,
+      "media_ids": [
+        "fit_aitana_1706893500_3291676923384795740_60308417554",
+        "fit_aitana_1723038300_3429326907756779745_60308417554",
+        "fit_aitana_1730991082_3496129057782348151_60308417554",
+        "fit_aitana_1731864000_3503309988414695518_60308417554",
+        "fit_aitana_1731864000_3503309988414760828_60308417554",
+        "fit_aitana_1731864000_3503309988431554237_60308417554",
+        "fit_aitana_1731864000_3503309988431634720_60308417554",
+        "fit_aitana_1731864000_3503309988439881346_60308417554",
+        "fit_aitana_1743533700_3601054089962659887_60308417554",
+        "fit_aitana_1757261400_3714865297980138306_60308417554",
+        "fit_aitana_1757261400_3714865297980175364_60308417554",
+        "fit_aitana_1759849075_3738207445110536126_60308417554",
+        "fit_aitana_1764349737_3775961730761884360_60308417554",
+        "fit_aitana_1765473883_3785391753231080722_60308417554",
+        "fit_aitana_1770141079_3824540983929403387_60308417554",
+        "oliviaroa___1747163052_3631789368488375266_66251202538"
+      ],
+      "tags": {
+        "type": "FILLER",
+        "details": [
+          "pet_humanization"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "filler": 16
+        },
+        "top_styles": {
+          "no_subject": 16
+        },
+        "top_times": {
+          "n/a": 5,
+          "midday": 3,
+          "early-morning golden light": 1
+        },
+        "complexity_distribution": {
+          "easy": 16
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1706893500_3291676923384795740_60308417554",
+        "pose_archetype": "",
+        "primary_hook": "pet-content (standalone cat photo)",
+        "why_it_works": "Standalone pet photo deepens the 'real life' parasocial illusion — the model has a recurring cat character with its own home environment. Excellent filler content that breaks up portrait-heavy feed.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_011",
+      "name": "Beach — Medium",
+      "category": "img",
+      "description": "Modelo em beach, framing medium.",
+      "size": 16,
+      "media_ids": [
+        "fit_aitana_1720619289_3409124151754587049_60308417554",
+        "fit_aitana_1721915664_3419998933953841620_60308417554",
+        "fit_aitana_1724420700_3441012873559129215_60308417554",
+        "fit_aitana_1725285014_3448263082878011315_60308417554",
+        "fit_aitana_1725285014_3448263082886485609_60308417554",
+        "fit_aitana_1741628589_3585362934759564566_60308417554",
+        "fit_aitana_1743847057_3603972790110219479_60308417554",
+        "fit_aitana_1750781100_3661431262142877442_60308417554",
+        "fit_aitana_1751300100_3666391293858734357_60308417554",
+        "fit_aitana_1767806424_3804958525592468644_60308417554",
+        "fit_aitana_1767806424_3804958525592498714_60308417554",
+        "fit_aitana_1775836800_3872215217694311027_60308417554",
+        "fit_aitana_1776787729_3880299172154840407_60308417554",
+        "fit_aitana_1776787729_3880299172901427755_60308417554",
+        "fit_aitana_1776873927_3881022255434092964_60308417554",
+        "oliviaroa___1747163052_3631789368228364348_66251202538"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "beach",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 15,
+          "relatable": 1
+        },
+        "top_styles": {
+          "general": 4,
+          "loungewear_cozy": 2,
+          "editorial_studio": 2
+        },
+        "top_times": {
+          "midday": 3,
+          "golden-hour-sunset": 3,
+          "midday-bright": 2
+        },
+        "complexity_distribution": {
+          "medium": 10,
+          "easy": 1,
+          "high": 2,
+          "low-medium": 1,
+          "hard": 2
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1751300100_3666391293858734357_60308417554",
+        "pose_archetype": "standing-frontal-portrait, head straight to camera, slight chin-down tilt, locked eye contact",
+        "primary_hook": "beauty-portrait-pink-hair (close-up showcase of signature pink hair + glam)",
+        "why_it_works": "Close beauty crop reinforces the pink-hair brand identity. Direct piercing gaze + soft-glam = high-engagement portrait template. Pairs as carousel image 2 with the full-body shot.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_012",
+      "name": "Living Room — Full Body",
+      "category": "img",
+      "description": "Modelo em living room, framing full body.",
+      "size": 14,
+      "media_ids": [
+        "fit_aitana_1722265898_3422936908295785227_60308417554",
+        "fit_aitana_1724075100_3437951777352841445_60308417554",
+        "fit_aitana_1735149807_3531014968122750721_60308417554",
+        "fit_aitana_1738523085_3559312076469135209_60308417554",
+        "fit_aitana_1738523085_3559312076477470980_60308417554",
+        "fit_aitana_1750003200_3655614704082515945_60308417554",
+        "fit_aitana_1763053454_3765087726438192592_60308417554",
+        "fit_aitana_1763053454_3765087726748610643_60308417554",
+        "fit_aitana_1767806424_3804958525600874115_60308417554",
+        "fit_aitana_1771952911_3839740452031483206_60308417554",
+        "fit_aitana_1771952911_3839740452568348593_60308417554",
+        "fit_aitana_1771952911_3839740454925531906_60308417554",
+        "fit_aitana_1776873927_3881022254033179515_60308417554",
+        "fit_aitana_1776873927_3881022254779729949_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "living_room",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 10,
+          "relatable": 2,
+          "playful": 2
+        },
+        "top_styles": {
+          "streetstyle_european": 3,
+          "editorial_studio": 3,
+          "athleisure": 2
+        },
+        "top_times": {
+          "indoor-artificial": 3,
+          "studio (n/a)": 3,
+          "indoor-natural-warm": 2
+        },
+        "complexity_distribution": {
+          "hard": 1,
+          "medium": 8,
+          "high": 4,
+          "easy": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1767806424_3804958525600874115_60308417554",
+        "pose_archetype": "reclining-on-fringed-cotton-hammock-on-side-3/4-back-bottom-toward-camera, body curved seductively, head turned back over shoulder toward camera",
+        "primary_hook": "thirst-trap-resort-vacation (peak engagement-driver content)",
+        "why_it_works": "Pure thirst-trap content with high engagement metrics: bikini + S-curve pose + over-shoulder gaze + body emphasized via high angle. Wet hair + minimal styling adds 'just out of pool' authenticity. Boho hammock context softens the trap with 'lifestyle' framing.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_013",
+      "name": "Studio — Full Body",
+      "category": "img",
+      "description": "Modelo em studio, framing full body.",
+      "size": 13,
+      "media_ids": [
+        "fit_aitana_1718804084_3393897107412244288_60308417554",
+        "fit_aitana_1720014149_3404047867596827407_60308417554",
+        "fit_aitana_1761497778_3752037764603324025_60308417554",
+        "fit_aitana_1761497778_3752037764603334603_60308417554",
+        "fit_aitana_1761497778_3752037764611731803_60308417554",
+        "fit_aitana_1761497778_3752037764620106597_60308417554",
+        "fit_aitana_1761497778_3752037765182143775_60308417554",
+        "fit_aitana_1764177817_3774519568455204503_60308417554",
+        "fit_aitana_1764177817_3774519568463566273_60308417554",
+        "fit_aitana_1764177817_3774519568463582907_60308417554",
+        "fit_aitana_1771088400_3832471938753103919_60308417554",
+        "fit_aitana_1771088400_3832471939541661674_60308417554",
+        "fit_aitana_1772731572_3846273291803725197_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "studio",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 12,
+          "playful": 1
+        },
+        "top_styles": {
+          "editorial_studio": 5,
+          "bodycon_brazilian": 4,
+          "streetstyle_european": 3
+        },
+        "top_times": {
+          "studio": 5,
+          "indoor-studio": 3,
+          "indoor-natural": 2
+        },
+        "complexity_distribution": {
+          "medium": 7,
+          "high": 5,
+          "very-high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1718804084_3393897107412244288_60308417554",
+        "pose_archetype": "seated-on-car-hood-leaning-side, perched on hood of black sports car, hips angled left, legs together folded to side, left arm extended bracing on hood edge, right hand resting on right calf",
+        "primary_hook": "high-fashion-editorial-bodysuit + sports-car (luxury photo-shoot quality)",
+        "why_it_works": "Studio photoshoot quality (vs phone selfie) signals high production value and 'real model' status. Sheer bodysuit + car combo is iconic fashion editorial. Strong color contrast: white outfit + black car + white brick + pink hair. The pose is balanced — sensual but elevated, not Instagram-thirsty.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_014",
+      "name": "Bedroom — Medium",
+      "category": "img",
+      "description": "Modelo em bedroom, framing medium.",
+      "size": 12,
+      "media_ids": [
+        "fit_aitana_1692549534_3173657979793924385_60308417554",
+        "fit_aitana_1702228200_3254848858864358496_60308417554",
+        "fit_aitana_1709485200_3315607735956102487_60308417554",
+        "fit_aitana_1710177900_3321535877904187250_60308417554",
+        "fit_aitana_1713024300_3345412782501145373_60308417554",
+        "fit_aitana_1742492115_3592606711744162799_60308417554",
+        "fit_aitana_1742492115_3592606711811302779_60308417554",
+        "fit_aitana_1762709400_3762201770894856774_60308417554",
+        "fit_aitana_1773681172_3854237776749276697_60308417554",
+        "fit_aitana_1774799401_3863605650068628444_60308417554",
+        "fit_aitana_1774889102_3864372219296101185_60308417554",
+        "fit_aitana_1775836800_3872215218524808965_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "bedroom",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 10,
+          "filler": 1,
+          "sensual": 1
+        },
+        "top_styles": {
+          "loungewear_cozy": 6,
+          "bodycon_brazilian": 2,
+          "no_subject": 1
+        },
+        "top_times": {
+          "indoor-natural": 3,
+          "morning": 2,
+          "golden-hour-late-afternoon": 2
+        },
+        "complexity_distribution": {
+          "easy": 4,
+          "medium": 4,
+          "easy-medium": 2,
+          "high": 1,
+          "low-medium": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1692549534_3173657979793924385_60308417554",
+        "pose_archetype": null,
+        "primary_hook": "slow-morning-aesthetic / 'soft girl' lifestyle content",
+        "why_it_works": "Pinterest-coded slow-living aesthetic. Hand-with-coffee-on-bed is one of the highest-saving image categories on Instagram. Communicates lifestyle/personality without showing face — humanizes the AI persona between portrait posts and breaks up feed.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_015",
+      "name": "Studio — Medium",
+      "category": "img",
+      "description": "Modelo em studio, framing medium.",
+      "size": 12,
+      "media_ids": [
+        "fit_aitana_1693331400_3180151764908268924_60308417554",
+        "fit_aitana_1694537700_3190246009321163735_60308417554",
+        "fit_aitana_1694537700_3190246009321245884_60308417554",
+        "fit_aitana_1697301600_3213521398600496467_60308417554",
+        "fit_aitana_1720014149_3404047867588623760_60308417554",
+        "fit_aitana_1761497778_3752037764603317827_60308417554",
+        "fit_aitana_1761497778_3752037764620095236_60308417554",
+        "fit_aitana_1761497778_3752037764620100537_60308417554",
+        "openart_ai_1774551377_3861536179250310630_66972499939",
+        "openart_ai_1774551377_3861536184677703697_66972499939",
+        "openart_ai_1774551377_3861536192890176977_66972499939",
+        "openart_ai_1774551378_3861536187798257918_66972499939"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "studio",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 9,
+          "sensual": 3
+        },
+        "top_styles": {
+          "editorial_studio": 5,
+          "bodycon_brazilian": 4,
+          "general": 2
+        },
+        "top_times": {
+          "indoor-studio": 7,
+          "studio": 3,
+          "indoor-natural-daylight": 2
+        },
+        "complexity_distribution": {
+          "easy": 5,
+          "medium": 5,
+          "low": 2
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1693331400_3180151764908268924_60308417554",
+        "pose_archetype": "frontal standing portrait, shoulders square to camera, head straight with neutral chin position",
+        "primary_hook": "beauty-portrait-modeltest-clean",
+        "why_it_works": "Clean model-test aesthetic establishes credibility ('I'm a real model'). Blank-wall backdrop puts focus 100% on hair color + face symmetry. Pink-on-cream is one of the strongest color stories on social. Reusable as 'about-me' style image.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_016",
+      "name": "Restaurant — Full Body",
+      "category": "img",
+      "description": "Modelo em restaurant, framing full body.",
+      "size": 12,
+      "media_ids": [
+        "fit_aitana_1715186364_3363549470087836462_60308417554",
+        "fit_aitana_1735672583_3535400329408562486_60308417554",
+        "fit_aitana_1744136100_3606397492344134071_60308417554",
+        "fit_aitana_1744741500_3610589151609155666_60308417554",
+        "fit_aitana_1762968234_3764372851269334998_60308417554",
+        "fit_aitana_1769965200_3822984639086628076_60308417554",
+        "fit_aitana_1769965200_3822984639086645941_60308417554",
+        "fit_aitana_1774371600_3860001130180807008_60308417554",
+        "fit_aitana_1775750977_3871600705576380294_60308417554",
+        "fit_aitana_1775750977_3871600748207338101_60308417554",
+        "fit_aitana_1776354725_3876665150455464529_60308417554",
+        "fit_aitana_1777132800_3882456431366512035_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "restaurant",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 11,
+          "playful": 1
+        },
+        "top_styles": {
+          "streetstyle_european": 7,
+          "bodycon_brazilian": 3,
+          "loungewear_cozy": 1
+        },
+        "top_times": {
+          "midday": 2,
+          "indoor-warm-evening": 2,
+          "indoor-natural": 1
+        },
+        "complexity_distribution": {
+          "medium": 10,
+          "easy": 1,
+          "high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1769965200_3822984639086645941_60308417554",
+        "pose_archetype": "standing-on-sidewalk-outside-shop-front, body squared and rigid, arms hanging straight, holding metallic silver bucket bag in left hand, small black sunglasses on, classic look-book pose",
+        "primary_hook": "ootd-fashion-girl-streetstyle (full-body fit-check)",
+        "why_it_works": "Look-book full-body shot is essential outfit-content format. Knee-high black stockings + mini skirt + cropped cardigan + Mary-Janes = peak 2025/26 coquette/Y2K trend. Silver crinkle bag is a viral 'it-bag' archetype. European street facade adds geo-cool. Pink hair against neutral grey-stone-blue palette is the unifying color story.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_017",
+      "name": "Spa Salon — Full Body",
+      "category": "img",
+      "description": "Modelo em spa salon, framing full body.",
+      "size": 11,
+      "media_ids": [
+        "fit_aitana_1717163100_3380094606254915261_60308417554",
+        "fit_aitana_1747929900_3637252014245689977_60308417554",
+        "fit_aitana_1752420900_3673529899000345206_60308417554",
+        "fit_aitana_1755877800_3697423043181843199_60308417554",
+        "fit_aitana_1755877800_3697423043190236478_60308417554",
+        "fit_aitana_1758730500_3728824296756740871_60308417554",
+        "fit_aitana_1766165100_3791178689774390777_60308417554",
+        "fit_aitana_1770224400_3825231447309438884_60308417554",
+        "fit_aitana_1774543836_3861454892095257259_60308417554",
+        "fit_aitana_1775232028_3867247989366508570_60308417554",
+        "fit_aitana_1776442731_3877404982949473604_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "spa_salon",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 11
+        },
+        "top_styles": {
+          "streetstyle_european": 5,
+          "general": 1,
+          "editorial_studio": 1
+        },
+        "top_times": {
+          "midday-bright": 2,
+          "midday": 1,
+          "indoor-natural-bright": 1
+        },
+        "complexity_distribution": {
+          "medium": 6,
+          "high": 2,
+          "easy": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1755877800_3697423043181843199_60308417554",
+        "pose_archetype": "standing-front-facing-under-arch, body slightly turned 3/4, arms relaxed at sides with hands lightly grazing front waistband",
+        "primary_hook": "monochrome-yellow-resort-outfit-under-arch (Pinterest-perfect summer aesthetic)",
+        "why_it_works": "Monochrome yellow set is high-impact color story for feed. Stone arch is iconic European-summer backdrop. Coordinated 'matching set' is high-saving content (followers screenshot for inspiration). Sunglasses + relaxed pose reads cool/aspirational without being intimidating. Aspect 4:5 with arch framing is screenshot-perfect.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_018",
+      "name": "Gym — Medium",
+      "category": "img",
+      "description": "Modelo em gym, framing medium.",
+      "size": 10,
+      "media_ids": [
+        "fit_aitana_1693847705_3184547823805907084_60308417554",
+        "fit_aitana_1707328500_3297633163777957815_60308417554",
+        "fit_aitana_1709226300_3313468315773605642_60308417554",
+        "fit_aitana_1711213688_3330224252559450374_60308417554",
+        "fit_aitana_1711213688_3330224252802772816_60308417554",
+        "fit_aitana_1714137075_3354747394670990968_60308417554",
+        "fit_aitana_1714137075_3354747394679449122_60308417554",
+        "fit_aitana_1770224400_3825231447301088146_60308417554",
+        "fit_aitana_1770915769_3831040326949714849_60308417554",
+        "fit_aitana_1775320377_3867989217699734332_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "gym",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 8,
+          "sensual": 1,
+          "relatable": 1
+        },
+        "top_styles": {
+          "athleisure": 10
+        },
+        "top_times": {
+          "indoor-artificial": 4,
+          "indoor-evening": 2,
+          "indoor-fluorescent-mixed": 1
+        },
+        "complexity_distribution": {
+          "medium": 6,
+          "easy": 4
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1709226300_3313468315773605642_60308417554",
+        "pose_archetype": "standing in commercial gym facing camera, both hands gripping a horizontal pale-green/mint-pastel barbell at hip-level, body squared frontal, slight bracing",
+        "primary_hook": "fitness-progress-content (gym workout selfie)",
+        "why_it_works": "Gym selfies in commercial settings (vs home) signal seriousness about fitness and authenticity. Crop top showing midriff + low-rise bottom showcases physique without overtly thirst-trap; reads as 'fit-girl' aspirational. Pastel mint barbell adds cute color accent.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_019",
+      "name": "Spa Salon — Medium",
+      "category": "img",
+      "description": "Modelo em spa salon, framing medium.",
+      "size": 10,
+      "media_ids": [
+        "fit_aitana_1696524300_3206968069216874690_60308417554",
+        "fit_aitana_1704475500_3273700484635097613_60308417554",
+        "fit_aitana_1707490800_3298994817099098682_60308417554",
+        "fit_aitana_1710869700_3327338935682829728_60308417554",
+        "fit_aitana_1722615300_3424947907289257127_60308417554",
+        "fit_aitana_1755014400_3697633870115542309_60308417554",
+        "fit_aitana_1774026000_3857078189709342976_60308417554",
+        "fit_aitana_1774026000_3857078189860375901_60308417554",
+        "fit_aitana_1774026000_3857078190053316977_60308417554",
+        "oliviaroa___1747163052_3631789368496741774_66251202538"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "spa_salon",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 10
+        },
+        "top_styles": {
+          "general": 2,
+          "editorial_studio": 2,
+          "leather_rocker": 1
+        },
+        "top_times": {
+          "evening (warm artificial light)": 3,
+          "midday": 2,
+          "indoor-event-lit": 1
+        },
+        "complexity_distribution": {
+          "medium": 3,
+          "easy": 4,
+          "moderate": 2,
+          "medium-high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1704475500_3273700484635097613_60308417554",
+        "pose_archetype": "standing leaning back against white-painted plaster wall with green vine ivy spilling from left, slight S-curve, head tilted slightly to right",
+        "primary_hook": "summer-fashion-vacation (Mediterranean villa OOTD)",
+        "why_it_works": "Mediterranean white-wall + ivy is one of the most-replicated lifestyle backdrops on IG (extremely Pinterest-coded). Denim overall reads young-fresh-summery. Pink hair against neutral wall pops without competing with the fashion item being showcased.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_020",
+      "name": "Café — Medium",
+      "category": "img",
+      "description": "Modelo em café, framing medium.",
+      "size": 10,
+      "media_ids": [
+        "fit_aitana_1702401366_3256301134585873328_60308417554",
+        "fit_aitana_1711561500_3333142107745034580_60308417554",
+        "fit_aitana_1713878053_3352574565808839117_60308417554",
+        "fit_aitana_1730991082_3496129057799053074_60308417554",
+        "fit_aitana_1749398700_3648358907564991807_60308417554",
+        "fit_aitana_1753029300_3678578790351749938_60308417554",
+        "fit_aitana_1753029300_3678578790620190278_60308417554",
+        "fit_aitana_1774543836_3861454934675862174_60308417554",
+        "fit_aitana_1774889102_3864372290775462449_60308417554",
+        "fit_aitana_1776873927_3881022254855245031_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "café",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 10
+        },
+        "top_styles": {
+          "streetstyle_european": 5,
+          "bodycon_brazilian": 3,
+          "general": 1
+        },
+        "top_times": {
+          "midday": 3,
+          "late-afternoon-golden-hour": 2,
+          "indoor-natural": 1
+        },
+        "complexity_distribution": {
+          "easy": 3,
+          "medium": 6,
+          "high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1702401366_3256301134585873328_60308417554",
+        "pose_archetype": "standing leaning back against exposed brick wall, hair half-up ponytail, shoulders square to camera, slight contrapposto",
+        "primary_hook": "fitness-fashion-OOTD (curated outfit-of-the-day with lifestyle backdrop)",
+        "why_it_works": "Strong complementary color story (olive green outfit + warm red brick) is visually balanced and Pinterest-friendly. Crop top showcases fitness physique without being overtly sexual; coordinated set signals 'put-together fashion girl' aesthetic.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_021",
+      "name": "Festival Event — Medium",
+      "category": "img",
+      "description": "Modelo em festival event, framing medium.",
+      "size": 10,
+      "media_ids": [
+        "fit_aitana_1708190700_3303932685595104716_60308417554",
+        "fit_aitana_1712508300_3340981645786455356_60308417554",
+        "fit_aitana_1727366068_3465720229840738571_60308417554",
+        "fit_aitana_1727366068_3465720229840787316_60308417554",
+        "fit_aitana_1727366068_3465720229874143467_60308417554",
+        "fit_aitana_1771261584_3833938731824854686_60308417554",
+        "fit_aitana_1771261584_3833938742042194433_60308417554",
+        "fit_aitana_1776096728_3874501914536759767_60308417554",
+        "fit_aitana_1776096728_3874501956110689827_60308417554",
+        "oliviaroa___1747163052_3631789368245088292_66251202538"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "festival_event",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 8,
+          "confident": 2
+        },
+        "top_styles": {
+          "general": 4,
+          "leather_rocker": 3,
+          "evening_glam": 2
+        },
+        "top_times": {
+          "night": 6,
+          "midday": 1,
+          "midday diffused": 1
+        },
+        "complexity_distribution": {
+          "medium": 6,
+          "high": 3,
+          "medium-high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1708190700_3303932685595104716_60308417554",
+        "pose_archetype": "standing in 3D-rendered fantasy/post-apocalyptic outdoor scene, body squared to camera, right hand reaching down to side, head tilted slightly to right",
+        "primary_hook": "gamer-cosplay-thirst (sultry game-character cosplay aesthetic)",
+        "why_it_works": "Crossover gamer-cosplay content reaches male gamer audience hard. Tactical leather harness reads as Lara-Croft/Bayonetta archetype. Stylized rendering implies AI-art aesthetic which is currently trending.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_022",
+      "name": "Filler — Landscape Iconic",
+      "category": "filler",
+      "description": "Conteúdo lifestyle sem pessoa. Tipo: landscape_iconic.",
+      "size": 10,
+      "media_ids": [
+        "fit_aitana_1723038300_3429326907765273457_60308417554",
+        "fit_aitana_1723038300_3429326907765418651_60308417554",
+        "fit_aitana_1725285014_3448263082886523124_60308417554",
+        "fit_aitana_1753907400_3688103473581325684_60308417554",
+        "fit_aitana_1757261400_3714865297971763510_60308417554",
+        "fit_aitana_1767806424_3804958525592467924_60308417554",
+        "fit_aitana_1771606800_3836783899523461612_60308417554",
+        "fit_aitana_1774371600_3860001130180801910_60308417554",
+        "fit_aitana_1776442731_3877404989442259445_60308417554",
+        "oliviaroa___1747163052_3631789368245217366_66251202538"
+      ],
+      "tags": {
+        "type": "FILLER",
+        "details": [
+          "landscape_iconic"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "filler": 10
+        },
+        "top_styles": {
+          "no_subject": 10
+        },
+        "top_times": {
+          "midday": 3,
+          "midday warm": 1,
+          "midday clear blue sky": 1
+        },
+        "complexity_distribution": {
+          "easy": 8,
+          "high": 1,
+          "medium": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1723038300_3429326907765273457_60308417554",
+        "pose_archetype": "",
+        "primary_hook": "iconic-mediterranean-detail (Amalfi lemons + Sicilian tiles)",
+        "why_it_works": "Highly recognizable Mediterranean iconography (Amalfi lemons + majolica tiles) instantly geo-locates the content. Saturated yellow + blue tile = highly saved/shared aesthetic content. Pinterest-coded, perfect carousel filler between model portraits. Adds 'real travel' credibility to the persona's vacation arc.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_023",
+      "name": "Conference — Medium",
+      "category": "img",
+      "description": "Modelo em conference, framing medium.",
+      "size": 9,
+      "media_ids": [
+        "fit_aitana_1705500300_3282296883295394545_60308417554",
+        "fit_aitana_1742321700_3591177306049667307_60308417554",
+        "fit_aitana_1759849075_3738207445068551006_60308417554",
+        "fit_aitana_1760196621_3740389366183782200_60308417554",
+        "fit_aitana_1762450387_3760028834582819271_60308417554",
+        "fit_aitana_1770141079_3824540927499230498_60308417554",
+        "fit_aitana_1770141079_3824540972789315085_60308417554",
+        "fit_aitana_1775232028_3867247996178070068_60308417554",
+        "fit_aitana_1776096728_3874501910996732649_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "conference",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 7,
+          "relatable": 2
+        },
+        "top_styles": {
+          "streetstyle_european": 5,
+          "tailored_suiting": 3,
+          "general": 1
+        },
+        "top_times": {
+          "indoor-event": 3,
+          "late afternoon (cool overcast outdoor light + warm indoor)": 1,
+          "indoor-event-light": 1
+        },
+        "complexity_distribution": {
+          "medium": 5,
+          "hard": 1,
+          "high": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1705500300_3282296883295394545_60308417554",
+        "pose_archetype": "standing red-carpet press-event pose, body squared to camera, formal model stance, hair sleek bob with curtain bangs",
+        "primary_hook": "brand-event-ambassador (press-wall photo at LLONGUERAS event, hair brand)",
+        "why_it_works": "Brand-event press photo is highly credible influencer-status signal — 'real' celebrities are at brand activations. Reinforces parasocial illusion of being legitimate public figure. Tailored grey blazer + curtain bangs = current high-fashion editorial trend.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_024",
+      "name": "Filler — Landscape Natural",
+      "category": "filler",
+      "description": "Conteúdo lifestyle sem pessoa. Tipo: landscape_natural.",
+      "size": 9,
+      "media_ids": [
+        "fit_aitana_1712508300_3340981645526356039_60308417554",
+        "fit_aitana_1720619289_3409124151754690561_60308417554",
+        "fit_aitana_1733686500_3516340144880465300_60308417554",
+        "fit_aitana_1734291868_3523818052334994883_60308417554",
+        "fit_aitana_1746729256_3628150428328416195_60308417554",
+        "fit_aitana_1766165100_3791178689774411942_60308417554",
+        "fit_aitana_1770141079_3824540982201321766_60308417554",
+        "fit_aitana_1771606800_3836783899531862669_60308417554",
+        "fit_aitana_1773681172_3854237805589354958_60308417554"
+      ],
+      "tags": {
+        "type": "FILLER",
+        "details": [
+          "landscape_natural"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "filler": 9
+        },
+        "top_styles": {
+          "no_subject": 9
+        },
+        "top_times": {
+          "midday clear": 1,
+          "midday-bright": 1,
+          "midday-overcast": 1
+        },
+        "complexity_distribution": {
+          "easy": 9
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1712508300_3340981645526356039_60308417554",
+        "pose_archetype": "",
+        "primary_hook": "scenic-travel filler (vacation panorama)",
+        "why_it_works": "Filler landscape that strengthens travel narrative. No model needed — humanizes profile by showing 'her view'. Pairs well with apres-ski shot (1712508300_...517978630) as a multi-shot ski-trip carousel/feed cluster.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_025",
+      "name": "Conference — Full Body",
+      "category": "img",
+      "description": "Modelo em conference, framing full body.",
+      "size": 9,
+      "media_ids": [
+        "fit_aitana_1716387195_3373622772802213113_60308417554",
+        "fit_aitana_1736710200_3544057987170811514_60308417554",
+        "fit_aitana_1737397676_3549871457334052072_60308417554",
+        "fit_aitana_1760196621_3740389365890179140_60308417554",
+        "fit_aitana_1762450387_3760028834582816905_60308417554",
+        "fit_aitana_1762450387_3760028835295810966_60308417554",
+        "fit_aitana_1770141079_3824540983660942646_60308417554",
+        "fit_aitana_1776442731_3877404964326767620_60308417554",
+        "fit_aitana_1776442731_3877404965601824989_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "conference",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 8,
+          "relatable": 1
+        },
+        "top_styles": {
+          "streetstyle_european": 3,
+          "athleisure": 2,
+          "leather_rocker": 2
+        },
+        "top_times": {
+          "indoor-artificial": 2,
+          "indoor-controlled": 2,
+          "evening": 2
+        },
+        "complexity_distribution": {
+          "hard": 3,
+          "high": 4,
+          "medium-high": 1,
+          "medium": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1716387195_3373622772802213113_60308417554",
+        "pose_archetype": "standing leaning back against front of pink Mercedes G-Wagon, right hand resting on hood, left arm relaxed at side, hips slightly tilted, weight on left leg",
+        "primary_hook": "luxury-fitness aspirational (car + body)",
+        "why_it_works": "Pink G-Wagon + pink hair = signature aesthetic identity (color-coded brand). Athleisure full-body shows fitness pillar. G-Wagon is an iconic 'female-coded' luxury car symbol. Concrete garage backdrop adds editorial moodiness. High-impact post for save/share — combines wealth, fit body, color theory.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_026",
+      "name": "Filler — Drinks Cocktails",
+      "category": "filler",
+      "description": "Conteúdo lifestyle sem pessoa. Tipo: drinks_cocktails.",
+      "size": 9,
+      "media_ids": [
+        "fit_aitana_1721915664_3419998933953808583_60308417554",
+        "fit_aitana_1727876519_3470002207712863395_60308417554",
+        "fit_aitana_1728931500_3478669760458910819_60308417554",
+        "fit_aitana_1732477500_3508479436234788704_60308417554",
+        "fit_aitana_1757261400_3714865297971752139_60308417554",
+        "fit_aitana_1757261400_3714865297980129970_60308417554",
+        "fit_aitana_1774543836_3861454909996537619_60308417554",
+        "fit_aitana_1774973018_3865072866446320233_60308417554",
+        "fit_aitana_1775232028_3867247990457028510_60308417554"
+      ],
+      "tags": {
+        "type": "FILLER",
+        "details": [
+          "drinks_cocktails"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "filler": 9
+        },
+        "top_styles": {
+          "no_subject": 9
+        },
+        "top_times": {
+          "evening": 4,
+          "evening-night": 1,
+          "night": 1
+        },
+        "complexity_distribution": {
+          "easy": 9
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1721915664_3419998933953808583_60308417554",
+        "pose_archetype": "",
+        "primary_hook": "cocktail-bar-evening-aesthetic (date-night / girls-night-out coding)",
+        "why_it_works": "Cocktail content humanizes the persona — suggests social life beyond solo selfies. Limoncello-style drink with flower garnish signals taste / Mediterranean travel. Phone face-down is a known 'dinner phone-stack' signal of being present with friends. Drives 'where is this bar?' comments and saves.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_027",
+      "name": "Living Room — Medium",
+      "category": "img",
+      "description": "Modelo em living room, framing medium.",
+      "size": 7,
+      "media_ids": [
+        "fit_aitana_1703438100_3264998205526435336_60308417554",
+        "fit_aitana_1706893500_3291676923384670562_60308417554",
+        "fit_aitana_1707066900_3295438593449911961_60308417554",
+        "fit_aitana_1709485200_3315607735964512295_60308417554",
+        "fit_aitana_1724075100_3437951777352886317_60308417554",
+        "fit_aitana_1735672583_3535400329299507213_60308417554",
+        "fit_aitana_1762189551_3757840781353176117_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "living_room",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 7
+        },
+        "top_styles": {
+          "general": 2,
+          "loungewear_cozy": 1,
+          "slip_dress_intimate": 1
+        },
+        "top_times": {
+          "evening": 4,
+          "indoor-natural": 2,
+          "indoor-natural-bright (large window right)": 1
+        },
+        "complexity_distribution": {
+          "easy": 2,
+          "medium": 4,
+          "high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1703438100_3264998205526435336_60308417554",
+        "pose_archetype": "seated on red couch in front of Christmas tree, body turned 3/4 to right with left arm raised resting on couch back, head tilted right",
+        "primary_hook": "holiday-cozy-content (Christmas seasonal post)",
+        "why_it_works": "Seasonally-timed content (holidays drive engagement spikes). Soft pastel pink hair against warm Christmas bokeh creates dreamy fairylike feel. Lace top adds romantic feminine layer to the cozy holiday narrative.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_028",
+      "name": "Festival Event — Full Body",
+      "category": "img",
+      "description": "Modelo em festival event, framing full body.",
+      "size": 7,
+      "media_ids": [
+        "fit_aitana_1717163100_3380094606254959844_60308417554",
+        "fit_aitana_1717163100_3380094606255035031_60308417554",
+        "fit_aitana_1727366068_3465720229832178633_60308417554",
+        "fit_aitana_1771261584_3833938736220511094_60308417554",
+        "fit_aitana_1776096728_3874501914251517943_60308417554",
+        "fit_aitana_1776096728_3874501925634894846_60308417554",
+        "fit_aitana_1776096728_3874501965782777511_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "festival_event",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 6,
+          "confident": 1
+        },
+        "top_styles": {
+          "loungewear_cozy": 3,
+          "swimwear_bikini": 1,
+          "leather_rocker": 1
+        },
+        "top_times": {
+          "midday-bright": 2,
+          "night": 2,
+          "golden-hour-late-afternoon": 2
+        },
+        "complexity_distribution": {
+          "high": 3,
+          "medium": 1,
+          "medium-high": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1717163100_3380094606254959844_60308417554",
+        "pose_archetype": "squatting-on-dirt-road-back-to-camera, knees apart, weight on toes, right hand raised holding cowboy hat brim, left hand resting on dirt/leg",
+        "primary_hook": "western-fantasy + thirst-trap (bikini + cowboy boots + Jeep + desert)",
+        "why_it_works": "Combines multiple high-engagement codes: bikini back shot + western fantasy + premium 4x4 + epic landscape. The wide environmental composition makes it feel cinematic / movie-poster level, not selfie-tier. Saguaro cacti are instantly recognizable as 'expensive trip to Arizona'. Cowboy boots + bikini is internet-coded sex appeal.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_029",
+      "name": "Yacht — Full Body",
+      "category": "img",
+      "description": "Modelo em yacht, framing full body.",
+      "size": 7,
+      "media_ids": [
+        "fit_aitana_1717515111_3383084413361026583_60308417554",
+        "fit_aitana_1720619289_3409124151746291886_60308417554",
+        "fit_aitana_1752767700_3673539634172937188_60308417554",
+        "fit_aitana_1752767700_3673539634357414532_60308417554",
+        "fit_aitana_1753287000_3681471629528026811_60308417554",
+        "fit_aitana_1767806424_3804958525919651169_60308417554",
+        "fit_aitana_1777132800_3882456432742241757_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "yacht",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 7
+        },
+        "top_styles": {
+          "swimwear_bikini": 4,
+          "streetstyle_european": 2,
+          "loungewear_cozy": 1
+        },
+        "top_times": {
+          "midday-bright": 2,
+          "late-afternoon-bright": 2,
+          "golden-hour-dusk": 1
+        },
+        "complexity_distribution": {
+          "medium": 4,
+          "high": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1717515111_3383084413361026583_60308417554",
+        "pose_archetype": "seated-on-boat-cushion-leaning-back, body reclined on boat bow cushion, weight on left arm braced behind, right arm extended forward leaning on knee, legs splayed open right leg bent up, head turned in profile gazing across water",
+        "primary_hook": "luxury-boat-day + bikini-body (yacht aesthetic)",
+        "why_it_works": "Yacht/boat content is among the highest-engagement luxury aesthetics. Sunset golden-hour grade adds cinematic warmth. Mismatched bikini (white top + black bottom) signals fashion-girl taste. The 'A' initial necklace personalizes/brands the persona. Pose is confident but relaxed — feels candid not posed.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_030",
+      "name": "Bathroom — Full Body",
+      "category": "img",
+      "description": "Modelo em bathroom, framing full body.",
+      "size": 7,
+      "media_ids": [
+        "fit_aitana_1719582300_3400383743126041169_60308417554",
+        "fit_aitana_1725285014_3448263082886342554_60308417554",
+        "fit_aitana_1732822500_3511168607802082479_60308417554",
+        "fit_aitana_1733686500_3516340144880437106_60308417554",
+        "fit_aitana_1764177817_3774519568463577155_60308417554",
+        "fit_aitana_1764349737_3775961730753516453_60308417554",
+        "fit_aitana_1770224400_3825231447292665599_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "bathroom",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 7
+        },
+        "top_styles": {
+          "bodycon_brazilian": 2,
+          "athleisure": 2,
+          "swimwear_bikini": 1
+        },
+        "top_times": {
+          "indoor-natural": 2,
+          "indoor-artificial": 2,
+          "midday-natural": 1
+        },
+        "complexity_distribution": {
+          "medium": 7
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1719582300_3400383743126041169_60308417554",
+        "pose_archetype": "standing-mirror-selfie-in-bathroom, body slightly turned right, weight on right leg, left hip popped, phone held vertically at chest height covering face partially",
+        "primary_hook": "bikini-mirror-selfie-luxury-bathroom (peak Instagram thirst-trap format)",
+        "why_it_works": "Bathroom mirror selfie is THE most-replicated format on IG. Combining it with a bikini + cowboy hat + luxury vintage bathroom triples the engagement. Phone covering face partially adds 'mystery / coy' coding. Orange bikini against white-tile background = strong color isolation.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_031",
+      "name": "Bedroom — Close Up",
+      "category": "img",
+      "description": "Modelo em bedroom, framing close up.",
+      "size": 7,
+      "media_ids": [
+        "fit_aitana_1725285014_3448263083188526361_60308417554",
+        "fit_aitana_1731690600_3501819902913285506_60308417554",
+        "fit_aitana_1731690600_3501819902921582186_60308417554",
+        "fit_aitana_1736103972_3539019088002136260_60308417554",
+        "fit_aitana_1746729256_3628150428227693198_60308417554",
+        "fit_aitana_1754580900_3694015175317308429_60308417554",
+        "fit_aitana_1757005531_3714354067813202551_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "bedroom",
+          "close_up"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 5,
+          "sensual": 1,
+          "relatable": 1
+        },
+        "top_styles": {
+          "loungewear_cozy": 3,
+          "general": 2,
+          "streetstyle_european": 1
+        },
+        "top_times": {
+          "morning": 2,
+          "afternoon-soft-indoor": 2,
+          "indoor-natural (soft window light)": 1
+        },
+        "complexity_distribution": {
+          "easy": 6,
+          "medium": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1725285014_3448263083188526361_60308417554",
+        "pose_archetype": "in-bed-reclining-on-side, propped against cream pillows, left arm raised overhead reaching out of frame, body relaxed-elongated to camera",
+        "primary_hook": "boudoir-body-flex (toned abs + delicate bikini top in bed)",
+        "why_it_works": "Cropped face = the body becomes the focal point AND avoids the AI-face uncanny valley risk. Pastel palette + soft styling + toned waist = high save/share rate on Instagram. The black ribbon detail gives a fashion-editorial edge over generic lingerie shots.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_032",
+      "name": "Café — Full Body",
+      "category": "img",
+      "description": "Modelo em café, framing full body.",
+      "size": 7,
+      "media_ids": [
+        "fit_aitana_1730991082_3496129057799187014_60308417554",
+        "fit_aitana_1759420200_3734609866233773471_60308417554",
+        "fit_aitana_1770915769_3831040363792433770_60308417554",
+        "fit_aitana_1774371600_3860001130180786322_60308417554",
+        "fit_aitana_1774799401_3863605712647650850_60308417554",
+        "fit_aitana_1775750977_3871600713948234358_60308417554",
+        "fit_aitana_1775750977_3871600732000521072_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "café",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 6,
+          "relatable": 1
+        },
+        "top_styles": {
+          "streetstyle_european": 4,
+          "leather_rocker": 1,
+          "general": 1
+        },
+        "top_times": {
+          "midday-overcast": 2,
+          "midday": 2,
+          "indoor-natural / overcast": 1
+        },
+        "complexity_distribution": {
+          "medium": 5,
+          "high": 1,
+          "medium-high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1730991082_3496129057799187014_60308417554",
+        "pose_archetype": "leaning-back-against-stone-pillar-corner relaxed standing, weight on right leg with left leg slightly bent, left hand tucked into front pocket of jeans, right hand at hip on jeans, head tilted slightly right, big genuine smile direct to camera",
+        "primary_hook": "candid-smile-street-style (warm-relatable + outfit-inspo combo)",
+        "why_it_works": "Genuine teeth-showing smile is rare in AI-influencer feeds (mostly pursed-lips) — feels authentic and warmer. Cream + black + denim is timeless saveable outfit. Cafe context = lifestyle aspiration.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_033",
+      "name": "Car — Medium",
+      "category": "img",
+      "description": "Modelo em car, framing medium.",
+      "size": 7,
+      "media_ids": [
+        "fit_aitana_1733686500_3516340144880468454_60308417554",
+        "fit_aitana_1737056105_3547006150533158479_60308417554",
+        "fit_aitana_1743533700_3601054089971161230_60308417554",
+        "fit_aitana_1764349737_3775961730812240749_60308417554",
+        "fit_aitana_1772558461_3844819546607775177_60308417554",
+        "fit_aitana_1774973018_3865072859492134721_60308417554",
+        "openart_ai_1774551378_3861536187949286420_66972499939"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "car",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 7
+        },
+        "top_styles": {
+          "athleisure": 2,
+          "streetstyle_european": 1,
+          "evening_glam": 1
+        },
+        "top_times": {
+          "night": 2,
+          "midday-winter": 1,
+          "indoor-natural": 1
+        },
+        "complexity_distribution": {
+          "medium": 6,
+          "low": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1733686500_3516340144880468454_60308417554",
+        "pose_archetype": "seated-from-behind-in-car-back-seat, body turned slightly toward right window, looking out at snowy forest, hands resting on lap",
+        "primary_hook": "winter-travel-aesthetic-from-behind (Lapland-girl drive)",
+        "why_it_works": "Back-of-head shots are scroll-stopping because they create mystery and let the viewer imagine themselves as the subject. Cozy fluff + snowy landscape = pure mood. Cinematic film-still energy. Pink hair pops against cool white snow.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_034",
+      "name": "Park Garden — Full Body",
+      "category": "img",
+      "description": "Modelo em park garden, framing full body.",
+      "size": 7,
+      "media_ids": [
+        "fit_aitana_1734291868_3523818052326576317_60308417554",
+        "fit_aitana_1736710200_3544057987044817066_60308417554",
+        "fit_aitana_1746375300_3625060267289829500_60308417554",
+        "fit_aitana_1754408100_3686544568350836613_60308417554",
+        "fit_aitana_1757261400_3714865297971790220_60308417554",
+        "fit_aitana_1762189551_3757840781344811699_60308417554",
+        "fit_aitana_1775750977_3871600741890691754_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "park_garden",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 6,
+          "relatable": 1
+        },
+        "top_styles": {
+          "streetstyle_european": 5,
+          "athleisure": 1,
+          "general": 1
+        },
+        "top_times": {
+          "midday-afternoon": 2,
+          "midday-overcast-winter": 1,
+          "indoor-controlled": 1
+        },
+        "complexity_distribution": {
+          "medium": 4,
+          "high": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1734291868_3523818052326576317_60308417554",
+        "pose_archetype": "playful-bend-down-toward-snowman, leaning forward at waist with one hand reaching down to adjust snowman's carrot nose, side profile to camera, hood up over beanie",
+        "primary_hook": "playful-snowman-interaction (cute candid winter moment)",
+        "why_it_works": "Childlike playfulness + winter cozy outfit = high warmth/comfort engagement signal. Snowman with detailed plaid scarf is a charming visual focal point. Premium NB sneakers add status. The 'caught in candid action' angle feels authentic vs over-staged. Strong for warm-and-fuzzy audience emotional bonding.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_035",
+      "name": "Car — Close Up",
+      "category": "img",
+      "description": "Modelo em car, framing close up.",
+      "size": 6,
+      "media_ids": [
+        "fit_aitana_1695751817_3200520678188011558_60308417554",
+        "fit_aitana_1730826462_3494748123120178141_60308417554",
+        "fit_aitana_1743533700_3601054090222742583_60308417554",
+        "fit_aitana_1772558460_3844819570372648394_60308417554",
+        "fit_aitana_1777044119_3882449927754265036_60308417554",
+        "openart_ai_1774551377_3861536177849417205_66972499939"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "car",
+          "close_up"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 4,
+          "sensual": 1,
+          "relatable": 1
+        },
+        "top_styles": {
+          "athleisure": 3,
+          "loungewear_cozy": 1,
+          "general": 1
+        },
+        "top_times": {
+          "outdoor-daylight-bright": 1,
+          "morning": 1,
+          "afternoon-overcast": 1
+        },
+        "complexity_distribution": {
+          "easy": 4,
+          "easy-medium": 1,
+          "medium": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1695751817_3200520678188011558_60308417554",
+        "pose_archetype": "in-car selfie from passenger seat, head tilted slightly to camera-left, shoulders 3/4 turn, classic 'getting-ready-for-night-out' selfie composition",
+        "primary_hook": "in-car-going-out-glam-selfie",
+        "why_it_works": "In-car selfie is highest-engagement format on Instagram (relatable + aspirational). Outfit + hair styling implies 'main-character night out'. Natural window light is universally flattering. Strapless dress + pink hair + gold hoops = unmistakable 'going somewhere' energy that drives saves/comments.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_036",
+      "name": "Bathroom — Medium",
+      "category": "img",
+      "description": "Modelo em bathroom, framing medium.",
+      "size": 6,
+      "media_ids": [
+        "fit_aitana_1701885000_3251969762098469376_60308417554",
+        "fit_aitana_1741105449_3580974511390984798_60308417554",
+        "fit_aitana_1769187410_3816543076127130158_60308417554",
+        "fit_aitana_1773422041_3852065514545779653_60308417554",
+        "fit_aitana_1773422041_3852065521340535203_60308417554",
+        "fit_aitana_1774889102_3864372301554789729_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "bathroom",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 5,
+          "sensual": 1
+        },
+        "top_styles": {
+          "general": 1,
+          "streetstyle_european": 1,
+          "slip_dress_intimate": 1
+        },
+        "top_times": {
+          "ambient (artificial)": 2,
+          "indoor-natural-bright": 1,
+          "indoor-warm-artificial": 1
+        },
+        "complexity_distribution": {
+          "easy": 1,
+          "medium": 4,
+          "high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1701885000_3251969762098469376_60308417554",
+        "pose_archetype": "bathroom mirror selfie standing frontal with left hand raised behind/through hair, slight 3/4 lean toward camera",
+        "primary_hook": "bathroom-mirror-selfie-casual",
+        "why_it_works": "Bathroom-mirror selfies are one of the most relatable Instagram archetypes — feels personal/genuine vs studio shoot. Crop top + jeans + bare midriff = thirst engagement framed as 'just casual'. Bath products on shelf add 'real life' authenticity. Hand-in-hair pose softens the framing. High repeatability format.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_037",
+      "name": "Kitchen — Medium",
+      "category": "img",
+      "description": "Modelo em kitchen, framing medium.",
+      "size": 6,
+      "media_ids": [
+        "fit_aitana_1708450200_3307042897252461360_60308417554",
+        "fit_aitana_1769015707_3815102725684203436_60308417554",
+        "fit_aitana_1770569172_3828126557508494827_60308417554",
+        "fit_aitana_1770569172_3828126579948017693_60308417554",
+        "fit_aitana_1770569172_3828126583538355574_60308417554",
+        "fit_aitana_1777044119_3882449927041226178_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "kitchen",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 4,
+          "relatable": 2
+        },
+        "top_styles": {
+          "streetstyle_european": 3,
+          "y2k_fashion": 1,
+          "bodycon_brazilian": 1
+        },
+        "top_times": {
+          "indoor-natural": 1,
+          "indoor-natural-bright": 1,
+          "evening (warm tungsten lamp lighting, plantation shutters closed)": 1
+        },
+        "complexity_distribution": {
+          "easy": 2,
+          "medium": 4
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1708450200_3307042897252461360_60308417554",
+        "pose_archetype": "seated-on-couch selfie, body slightly turned 3/4 right, right arm extended off-camera-bottom-right holding phone for selfie, head perfectly upright",
+        "primary_hook": "selfie-OOTD-soft-girl (at-home cute outfit-of-the-day selfie)",
+        "why_it_works": "Selfie format reads as authentic candid, parasocial-strong. Pink satin lace cami is iconic Y2K-coquette item that performs reliably with fashion-forward female audience. Pink hair + pink top + glossy lip = cohesive soft-girl monochromatic story.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_038",
+      "name": "Filler — Events Venue",
+      "category": "filler",
+      "description": "Conteúdo lifestyle sem pessoa. Tipo: events_venue.",
+      "size": 6,
+      "media_ids": [
+        "fit_aitana_1715186364_3363549470104716270_60308417554",
+        "fit_aitana_1722265898_3422936908304188173_60308417554",
+        "fit_aitana_1753907400_3688103473556087987_60308417554",
+        "fit_aitana_1759849075_3738207445068580050_60308417554",
+        "fit_aitana_1776096728_3874501922237500058_60308417554",
+        "fit_aitana_1776442731_3877404976112787320_60308417554"
+      ],
+      "tags": {
+        "type": "FILLER",
+        "details": [
+          "events_venue"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "filler": 6
+        },
+        "top_styles": {
+          "no_subject": 6
+        },
+        "top_times": {
+          "indoor-artificial": 2,
+          "indoor-artificial mixed with natural skylight": 1,
+          "early-evening-twilight": 1
+        },
+        "complexity_distribution": {
+          "easy": 3,
+          "high": 1,
+          "low": 1,
+          "hard": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1715186364_3363549470104716270_60308417554",
+        "pose_archetype": "",
+        "primary_hook": "event-lifestyle filler (premium experience)",
+        "why_it_works": "Event-content humanizes AI model — establishes 'she has a real social life and goes to premium events'. Terracotta clay + iconic ceiling slats are signature Madrid Open visuals (geographic reinforcement). Pairs well with model-portrait shots from same day as carousel storytelling.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_039",
+      "name": "Spa Salon — Close Up",
+      "category": "img",
+      "description": "Modelo em spa salon, framing close up.",
+      "size": 6,
+      "media_ids": [
+        "fit_aitana_1715186364_3363549470406498215_60308417554",
+        "fit_aitana_1722615300_3424947907088036277_60308417554",
+        "fit_aitana_1734291868_3523818052360083130_60308417554",
+        "fit_aitana_1746729256_3628150428236142471_60308417554",
+        "fit_aitana_1746729256_3628150428244451941_60308417554",
+        "fit_aitana_1746893700_3625693321779967347_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "spa_salon",
+          "close_up"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 6
+        },
+        "top_styles": {
+          "loungewear_cozy": 3,
+          "general": 2,
+          "evening_glam": 1
+        },
+        "top_times": {
+          "indoor-natural-overcast-light": 3,
+          "indoor-artificial": 2,
+          "evening-twilight": 1
+        },
+        "complexity_distribution": {
+          "easy": 4,
+          "medium": 2
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1715186364_3363549470406498215_60308417554",
+        "pose_archetype": "salon-cape detail-shot — subject wearing salon cape with hair draping over, face cropped out of frame to focus on cape branding",
+        "primary_hook": "salon-partnership branded content (brand placement)",
+        "why_it_works": "Brand-placement detail shots are key for monetization-ready content (salons, beauty brands). Face-out-of-frame is intentional — focuses 100% on the brand logo while maintaining subject identity via signature pink hair. High-contrast composition (pink + black) is scroll-stopping. Pairs well with before/after styling content as carousel.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_040",
+      "name": "Yacht — Medium",
+      "category": "img",
+      "description": "Modelo em yacht, framing medium.",
+      "size": 6,
+      "media_ids": [
+        "fit_aitana_1723038300_3429326907756874610_60308417554",
+        "fit_aitana_1753287000_3681471629393667158_60308417554",
+        "fit_aitana_1753287000_3681471629402100894_60308417554",
+        "fit_aitana_1767200400_3799875214591449590_60308417554",
+        "fit_aitana_1767806424_3804958525617666647_60308417554",
+        "openart_ai_1774551377_3861536191472517222_66972499939"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "yacht",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 6
+        },
+        "top_styles": {
+          "bodycon_brazilian": 3,
+          "swimwear_bikini": 2,
+          "general": 1
+        },
+        "top_times": {
+          "midday-to-afternoon overcast bright": 1,
+          "afternoon-bright": 1,
+          "afternoon-soft": 1
+        },
+        "complexity_distribution": {
+          "medium": 4,
+          "high": 1,
+          "low": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1723038300_3429326907756874610_60308417554",
+        "pose_archetype": "leaning-on-balcony-rail-with-view, hip cocked, one hand on rail, body angled 3/4 toward camera, head turned to camera over shoulder/forward",
+        "primary_hook": "iconic-travel-destination-portrait (Amalfi/Positano backdrop)",
+        "why_it_works": "Highly recognizable Italian coastal backdrop is a viral content shortcut — the geography does half the engagement work. Soft pastel sundress mirrors the village's pastel buildings (intentional color harmony). Long red hair pops against blue sea + pastel buildings. Universally aspirational travel imagery.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_041",
+      "name": "Filler — Interior Details",
+      "category": "filler",
+      "description": "Conteúdo lifestyle sem pessoa. Tipo: interior_details.",
+      "size": 6,
+      "media_ids": [
+        "fit_aitana_1725285014_3448263082961800882_60308417554",
+        "fit_aitana_1727876519_3470002207704243664_60308417554",
+        "fit_aitana_1730228554_3489655312364435260_60308417554",
+        "fit_aitana_1739298267_3565814775897341808_60308417554",
+        "fit_aitana_1770141079_3824540979399504274_60308417554",
+        "fit_aitana_1773422041_3852065518681345012_60308417554"
+      ],
+      "tags": {
+        "type": "FILLER",
+        "details": [
+          "interior_details"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "filler": 6
+        },
+        "top_styles": {
+          "no_subject": 6
+        },
+        "top_times": {
+          "indoor-natural": 2,
+          "dusk (post-sunset blue-pink sky)": 1,
+          "midday": 1
+        },
+        "complexity_distribution": {
+          "easy": 6
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1725285014_3448263082961800882_60308417554",
+        "pose_archetype": "",
+        "primary_hook": "golden-hour-coastal-vibe (Mediterranean dusk pastels)",
+        "why_it_works": "Atmospheric mood filler. Pastel sunset hits dopamine instantly. Reinforces 'she travels and unwinds at beautiful places' narrative without needing the model in frame.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_042",
+      "name": "Gym — Full Body",
+      "category": "img",
+      "description": "Modelo em gym, framing full body.",
+      "size": 6,
+      "media_ids": [
+        "fit_aitana_1728312221_3473657143294151847_60308417554",
+        "fit_aitana_1731864000_3503309988431422987_60308417554",
+        "fit_aitana_1731864000_3503309988439793896_60308417554",
+        "fit_aitana_1760457600_3743312228943140846_60308417554",
+        "fit_aitana_1765300210_3783934883421240931_60308417554",
+        "fit_aitana_1765300210_3783934883421263007_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "gym",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 5,
+          "confident": 1
+        },
+        "top_styles": {
+          "athleisure": 6
+        },
+        "top_times": {
+          "indoor-artificial": 3,
+          "indoor-natural": 2,
+          "indoor-daylight": 1
+        },
+        "complexity_distribution": {
+          "medium": 6
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1728312221_3473657143294151847_60308417554",
+        "pose_archetype": "post-workout-floor-seat, seated on rubber gym floor with knees bent up, ankles crossed, both forearms resting on knees with hands lightly clasped, body angled 3/4-left, gaze turned softly over shoulder to camera",
+        "primary_hook": "post-workout-cool-down (athletic body in real gym setting)",
+        "why_it_works": "Best-of-both-worlds content: fitness-credibility (real gym backdrop) + body-flex (toned abs/arms in tight black). Floor-sit pose is unusual and stops scroll. Pink ponytail vs black gym = strong color contrast. Pairs well in carousel with the POV barbell shot and PRIME bottle from same set.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_043",
+      "name": "Other — Close Up",
+      "category": "img",
+      "description": "Modelo em other, framing close up.",
+      "size": 5,
+      "media_ids": [
+        "fit_aitana_1693331400_3180151764665057733_60308417554",
+        "fit_aitana_1724075100_3437951777361145209_60308417554",
+        "fit_aitana_1741105449_3580974511122808606_60308417554",
+        "fit_aitana_1772731572_3846273274405774940_60308417554",
+        "openart_ai_1774551377_3861536189970928893_66972499939"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "other",
+          "close_up"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 5
+        },
+        "top_styles": {
+          "editorial_studio": 2,
+          "general": 2,
+          "y2k_fashion": 1
+        },
+        "top_times": {
+          "natural-daylight": 1,
+          "n/a-studio": 1,
+          "indoor-warm-natural": 1
+        },
+        "complexity_distribution": {
+          "medium": 1,
+          "hard": 1,
+          "easy": 1,
+          "low": 2
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1741105449_3580974511122808606_60308417554",
+        "pose_archetype": "hand-pose-jewelry-detail-shot, right hand resting flat-down across left hand which holds knee/lap, both hands relaxed on grey ribbed knit fabric, fingers gently splayed",
+        "primary_hook": "engagement-tease / luxury-jewelry-reveal",
+        "why_it_works": "Engagement-ring tease shots are top-performing parasocial content — drives 'is she engaged?!' comment frenzy. Hand-only crop maintains mystery. Easy to reproduce for follow-up engagement-narrative content.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_044",
+      "name": "Studio — Close Up",
+      "category": "img",
+      "description": "Modelo em studio, framing close up.",
+      "size": 5,
+      "media_ids": [
+        "fit_aitana_1702659900_3258470156345571820_60308417554",
+        "fit_aitana_1738781252_3561477735059656998_60308417554",
+        "fit_aitana_1775232028_3867247985021200663_60308417554",
+        "fit_aitana_1775492559_3869432555250390733_60308417554",
+        "fit_aitana_1776873927_3881022255098506400_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "studio",
+          "close_up"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 5
+        },
+        "top_styles": {
+          "athleisure": 1,
+          "loungewear_cozy": 1,
+          "y2k_fashion": 1
+        },
+        "top_times": {
+          "indoor-controlled": 2,
+          "indoor-artificial": 2,
+          "indoor-studio": 1
+        },
+        "complexity_distribution": {
+          "easy": 1,
+          "very-high": 1,
+          "high": 1,
+          "medium-high": 1,
+          "medium": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1702659900_3258470156345571820_60308417554",
+        "pose_archetype": "head-tilted close-up portrait, head leaned slightly to right, left hand raised to play with hair near temple",
+        "primary_hook": "beauty-portrait-glow (high-glam close-up with glossy skin and bold color story)",
+        "why_it_works": "Tight close-up + direct intense eye contact creates parasocial 'looking-at-me' feeling that drives high engagement. Pink-teal complementary color block is bold scroll-stopper. Hand-in-hair pose is timeless flirty signal.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_045",
+      "name": "City Landmark — Medium",
+      "category": "img",
+      "description": "Modelo em city landmark, framing medium.",
+      "size": 5,
+      "media_ids": [
+        "fit_aitana_1730228554_3489655312356084574_60308417554",
+        "fit_aitana_1730228554_3489655312364474436_60308417554",
+        "fit_aitana_1753907400_3688103473572750290_60308417554",
+        "fit_aitana_1753907400_3688103473572845851_60308417554",
+        "fit_aitana_1767278662_3800531341285053773_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "city_landmark",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 5
+        },
+        "top_styles": {
+          "editorial_studio": 2,
+          "streetstyle_european": 2,
+          "evening_glam": 1
+        },
+        "top_times": {
+          "midday": 2,
+          "afternoon-bright": 1,
+          "early-evening-golden": 1
+        },
+        "complexity_distribution": {
+          "medium": 2,
+          "high": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1730228554_3489655312356084574_60308417554",
+        "pose_archetype": "seated-on-mosaic-bench-Park-Guell, legs crossed, hands resting on lap, body angled 3/4-left, gazing off-camera to right",
+        "primary_hook": "geo-tagged-iconic-tourism (Park Güell Barcelona) + editorial-fashion fusion",
+        "why_it_works": "Iconic recognizable location (Park Güell trencadís) instantly says 'Barcelona' — strengthens model's geographic identity. Pairing tourist landmark with high-fashion editorial outfit elevates above typical travel pic. Off-camera dreamy gaze = 'caught candid' authenticity.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_046",
+      "name": "Pool — Full Body",
+      "category": "img",
+      "description": "Modelo em pool, framing full body.",
+      "size": 5,
+      "media_ids": [
+        "fit_aitana_1748275500_3640931130207806557_60308417554",
+        "fit_aitana_1748275500_3640931130207885111_60308417554",
+        "fit_aitana_1774371600_3860001131002911060_60308417554",
+        "fit_aitana_1777132800_3882456431056185404_60308417554",
+        "fit_aitana_1777132800_3882456431089683947_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "pool",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 5
+        },
+        "top_styles": {
+          "loungewear_cozy": 2,
+          "swimwear_bikini": 2,
+          "streetstyle_european": 1
+        },
+        "top_times": {
+          "afternoon-bright": 2,
+          "midday": 2,
+          "golden-hour / sunset": 1
+        },
+        "complexity_distribution": {
+          "medium": 4,
+          "high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1748275500_3640931130207806557_60308417554",
+        "pose_archetype": "standing-with-slight-contrapposto-on-poolside-deck, body slightly turned 3/4 to camera, hands raised lightly to torso/chest area",
+        "primary_hook": "vacation-resort-bohemian (matching crochet set + Palm Springs architecture)",
+        "why_it_works": "Matching crochet beach set is current peak boho-resort fashion trend (Faithfull/Dissh/Frankie Bikinis-tier). Palm Springs/Tulum modernist architecture backdrop signals luxury-vacation context. Cream knit + pink hair + blue hat is cohesive cool-warm color story. Hat-brim-shadow on face creates editorial mystery while still showing body/outfit. Strong vacation-content engagement.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_047",
+      "name": "Park Garden — Medium",
+      "category": "img",
+      "description": "Modelo em park garden, framing medium.",
+      "size": 4,
+      "media_ids": [
+        "fit_aitana_1699811400_3234575179723320585_60308417554",
+        "fit_aitana_1700154900_3237456770002586150_60308417554",
+        "fit_aitana_1750781100_3661431262142997278_60308417554",
+        "fit_aitana_1761927913_3755646003286933877_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "park_garden",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 3,
+          "sensual": 1
+        },
+        "top_styles": {
+          "loungewear_cozy": 1,
+          "bodycon_brazilian": 1,
+          "general": 1
+        },
+        "top_times": {
+          "indoor-natural-daylight": 1,
+          "outdoor-overcast-soft-daylight": 1,
+          "midday": 1
+        },
+        "complexity_distribution": {
+          "easy": 2,
+          "medium": 1,
+          "high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1699811400_3234575179723320585_60308417554",
+        "pose_archetype": "frontal standing selfie portrait, shoulders square, head straight with chin slightly down for soft 'cottagecore' energy",
+        "primary_hook": "cozy-home-cottagecore-soft-girl",
+        "why_it_works": "Cottagecore/cozy-girl aesthetic is high-saving content. Plant + cardigan + soft glam = Pinterest-perfect aesthetic. Statement multicolor beaded necklace adds visual interest as focal accent. Two-tone grown-out roots give 'real-life' authenticity vs perfect salon look. Soft direct gaze is approachable, not intimidating.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_048",
+      "name": "Neon Nightclub — Medium",
+      "category": "img",
+      "description": "Modelo em neon nightclub, framing medium.",
+      "size": 4,
+      "media_ids": [
+        "fit_aitana_1708796100_3309944158252942111_60308417554",
+        "fit_aitana_1737659825_3552070523783265846_60308417554",
+        "fit_aitana_1741105449_3580974511005272573_60308417554",
+        "fit_aitana_1771606800_3836783899531821879_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "neon_nightclub",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 3,
+          "relatable": 1
+        },
+        "top_styles": {
+          "winter_outerwear": 1,
+          "athleisure": 1,
+          "streetstyle_european": 1
+        },
+        "top_times": {
+          "indoor-evening": 1,
+          "golden-hour-late-afternoon": 1,
+          "indoor-warm-artificial-evening": 1
+        },
+        "complexity_distribution": {
+          "easy": 1,
+          "medium": 2,
+          "high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1708796100_3309944158252942111_60308417554",
+        "pose_archetype": "seated in white-and-purple gaming chair facing camera, legs slightly spread, hands resting on thighs, head perfectly upright",
+        "primary_hook": "gamer-girl-thirst (sexy gaming streamer aesthetic)",
+        "why_it_works": "Gamer-girl niche performs extremely well on Insta/Twitch — combines fitness physique display (visible abs) with gaming culture cues. Pink-purple monochromatic palette is highly cohesive and Pinterest-friendly. Gaming chair provides 'throne' framing.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_049",
+      "name": "Rooftop — Medium",
+      "category": "img",
+      "description": "Modelo em rooftop, framing medium.",
+      "size": 4,
+      "media_ids": [
+        "fit_aitana_1730991082_3496129058126313149_60308417554",
+        "fit_aitana_1736364518_3541204706824055956_60308417554",
+        "fit_aitana_1736364518_3541204706933326649_60308417554",
+        "openart_ai_1774551378_3861536211840069808_66972499939"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "rooftop",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 4
+        },
+        "top_styles": {
+          "loungewear_cozy": 2,
+          "evening_glam": 1,
+          "tailored_suiting": 1
+        },
+        "top_times": {
+          "night": 2,
+          "golden-hour-dusk": 1,
+          "golden-hour / late afternoon": 1
+        },
+        "complexity_distribution": {
+          "high": 1,
+          "medium": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1730991082_3496129058126313149_60308417554",
+        "pose_archetype": "seated-on-rooftop-bench-3/4-with-Eiffel-backdrop, body angled 3/4-left, right hand resting on bench, left hand resting on small handbag on round table beside, right leg crossed over left, head straight calm to camera",
+        "primary_hook": "luxury-paris-rooftop-cocktail-Eiffel-view (peak aspirational hero shot)",
+        "why_it_works": "Combines two of Instagram's highest-engagement triggers: iconic landmark (Eiffel) + golden-hour luxury setting. The composed-but-effortless pose feels editorial-magazine quality. Sky color palette is highly saveable. Hero / pinned-post material.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_050",
+      "name": "Bedroom — Full Body",
+      "category": "img",
+      "description": "Modelo em bedroom, framing full body.",
+      "size": 4,
+      "media_ids": [
+        "fit_aitana_1732045718_3504975980777828876_60308417554",
+        "fit_aitana_1732822500_3511168607802030568_60308417554",
+        "fit_aitana_1740422612_3575246461181535461_60308417554",
+        "fit_aitana_1761757694_3754218099004934068_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "bedroom",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 4
+        },
+        "top_styles": {
+          "athleisure": 2,
+          "streetstyle_european": 1,
+          "editorial_studio": 1
+        },
+        "top_times": {
+          "afternoon": 1,
+          "indoor-natural": 1,
+          "indoor-warm-artificial": 1
+        },
+        "complexity_distribution": {
+          "medium": 3,
+          "high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1732045718_3504975980777828876_60308417554",
+        "pose_archetype": "mirror-selfie-standing-contrapposto, weight on left leg right knee slightly bent, left hand on hip, right arm extended holding phone in front of face",
+        "primary_hook": "fitness-physique-flex + luxury-location (athleisure body in penthouse)",
+        "why_it_works": "Combines body confidence (toned midriff) with status (penthouse + city view + arched designer architecture). Sleek high pony = European model aesthetic. Phone covers face = intrigue + viewer projection.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_051",
+      "name": "Restaurant — Close Up",
+      "category": "img",
+      "description": "Modelo em restaurant, framing close up.",
+      "size": 4,
+      "media_ids": [
+        "fit_aitana_1747325400_3632907529181228433_60308417554",
+        "fit_aitana_1767278662_3800531341251445073_60308417554",
+        "fit_aitana_1773681172_3854237764267042501_60308417554",
+        "fit_aitana_1774371600_3860001131053247315_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "restaurant",
+          "close_up"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 4
+        },
+        "top_styles": {
+          "general": 2,
+          "slip_dress_intimate": 1,
+          "streetstyle_european": 1
+        },
+        "top_times": {
+          "night": 2,
+          "evening-night": 1,
+          "evening / night": 1
+        },
+        "complexity_distribution": {
+          "high": 2,
+          "medium-high": 1,
+          "moderate": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1747325400_3632907529181228433_60308417554",
+        "pose_archetype": "seated-at-restaurant-banquette-holding-wine-glass-up, body slightly turned 3/4 to camera, glass held to side of face at chin level",
+        "primary_hook": "luxury-evening-dining (upscale European bistro vibe with wine glass)",
+        "why_it_works": "Upscale brasserie setting + leather + slip dress + wine = peak adult-elegant aesthetic. The 'main character at dinner' framing is high-engagement. Pink hair against rich green-gold-cream environment creates visually striking palette. Wine-to-face hand pose is signature luxury-lifestyle pose. Reads as both editorial and 'real life'.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_052",
+      "name": "European Street — Full Body",
+      "category": "img",
+      "description": "Modelo em european street, framing full body.",
+      "size": 4,
+      "media_ids": [
+        "fit_aitana_1754840100_3696189299775093699_60308417554",
+        "fit_aitana_1769446999_3818720668494117649_60308417554",
+        "fit_aitana_1769446999_3818720668502502649_60308417554",
+        "fit_aitana_1775750977_3871600757116005834_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "european_street",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 2,
+          "relatable": 2
+        },
+        "top_styles": {
+          "streetstyle_european": 4
+        },
+        "top_times": {
+          "evening (night match)": 2,
+          "afternoon-overcast": 1,
+          "midday-indoor": 1
+        },
+        "complexity_distribution": {
+          "high": 1,
+          "medium": 2,
+          "medium-high": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1754840100_3696189299775093699_60308417554",
+        "pose_archetype": "three-women-seated-on-stone-stairs side-by-side, each holding magazine in front of face hiding identity, legs crossed/extended forward",
+        "primary_hook": "editorial-anonymity-trio (magazines-as-faces meme)",
+        "why_it_works": "Magazine-covering-face is a viral 2024-2026 fashion editorial trope (saves well, gets shared as 'aesthetic'). Coordinated styling across three women reads as 'cool-girl coven' — strong belonging/aspiration trigger. Indie magazines (Notion/Dazed/CLASH) signal taste-level beyond mass Vogue. Symmetrical composition is highly screenshot-able. Faceless concept also lets followers project themselves onto subjects.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_053",
+      "name": "Bathroom — Close Up",
+      "category": "img",
+      "description": "Modelo em bathroom, framing close up.",
+      "size": 4,
+      "media_ids": [
+        "fit_aitana_1773422041_3852065512196956959_60308417554",
+        "fit_aitana_1773422041_3852065520334490233_60308417554",
+        "fit_aitana_1773422041_3852065524117643472_60308417554",
+        "fit_aitana_1773681172_3854237804331013005_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "bathroom",
+          "close_up"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 4
+        },
+        "top_styles": {
+          "leather_rocker": 1,
+          "tailored_suiting": 1,
+          "loungewear_cozy": 1
+        },
+        "top_times": {
+          "ambient (artificial)": 2,
+          "ambient (artificial lighting)": 1,
+          "golden-hour-late-afternoon": 1
+        },
+        "complexity_distribution": {
+          "medium-high": 1,
+          "easy-medium": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1773422041_3852065512196956959_60308417554",
+        "pose_archetype": "seated-at-vanity-being-made-up, model facing slight 3/4 right while makeup artist (left, partially visible from behind) applies lipstick/lipliner to model's lips with brush",
+        "primary_hook": "GRWM-with-MUA (getting-ready behind the scenes with a makeup artist)",
+        "why_it_works": "GRWM/BTS-glam content is a top-engaging IG carousel format — viewers love seeing the 'process'. Having a real-feeling MUA hand in frame strengthens the illusion of a real working model. Warm pink-tungsten lighting reads as cinematic and saveable.",
+        "aspect": "4:3 (landscape, smaller resolution)"
+      }
+    },
+    {
+      "id": "tpl_054",
+      "name": "Mountain — Medium",
+      "category": "img",
+      "description": "Modelo em mountain, framing medium.",
+      "size": 3,
+      "media_ids": [
+        "fit_aitana_1708190700_3303932685594940460_60308417554",
+        "fit_aitana_1733686500_3516340144888771906_60308417554",
+        "fit_aitana_1742757300_3593077538851681533_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "mountain",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 3
+        },
+        "top_styles": {
+          "general": 1,
+          "winter_outerwear": 1,
+          "streetstyle_european": 1
+        },
+        "top_times": {
+          "sunset": 1,
+          "midday-bluebird": 1,
+          "sunset-late-afternoon": 1
+        },
+        "complexity_distribution": {
+          "medium": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1708190700_3303932685594940460_60308417554",
+        "pose_archetype": "standing in 3D-rendered Fortnite-style game world, frontal hero stance, slight contrapposto with weight on right leg, arms held at sides slightly bent",
+        "primary_hook": "gamer-fanart-crossover (model as Fortnite character skin)",
+        "why_it_works": "Crossover content (model + pop-culture game) is highly shareable and reaches gamer demographic. Novelty effect — people stop scrolling to see 'wait, is this a Fortnite skin?' confusion-engagement.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_055",
+      "name": "Neon Nightclub — Full Body",
+      "category": "img",
+      "description": "Modelo em neon nightclub, framing full body.",
+      "size": 3,
+      "media_ids": [
+        "fit_aitana_1723038300_3429326907765233968_60308417554",
+        "fit_aitana_1764867919_3780308561725296973_60308417554",
+        "fit_aitana_1775320377_3867989207943751786_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "neon_nightclub",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 3
+        },
+        "top_styles": {
+          "editorial_studio": 1,
+          "streetstyle_european": 1,
+          "athleisure": 1
+        },
+        "top_times": {
+          "indoor-natural-daylight": 1,
+          "indoor-cinema": 1,
+          "indoor-controlled": 1
+        },
+        "complexity_distribution": {
+          "hard": 1,
+          "high": 2
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1723038300_3429326907765233968_60308417554",
+        "pose_archetype": "walking-away-from-camera into white minimalist gallery space, mid-stride, body fully turned away",
+        "primary_hook": "high-fashion-editorial-architecture (gallery exploration moment)",
+        "why_it_works": "Strong architectural composition (frame-within-frame) is highly screenshottable / Pinterest-coded. Walking away pose is mysterious and editorial — viewer wants to follow. White-on-white-on-cream palette + single copper hair pop = magazine-quality color work. Shows persona has 'taste' beyond beach selfies.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_056",
+      "name": "Mountain — Close Up",
+      "category": "img",
+      "description": "Modelo em mountain, framing close up.",
+      "size": 3,
+      "media_ids": [
+        "fit_aitana_1733686500_3516340144888855294_60308417554",
+        "fit_aitana_1766165100_3791178689774413211_60308417554",
+        "fit_aitana_1766165100_3791178689782747954_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "mountain",
+          "close_up"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 3
+        },
+        "top_styles": {
+          "winter_outerwear": 1,
+          "streetstyle_european": 1,
+          "general": 1
+        },
+        "top_times": {
+          "afternoon-winter": 1,
+          "midday-overcast or shaded forest": 1,
+          "golden-hour / late-afternoon (warm rim-light on hair and trees)": 1
+        },
+        "complexity_distribution": {
+          "medium": 2,
+          "low": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1733686500_3516340144888855294_60308417554",
+        "pose_archetype": "outdoor-portrait-standing-with-ski-goggles-on-beanie, slight 3/4 angle to camera, soft direct gaze, snow-resort-bg model headshot",
+        "primary_hook": "ski-resort-portrait-pink-on-pink (matching beanie + hair monochrome moment)",
+        "why_it_works": "Pink beanie + pink hair monochrome aesthetic is a high-engagement Pinterest/IG trope. Goggle-prop adds 'just-came-down-from-the-slopes' authenticity. Dark wood chalet backdrop creates strong contrast with subject. Premium ski-luxe location signals wealth.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_057",
+      "name": "Tropical Villa — Full Body",
+      "category": "img",
+      "description": "Modelo em tropical villa, framing full body.",
+      "size": 3,
+      "media_ids": [
+        "fit_aitana_1741274909_3582396051513013864_60308417554",
+        "fit_aitana_1774543836_3861454943668440821_60308417554",
+        "oliviaroa___1747163052_3631789368211475701_66251202538"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "tropical_villa",
+          "full_body"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 3
+        },
+        "top_styles": {
+          "streetstyle_european": 3
+        },
+        "top_times": {
+          "afternoon (clear blue sky, soft warm sun)": 1,
+          "midday / early afternoon (bright direct sunlight, sharp shadows, blue clear sky)": 1,
+          "indoor-natural": 1
+        },
+        "complexity_distribution": {
+          "easy-medium": 1,
+          "high": 1,
+          "medium": 1
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1741274909_3582396051513013864_60308417554",
+        "pose_archetype": "lounging-on-outdoor-sofa, seated reclined with right knee bent up against chest, left leg folded under, right hand resting on chin/jaw, body tilted slightly to right",
+        "primary_hook": "vacation-bikini-lounge (poolside main-character)",
+        "why_it_works": "Classic bikini-on-villa-sofa shot performs reliably. Pink-and-black bikini matches signature pink hair palette. Negative space and cream wall make it feed-friendly. Sunglasses + finger-on-chin = effortless cool factor.",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_058",
+      "name": "Pool — Medium",
+      "category": "img",
+      "description": "Modelo em pool, framing medium.",
+      "size": 3,
+      "media_ids": [
+        "fit_aitana_1741274909_3582396051580238116_60308417554",
+        "fit_aitana_1742757300_3593077538298247693_60308417554",
+        "fit_aitana_1752420900_3673529899000292862_60308417554"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "pool",
+          "medium"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 3
+        },
+        "top_styles": {
+          "streetstyle_european": 1,
+          "bodycon_brazilian": 1,
+          "swimwear_bikini": 1
+        },
+        "top_times": {
+          "midday-afternoon": 1,
+          "golden-hour-sunset": 1,
+          "midday-bright": 1
+        },
+        "complexity_distribution": {
+          "medium": 3
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1741274909_3582396051580238116_60308417554",
+        "pose_archetype": "lounging-on-rattan-armchair, seated upright with hands resting on opposite forearms in lap, body slightly leaned back, head tilted very slightly down, sunglasses on",
+        "primary_hook": "vacation-bikini-poolside (rattan-armchair villa flex)",
+        "why_it_works": "Classic vacation flex — pool + rattan + bikini + abs. Paired with previous shot creates carousel narrative ('day in my life at the villa').",
+        "aspect": "4:5"
+      }
+    },
+    {
+      "id": "tpl_059",
+      "name": "Street Urban — Close Up",
+      "category": "img",
+      "description": "Modelo em street urban, framing close up.",
+      "size": 3,
+      "media_ids": [
+        "fit_aitana_1764349737_3775961730736766306_60308417554",
+        "fit_aitana_1772382709_3843345838286308366_60308417554",
+        "openart_ai_1774551377_3861536181020265052_66972499939"
+      ],
+      "tags": {
+        "type": "IMG",
+        "details": [
+          "street_urban",
+          "close_up"
+        ]
+      },
+      "stats": {
+        "top_intents": {
+          "aspirational": 3
+        },
+        "top_styles": {
+          "streetstyle_european": 2,
+          "loungewear_cozy": 1
+        },
+        "top_times": {
+          "midday-overcast": 1,
+          "overcast daytime": 1,
+          "blue-hour / dusk (cool blue dominant with warm distant lamp glows)": 1
+        },
+        "complexity_distribution": {
+          "low": 1,
+          "medium": 2
+        }
+      },
+      "example_media": {
+        "media_id": "fit_aitana_1764349737_3775961730736766306_60308417554",
+        "pose_archetype": "tilted-overhead-selfie shot at ~45° dutch-angle, head tipped to camera-left, shoulders rotated 3/4, arm extended up holding phone (out of frame)",
+        "primary_hook": "luxury-flex selfie (head-to-toe Prada with iconic triangle logos visible)",
+        "why_it_works": "Three Prada triangle logos in one frame (jacket plate, knit logo, bag plate) is a deliberate brand stack. Dutch angle adds movement/energy to a static selfie. Pink hair against pure black wardrobe = strong color contrast that pops in feed.",
+        "aspect": "4:5"
+      }
+    }
+  ]
+}

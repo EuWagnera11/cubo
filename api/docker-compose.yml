@@ -1,0 +1,119 @@
+# Cubo Studio API — Docker Compose
+# Sobe FastAPI + Postgres + Redis + Caddy (SSL automático) numa stack só.
+#
+# Uso no VPS:
+#   1. clonar repo, cd /opt/cubo-api/api
+#   2. cp .env.example .env  &&  nano .env  (configurar)
+#   3. docker compose up -d
+#
+# Logs:    docker compose logs -f api
+# Restart: docker compose restart api
+# Update:  git pull && docker compose up -d --build api
+
+services:
+  # ──────────────────────────────────────────────────────
+  # API (FastAPI)
+  # ──────────────────────────────────────────────────────
+  api:
+    build: .
+    container_name: cubo-api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://cubo:${POSTGRES_PASSWORD}@postgres:5432/cubo
+      REDIS_URL: redis://redis:6379/0
+    expose:
+      - "8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - cubo-net
+
+  # ──────────────────────────────────────────────────────
+  # Postgres (database)
+  # ──────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: cubo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cubo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: cubo
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cubo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cubo-net
+    # Não exponhe porta pra fora — só acessível internamente
+    # Pra debug local, descomentar:
+    # ports:
+    #   - "5432:5432"
+
+  # ──────────────────────────────────────────────────────
+  # Redis (cache + rate limit + job queue)
+  # ──────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: cubo-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cubo-net
+
+  # ──────────────────────────────────────────────────────
+  # Caddy (reverse proxy + SSL automático Let's Encrypt)
+  # ──────────────────────────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: cubo-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - cubo-net
+
+# ──────────────────────────────────────────────────────
+# Volumes persistentes
+# ──────────────────────────────────────────────────────
+volumes:
+  postgres-data:
+  redis-data:
+  caddy-data:
+  caddy-config:
+
+# ──────────────────────────────────────────────────────
+# Network isolada
+# ──────────────────────────────────────────────────────
+networks:
+  cubo-net:
+    driver: bridge

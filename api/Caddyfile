@@ -1,0 +1,78 @@
+# Caddyfile — reverse proxy + SSL automático Let's Encrypt
+#
+# Apontar DNS antes de subir:
+#   api.refinecubo.com.br  A  <IP_DO_VPS>
+#
+# Caddy faz tudo automático:
+# - Pega certificado Let's Encrypt
+# - Renova automaticamente
+# - HTTP/2 + HTTP/3
+# - Redirect HTTP → HTTPS
+
+api.refinecubo.com.br {
+    # Reverse proxy pro container api
+    reverse_proxy api:8000
+
+    # Headers de segurança
+    header {
+        # HSTS (force HTTPS por 1 ano)
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Anti-clickjacking
+        X-Frame-Options "DENY"
+        # Anti-MIME sniffing
+        X-Content-Type-Options "nosniff"
+        # Referrer policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Permissions
+        Permissions-Policy "geolocation=(), microphone=(), camera=()"
+        # Remove server header
+        -Server
+    }
+
+    # Logs estruturados
+    log {
+        output file /data/access.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format json
+    }
+
+    # Health check sem log (evita poluir)
+    @health {
+        path /health
+    }
+    log {
+        skip @health
+    }
+
+    # CORS (descomentar se precisar — Lovable normalmente não precisa pq é HTTPS direto)
+    # @cors_preflight {
+    #     method OPTIONS
+    # }
+    # respond @cors_preflight 204 {
+    #     header Access-Control-Allow-Origin "*"
+    #     header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    #     header Access-Control-Allow-Headers "*"
+    # }
+
+    # Rate limit básico (descomentar se quiser)
+    # rate_limit {
+    #     zone dynamic_per_ip {
+    #         key {remote_host}
+    #         events 100
+    #         window 1m
+    #     }
+    # }
+}
+
+# Subdominios extras (descomentar conforme criar):
+#
+# app.refinecubo.com.br {
+#     reverse_proxy frontend:3000
+# }
+#
+# refinecubo.com.br {
+#     redir https://app.refinecubo.com.br{uri} permanent
+# }
