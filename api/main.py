@@ -126,6 +126,7 @@ if settings.DATABASE_URL:
     from .routers import specialized as r_spec
     from .routers import captions as r_cap
     from .routers import catalog as r_catalog
+    from .routers import admin as r_admin
 
     # Core
     app.include_router(r_gen.router)
@@ -152,6 +153,9 @@ if settings.DATABASE_URL:
     # Billing & uploads
     app.include_router(r_billing.router)
     app.include_router(r_uploads.router)
+
+    # Admin
+    app.include_router(r_admin.router)
 
 
 # ─────────────── Error handler ───────────────

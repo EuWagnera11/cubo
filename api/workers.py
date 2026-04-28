@@ -403,6 +403,109 @@ def style_learn_task(self, *, learned_style_id: str, image_paths: list[str], use
         raise
 
 
+@celery_app.task(name="refine.regen_previews", bind=True)
+def regen_previews_task(self, *, target: str = "all", limit: int | None = None):
+    """
+    Regenera previews de todos templates/presets/worlds via Freepik nano-banana 2K.
+    Roda dentro do worker da VPS (acesso DB + Supabase + Freepik OK).
+    """
+    import os, httpx
+    from supabase import create_client
+    from .freepik import FreepikClient
+
+    sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
+    fp = FreepikClient(api_keys=[k.strip() for k in os.environ["FREEPIK_API_KEYS"].split(",") if k.strip()])
+
+    async def _gen_one(prompt: str, ratio: str = "portrait_4_5") -> str | None:
+        full = f"{prompt}, editorial photography, 4K quality, professional lighting"
+        try:
+            tid = await fp.nano_banana_pro(prompt=full, aspect_ratio=ratio, size="2k")
+            r = await fp.poll_task(tid, kind="image", max_wait_s=300)
+            urls = r.get("generated") or r.get("urls") or []
+            if isinstance(urls, str): return urls
+            return urls[0] if urls else None
+        except Exception:
+            return None
+
+    async def _process(table: str, id_col: str, id_val: str, prompt: str, ratio: str, update_col: str):
+        gen_url = await _gen_one(prompt, ratio)
+        if not gen_url: return False
+        try:
+            async with httpx.AsyncClient(timeout=120) as c:
+                img = (await c.get(gen_url)).content
+            path = f"{table}/{id_val}.jpg"
+            sb.storage.from_("previews").upload(path, img,
+                file_options={"content-type": "image/jpeg", "upsert": "true"})
+            pub_url = sb.storage.from_("previews").get_public_url(path)
+            with engine.begin() as conn:
+                conn.execute(text(f"UPDATE {table} SET {update_col} = :u WHERE {id_col} = :id"),
+                             {"u": pub_url, "id": id_val})
+            return True
+        except Exception:
+            return False
+
+    async def _run():
+        results: dict = {}
+
+        if target in ("templates", "all"):
+            with engine.connect() as conn:
+                rows = conn.execute(text("""
+                    SELECT id, name, prompt, media_type FROM templates
+                    WHERE is_public=true AND (preview_url IS NULL OR preview_url LIKE '/placeholder%')
+                    ORDER BY uses_count DESC NULLS LAST
+                    LIMIT :l
+                """), {"l": limit or 1000}).fetchall()
+            ok = 0
+            for r in rows:
+                ratio = "social_story_9_16" if r.media_type == "video" else "portrait_4_5"
+                if await _process("templates", "id", str(r.id), r.prompt or r.name, ratio, "preview_url"):
+                    ok += 1
+            results["templates"] = f"{ok}/{len(rows)}"
+
+        if target in ("presets", "all"):
+            with engine.connect() as conn:
+                rows = conn.execute(text("""
+                    SELECT id, name, base_prompt FROM model_presets
+                    WHERE reference_image_url LIKE '/presets%'
+                    LIMIT :l
+                """), {"l": limit or 100}).fetchall()
+            ok = 0
+            for r in rows:
+                if await _process("model_presets", "id", str(r.id),
+                                   f"{r.base_prompt}, full body editorial portrait", "portrait_4_5",
+                                   "reference_image_url"):
+                    ok += 1
+            results["presets"] = f"{ok}/{len(rows)}"
+
+        if target in ("worlds", "all"):
+            with engine.connect() as conn:
+                rows = conn.execute(text("""
+                    SELECT id, name, prompt_template FROM worlds
+                    WHERE is_public=true AND preview_url IS NULL
+                    LIMIT :l
+                """), {"l": limit or 100}).fetchall()
+            ok = 0
+            for r in rows:
+                if await _process("worlds", "id", str(r.id), r.prompt_template, "widescreen_16_9", "preview_url"):
+                    ok += 1
+            results["worlds"] = f"{ok}/{len(rows)}"
+
+        await fp.close()
+        return results
+
+    return _run_async_in_worker(_run())
+
+
+def _run_async_in_worker(coro):
+    """Helper pra rodar coroutine no worker síncrono Celery."""
+    import asyncio
+    loop = asyncio.new_event_loop()
+    try:
+        return loop.run_until_complete(coro)
+    finally:
+        loop.close()
+
+
 @celery_app.task(name="refine.recreate", bind=True)
 def recreate_task(self, *, recreate_job_id: str, persona_id: str, persona_ref: str,
                   drive_import_id: str, options: dict | None = None) -> dict:
