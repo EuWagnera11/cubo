@@ -20,22 +20,25 @@ APP_URL = os.environ.get("APP_URL", "https://app.refinecubo.com.br")
 
 # Map tier → Stripe price ID + créditos mensais
 TIER_PRICES = {
-    "starter":    {"price_id": os.environ.get("STRIPE_PRICE_STARTER", ""), "credits": 50,    "amount_brl": 30},
-    "pro":        {"price_id": os.environ.get("STRIPE_PRICE_PRO", ""),     "credits": 300,   "amount_brl": 97},
-    "agency":     {"price_id": os.environ.get("STRIPE_PRICE_AGENCY", ""),  "credits": 1500,  "amount_brl": 297},
-    "enterprise": {"price_id": os.environ.get("STRIPE_PRICE_ENTERPRISE", ""), "credits": 5000, "amount_brl": 0},  # custom
+    "starter":    {"price_id": os.environ.get("STRIPE_PRICE_STARTER", ""),    "credits": 500,    "amount_brl": 47},
+    "creator":    {"price_id": os.environ.get("STRIPE_PRICE_CREATOR", ""),    "credits": 2500,   "amount_brl": 147},
+    "pro":        {"price_id": os.environ.get("STRIPE_PRICE_PRO", ""),        "credits": 7500,   "amount_brl": 297},
+    "agency":     {"price_id": os.environ.get("STRIPE_PRICE_AGENCY", ""),     "credits": 25000,  "amount_brl": 697},
+    "enterprise": {"price_id": os.environ.get("STRIPE_PRICE_ENTERPRISE", ""), "credits": 100000, "amount_brl": 0},  # custom
 }
 
+# Top-up packs (compra avulsa)
 CREDIT_PACKS = {
-    "100":  {"price_id": os.environ.get("STRIPE_PRICE_PACK_100", ""),  "credits": 100,  "amount_brl": 25},
-    "500":  {"price_id": os.environ.get("STRIPE_PRICE_PACK_500", ""),  "credits": 500,  "amount_brl": 99},
-    "1500": {"price_id": os.environ.get("STRIPE_PRICE_PACK_1500", ""), "credits": 1500, "amount_brl": 249},
+    "500":   {"price_id": os.environ.get("STRIPE_PRICE_PACK_500", ""),   "credits": 500,   "amount_brl": 39},
+    "2000":  {"price_id": os.environ.get("STRIPE_PRICE_PACK_2000", ""),  "credits": 2000,  "amount_brl": 129},
+    "5000":  {"price_id": os.environ.get("STRIPE_PRICE_PACK_5000", ""),  "credits": 5000,  "amount_brl": 297},
+    "15000": {"price_id": os.environ.get("STRIPE_PRICE_PACK_15000", ""), "credits": 15000, "amount_brl": 797},
 }
 
 
 class CheckoutReq(BaseModel):
-    tier: Literal["starter", "pro", "agency", "enterprise"] | None = None
-    pack: Literal["100", "500", "1500"] | None = None
+    tier: Literal["starter", "creator", "pro", "agency", "enterprise"] | None = None
+    pack: Literal["500", "2000", "5000", "15000"] | None = None
 
 
 @router.post("/checkout")
