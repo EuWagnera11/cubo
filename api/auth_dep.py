@@ -30,7 +30,7 @@ class AuthUser:
 
 
 def get_current_user(token: HTTPAuthorizationCredentials = Depends(bearer)) -> AuthUser:
-    """Valida JWT do Supabase + carrega profile do user."""
+    """Valida JWT do Supabase + carrega profile do user (cria se não existir)."""
     if not token:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Missing bearer token")
 
@@ -45,16 +45,26 @@ def get_current_user(token: HTTPAuthorizationCredentials = Depends(bearer)) -> A
     if not user_id:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Token missing sub claim")
 
-    # Load profile
-    with _engine.connect() as conn:
+    # Load profile (bootstrap se não existir — Postgres local não tem trigger handle_new_user)
+    with _engine.begin() as conn:
         row = conn.execute(text(
             "SELECT tier, credits FROM profiles WHERE id = :id"
         ), {"id": user_id}).first()
 
+        if not row:
+            # Cria profile no first-touch
+            conn.execute(text("""
+                INSERT INTO profiles (id, email, tier, credits)
+                VALUES (:id, :email, 'free', 0)
+                ON CONFLICT (id) DO NOTHING
+            """), {"id": user_id, "email": email})
+            tier_val, credits_val = "free", 0
+        else:
+            tier_val, credits_val = row.tier, row.credits
+
     return AuthUser(
         user_id=user_id, email=email,
-        tier=row.tier if row else "free",
-        credits=row.credits if row else 0,
+        tier=tier_val, credits=credits_val,
     )
 
 

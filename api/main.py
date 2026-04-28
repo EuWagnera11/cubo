@@ -59,8 +59,50 @@ async def lifespan(app: FastAPI):
         warnings.append("REDIS_URL not set — Celery workers won't dispatch")
     for w in warnings:
         print(f"⚠️  {w}")
+
+    # Auto-aplicar migration no startup (idempotente — usa CREATE IF NOT EXISTS)
+    if settings.DATABASE_URL:
+        try:
+            await _run_migrations()
+        except Exception as e:
+            print(f"⚠️  Migration startup error: {e}")
+
     yield
     print("🛑 Shutting down...")
+
+
+async def _run_migrations():
+    """Aplica migrations SQL na ordem alfabética. Idempotente (tudo CREATE IF NOT EXISTS)."""
+    import os as _os
+    from pathlib import Path
+    from sqlalchemy import create_engine as _ce, text as _t
+
+    migrations_dir = Path(__file__).parent / "migrations"
+    if not migrations_dir.exists():
+        return
+
+    # Para Postgres local, usar 000_postgres_local.sql se existir.
+    # Pra Supabase, usar 000_initial_schema.sql.
+    is_supabase = "supabase.co" in (settings.DATABASE_URL or "")
+    sql_files = sorted(migrations_dir.glob("*.sql"))
+    if not is_supabase:
+        # Filtrar: pular o initial_schema do Supabase (depende de auth.users)
+        sql_files = [f for f in sql_files if "initial_schema" not in f.name]
+    else:
+        # Pular o postgres_local (sem auth.users FK) no Supabase
+        sql_files = [f for f in sql_files if "postgres_local" not in f.name]
+
+    db_url = (settings.DATABASE_URL or "").replace("+asyncpg", "")
+    engine = _ce(db_url, pool_pre_ping=True)
+    with engine.begin() as conn:
+        for f in sql_files:
+            sql = f.read_text(encoding="utf-8")
+            try:
+                conn.execute(_t(sql))
+                print(f"✓ Applied migration: {f.name}")
+            except Exception as e:
+                print(f"⚠️  Migration {f.name} skipped: {e}")
+    engine.dispose()
 
 
 app = FastAPI(
