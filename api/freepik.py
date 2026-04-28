@@ -440,14 +440,27 @@ class FreepikClient:
     #                          POLLING
     # ════════════════════════════════════════════════════════════════
 
-    async def get_task(self, task_id: str, kind: Literal["image", "video", "enhance"] = "image") -> dict:
-        """Status de uma task. kind define o endpoint correto pra Freepik."""
-        endpoints = {
-            "image": f"/v1/ai/tasks/{task_id}",
-            "video": f"/v1/ai/tasks/{task_id}",
-            "enhance": f"/v1/ai/tasks/{task_id}",
-        }
-        return await self._request("GET", endpoints[kind])
+    # Mapa task_id → endpoint do POST (cada modelo Freepik tem seu próprio polling)
+    # Populado automaticamente quando uma task é criada.
+    _task_endpoints: dict[str, str] = {}
+
+    async def get_task(self, task_id: str, kind: Literal["image", "video", "enhance"] = "image",
+                       *, endpoint: str | None = None) -> dict:
+        """Status de uma task. Cada modelo Freepik tem endpoint próprio (POST path + /{id})."""
+        # 1. Endpoint explícito (preferido)
+        if endpoint:
+            return await self._request("GET", f"{endpoint}/{task_id}")
+
+        # 2. Endpoint registrado quando a task foi criada
+        if task_id in self._task_endpoints:
+            return await self._request("GET", f"{self._task_endpoints[task_id]}/{task_id}")
+
+        # 3. Fallback genérico (alguns modelos tem /tasks/, outros não)
+        try:
+            return await self._request("GET", f"/v1/ai/tasks/{task_id}")
+        except FreepikError:
+            # Tenta o endpoint nano-banana-pro (mais comum no nosso uso)
+            return await self._request("GET", f"/v1/ai/gemini-2-5-flash-image-preview/{task_id}")
 
     async def poll_task(
         self,
@@ -456,11 +469,12 @@ class FreepikClient:
         *,
         max_wait_s: int = 600,
         interval_s: float = 3.0,
+        endpoint: str | None = None,
     ) -> dict:
         """Polla task até COMPLETED/FAILED ou timeout."""
         elapsed = 0.0
         while elapsed < max_wait_s:
-            r = await self.get_task(task_id, kind=kind)
+            r = await self.get_task(task_id, kind=kind, endpoint=endpoint)
             data = r.get("data", r)
             status = (data.get("status") or "").upper()
             if status in ("COMPLETED", "SUCCESS"):
