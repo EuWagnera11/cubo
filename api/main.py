@@ -112,6 +112,9 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
+    # Quando atrás de reverse proxy com path prefix /api, FastAPI ajusta
+    # OpenAPI URLs corretamente. Lê de env pra suportar deploy direto também.
+    root_path=os.environ.get("ROOT_PATH", ""),
 )
 
 app.add_middleware(
