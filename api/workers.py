@@ -162,7 +162,7 @@ def generate_image_task(
         return {"status": "completed", "urls": urls}
 
     except (FreepikError, Exception) as e:
-        _update_generation(generation_id, status="failed")
+        _update_generation(generation_id, status="failed", error_message=str(e)[:1000])
         raise self.retry(exc=e, countdown=10)
 
 
@@ -209,11 +209,11 @@ def generate_video_task(
                 last_err = e
                 continue
 
-        _update_generation(generation_id, status="failed")
+        _update_generation(generation_id, status="failed", error_message=str(last_err or "All video engines quota exceeded")[:1000])
         raise (last_err or FreepikError("All video engines quota exceeded"))
 
     except FreepikError as e:
-        _update_generation(generation_id, status="failed")
+        _update_generation(generation_id, status="failed", error_message=str(e)[:1000])
         raise self.retry(exc=e, countdown=30)
 
 
@@ -247,7 +247,7 @@ def face_swap_task(self, *, generation_id: str, source_image: str, target_image:
                           completed_at="now()")
         return {"status": "completed", "urls": enhanced}
     except Exception as e:
-        _update_generation(generation_id, status="failed")
+        _update_generation(generation_id, status="failed", error_message=str(e)[:1000])
         raise self.retry(exc=e, countdown=10, max_retries=1)
 
 
