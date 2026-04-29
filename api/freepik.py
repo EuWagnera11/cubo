@@ -61,7 +61,11 @@ class FreepikClient:
         self.api_keys = api_keys
         self._key_idx = 0
         self.timeout = timeout
-        self._client = httpx.AsyncClient(timeout=timeout, base_url=FREEPIK_BASE)
+        # NOTA: NAO criar AsyncClient compartilhado aqui. httpx.AsyncClient fica
+        # preso ao event loop ativo no momento da criacao. Em Celery + asyncio,
+        # cada task cria/fecha um novo loop, e o cliente do loop antigo da
+        # "Event loop is closed". Cada _request() cria seu cliente local.
+        self._client = None  # mantido por compat com close()
 
     # ─────────────── Key rotation ───────────────
 
@@ -94,9 +98,12 @@ class FreepikClient:
                 "Accept": "application/json",
             }
             try:
-                resp = await self._client.request(
-                    method, path, headers=headers, json=json, params=params
-                )
+                # Cliente local por request — evita "Event loop is closed"
+                # quando Celery alterna loops entre tasks.
+                async with httpx.AsyncClient(timeout=self.timeout, base_url=FREEPIK_BASE) as client:
+                    resp = await client.request(
+                        method, path, headers=headers, json=json, params=params
+                    )
             except httpx.HTTPError as e:
                 last_err = e
                 await asyncio.sleep(1 + attempt)
@@ -860,7 +867,11 @@ class FreepikClient:
                                      {"video": video_url, "resolution": resolution})
 
     async def close(self):
-        await self._client.aclose()
+        # Sem-op: nao usamos mais cliente compartilhado. Cada _request gerencia
+        # o ciclo de vida do AsyncClient via "async with".
+        if self._client is not None:
+            try: await self._client.aclose()
+            except Exception: pass
 
 
 # ─────────────── Singleton helper ───────────────
