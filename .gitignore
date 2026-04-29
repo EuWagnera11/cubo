@@ -7,6 +7,7 @@
 .env.local
 .env.*.local
 api/.env
+api/.env.production
 *.pem
 *.key
 *credentials*
@@ -104,3 +105,4 @@ treino/aitana_video_frames/_*.json
 # Análises individuais 718 JSONs — peso ~5MB total + valor competitivo
 # Pode subir (não é tão grande), mas comentar se quiser proteger:
 # treino/analysis/*.json
+.env.deploy
