@@ -1,5 +1,12 @@
 """
 Refine — auth dependency (validates Supabase JWT).
+
+Suporta DOIS modos de assinatura JWT do Supabase:
+  - Modern (asymmetric ES256/RS256): valida via JWKS endpoint
+  - Legacy (symmetric HS256): valida com SUPABASE_JWT_SECRET
+
+Tenta primeiro JWKS (modern), faz fallback pra HS256 se a chave nao bater.
+Anonymous sign-in do Supabase (sb_publishable_*) usa ES256 sempre.
 """
 from __future__ import annotations
 
@@ -7,17 +14,28 @@ import os
 from typing import Optional
 
 import jwt
+from jwt import PyJWKClient
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from sqlalchemy import create_engine, text
 
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_JWT_SECRET = os.environ.get("SUPABASE_JWT_SECRET", "")
 JWT_SECRET = os.environ.get("JWT_SECRET", "dev-secret-change-in-prod")
 DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://localhost:5432/refine")
 
 bearer = HTTPBearer(auto_error=False)
 _engine = create_engine(DATABASE_URL.replace("+asyncpg", ""), pool_pre_ping=True)
+
+# JWKS client (cache de chaves publicas; refresh automatico em key rotation)
+_jwks_client: Optional[PyJWKClient] = None
+if SUPABASE_URL:
+    _jwks_url = f"{SUPABASE_URL.rstrip('/')}/auth/v1/.well-known/jwks.json"
+    try:
+        _jwks_client = PyJWKClient(_jwks_url, cache_keys=True, lifespan=3600)
+    except Exception as e:
+        print(f"[auth] PyJWKClient init failed: {e}")
 
 
 class AuthUser:
@@ -29,15 +47,50 @@ class AuthUser:
         self.role = role
 
 
+def _decode_jwt(raw_token: str) -> dict:
+    """Decodifica JWT tentando JWKS (ES256/RS256) primeiro, HS256 como fallback."""
+    last_err: Exception = jwt.PyJWTError("no decoder available")
+
+    # 1. Tentativa JWKS (Supabase modern + anonymous + OAuth)
+    if _jwks_client is not None:
+        try:
+            unverified = jwt.get_unverified_header(raw_token)
+            alg = unverified.get("alg", "")
+            if alg in ("ES256", "RS256", "ES384", "RS384", "ES512", "RS512"):
+                signing_key = _jwks_client.get_signing_key_from_jwt(raw_token).key
+                return jwt.decode(
+                    raw_token, signing_key,
+                    algorithms=[alg], audience="authenticated",
+                    options={"verify_iss": False},
+                )
+        except jwt.PyJWTError as e:
+            last_err = e
+        except Exception as e:
+            last_err = e  # network etc
+
+    # 2. Fallback HS256 (legacy SUPABASE_JWT_SECRET)
+    secret = SUPABASE_JWT_SECRET or JWT_SECRET
+    if secret:
+        try:
+            return jwt.decode(
+                raw_token, secret,
+                algorithms=["HS256"], audience="authenticated",
+                options={"verify_iss": False},
+            )
+        except jwt.PyJWTError as e:
+            last_err = e
+
+    raise last_err
+
+
 def get_current_user(token: HTTPAuthorizationCredentials = Depends(bearer)) -> AuthUser:
     """Valida JWT do Supabase + carrega profile do user (cria se não existir)."""
     if not token:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Missing bearer token")
 
-    secret = SUPABASE_JWT_SECRET or JWT_SECRET
     try:
-        payload = jwt.decode(token.credentials, secret, algorithms=["HS256"], audience="authenticated")
-    except jwt.PyJWTError as e:
+        payload = _decode_jwt(token.credentials)
+    except Exception as e:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, f"Invalid token: {e}")
 
     user_id = payload.get("sub")
