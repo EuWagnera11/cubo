@@ -133,24 +133,32 @@ def generate_image_task(
                 generated = [generated]
             urls.extend(generated)
 
-        # 2. Skin enhance (opcional)
+        # 2. Skin enhance (opcional, falha gracefully se Freepik 404)
         if enhance_skin and urls:
             _update_generation(generation_id, status="enhancing")
             enhanced: list[str] = []
             for u in urls:
-                t = _run(fp.skin_enhancer(u, mode="faithful", skin_detail=20, smart_grain=0))
-                r = _run(fp.poll_task(t, kind="enhance", max_wait_s=180))
-                enhanced.append(r.get("generated", [u])[0] if isinstance(r.get("generated"), list) else (r.get("generated") or u))
+                try:
+                    t = _run(fp.skin_enhancer(u, mode="faithful", skin_detail=20, smart_grain=0))
+                    r = _run(fp.poll_task(t, kind="enhance", max_wait_s=180))
+                    enhanced.append(r.get("generated", [u])[0] if isinstance(r.get("generated"), list) else (r.get("generated") or u))
+                except Exception as e:
+                    print(f"[worker] skin_enhancer falhou (mantendo imagem original): {e}")
+                    enhanced.append(u)  # mantem imagem crua se enhancer 404
             urls = enhanced
 
-        # 3. Upscale (opcional, pra 4K final)
+        # 3. Upscale (opcional, falha gracefully)
         if upscale and urls:
             _update_generation(generation_id, status="upscaling")
             upscaled: list[str] = []
             for u in urls:
-                t = _run(fp.magnific_upscaler(u, scale=2, engine="magnific_sparkle", engine_style="soft_portraits"))
-                r = _run(fp.poll_task(t, kind="enhance", max_wait_s=300))
-                upscaled.append(r.get("generated", [u])[0] if isinstance(r.get("generated"), list) else (r.get("generated") or u))
+                try:
+                    t = _run(fp.magnific_upscaler(u, scale=2, engine="magnific_sparkle", engine_style="soft_portraits"))
+                    r = _run(fp.poll_task(t, kind="enhance", max_wait_s=300))
+                    upscaled.append(r.get("generated", [u])[0] if isinstance(r.get("generated"), list) else (r.get("generated") or u))
+                except Exception as e:
+                    print(f"[worker] magnific_upscaler falhou (mantendo imagem original): {e}")
+                    upscaled.append(u)
             urls = upscaled
 
         _update_generation(
