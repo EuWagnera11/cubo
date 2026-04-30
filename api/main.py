@@ -209,6 +209,16 @@ if settings.DATABASE_URL:
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
     """Captura erros não tratados e retorna JSON limpo (sem stack trace na resposta)."""
+    # FreepikDeprecated: feature indisponível pós rebrand Magnific (HTTP 503)
+    try:
+        from .freepik import FreepikDeprecated
+        if isinstance(exc, FreepikDeprecated):
+            return JSONResponse(
+                status_code=503,
+                content={"error": "feature_unavailable", "detail": str(exc)},
+            )
+    except Exception:
+        pass
     return JSONResponse(
         status_code=500,
         content={"error": "internal_error", "detail": str(exc)[:200]},
