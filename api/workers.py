@@ -39,6 +39,20 @@ celery_app.conf.update(
     task_soft_time_limit=840,
     worker_prefetch_multiplier=1,
     worker_max_tasks_per_child=50,
+    # Robustness: reconectar automaticamente se broker cair, heartbeat
+    # pra detectar conexao zombie. Evita worker "vivo mas surdo".
+    broker_connection_retry_on_startup=True,
+    broker_connection_retry=True,
+    broker_connection_max_retries=None,  # infinite retries
+    broker_heartbeat=10,
+    broker_heartbeat_checkrate=2.0,
+    broker_pool_limit=None,  # cria conexao on demand, evita pool stale
+    # Worker: reconectar se ficar idle muito tempo
+    worker_cancel_long_running_tasks_on_connection_loss=True,
+    # Visibility timeout no Redis: se worker morrer no meio de uma task,
+    # outro worker pega depois desse tempo (default = 1h, baixar p/ 15min)
+    broker_transport_options={"visibility_timeout": 900},
+    result_backend_transport_options={"visibility_timeout": 900},
 )
 
 # Celery Beat schedule — tarefas periódicas
