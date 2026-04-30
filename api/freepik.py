@@ -45,6 +45,34 @@ class FreepikQuotaExceeded(FreepikError):
     """Daily cap ou quota da key esgotada — rota pra próxima."""
 
 
+class FreepikDeprecated(FreepikError):
+    """Endpoint descontinuado pós rebrand Magnific — substituicao em desenvolvimento."""
+
+
+# Endpoints removidos pelo Freepik no rebrand pra Magnific (2026-04-28).
+# Curto-circuito: lança FreepikDeprecated antes mesmo do request, preservando
+# créditos do user e dando mensagem amigável.
+DEPRECATED_PATHS: dict[str, str] = {
+    # Skin enhancer
+    "/v1/ai/image-enhance/faithful": "Skin Enhancer indisponível (rebrand Magnific). Substituição em desenvolvimento.",
+    # Edit / inpaint / outpaint
+    "/v1/ai/image-inpaint": "Inpaint indisponível. Use Seedream Edit (em breve no front).",
+    "/v1/ai/image-outpaint": "Outpaint indisponível (rebrand Magnific).",
+    "/v1/ai/image-object-removal": "Remove Object indisponível (rebrand Magnific).",
+    "/v1/ai/sketch-to-image": "Sketch to Image indisponível (rebrand Magnific).",
+    "/v1/ai/style-transfer": "Style Transfer indisponível — endpoint mudou (em breve).",
+    "/v1/ai/replace-background": "Replace Background indisponível (rebrand Magnific).",
+    "/v1/ai/colorize": "Colorize indisponível (rebrand Magnific).",
+    # Swap
+    "/v1/ai/face-swap": "Face Swap indisponível (rebrand Magnific).",
+    # Audio (Freepik removeu inteiramente)
+    "/v1/ai/text-to-speech": "TTS removido pelo Freepik. Trocar provider (ElevenLabs).",
+    "/v1/ai/voice-clone": "Voice Clone removido pelo Freepik.",
+    "/v1/ai/sound-generation": "SFX removido pelo Freepik.",
+    "/v1/ai/lip-sync": "Lipsync removido pelo Freepik.",
+}
+
+
 class FreepikClient:
     """
     Cliente master pra Freepik APIs com rotação de keys.
@@ -88,6 +116,11 @@ class FreepikClient:
         retry_on_quota: bool = True,
     ) -> dict:
         """HTTP request com retry/rotação em quota errors."""
+        # Curto-circuito: paths descontinuados pos rebrand Magnific
+        for prefix, msg in DEPRECATED_PATHS.items():
+            if path.startswith(prefix):
+                raise FreepikDeprecated(msg, status=410)
+
         attempts = len(self.api_keys) if retry_on_quota else 1
         last_err: Optional[Exception] = None
 
