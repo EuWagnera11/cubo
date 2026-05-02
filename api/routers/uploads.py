@@ -7,6 +7,8 @@ que muda assinatura de retorno entre versões — `create_signed_upload_url`
 from __future__ import annotations
 
 import os
+import re
+import uuid
 from typing import Literal
 
 import httpx
@@ -41,7 +43,10 @@ def create_signed_upload(payload: SignedUploadReq, user: AuthUser = Depends(get_
     if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
         raise HTTPException(503, "Supabase storage não configurado")
 
-    storage_path = f"{user.user_id}/{payload.filename}"
+    # Prefixa filename com UUID curto pra evitar 409 Duplicate quando o mesmo
+    # arquivo for enviado mais de uma vez. Mantém extensão pra preview/MIME OK.
+    safe_name = re.sub(r"[^a-zA-Z0-9._-]", "_", payload.filename) or "file.bin"
+    storage_path = f"{user.user_id}/{uuid.uuid4().hex[:12]}_{safe_name}"
     endpoint = f"{SUPABASE_URL}/storage/v1/object/upload/sign/{payload.bucket}/{storage_path}"
 
     try:
