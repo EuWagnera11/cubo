@@ -27,7 +27,9 @@ EXPOSE 8000
 COPY entrypoint.sh /code/api/entrypoint.sh
 RUN chmod +x /code/api/entrypoint.sh
 
+# HEALTHCHECK condicional: api (HTTP /health) | worker/beat (sempre OK,
+# Celery quem decide saúde). SERVICE_MODE setado via env do Easypanel.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD curl -f http://localhost:8000/health || exit 1
+  CMD sh -c '[ "${SERVICE_MODE:-api}" != "api" ] || curl -f http://localhost:8000/health' || exit 1
 
 ENTRYPOINT ["/code/api/entrypoint.sh"]
