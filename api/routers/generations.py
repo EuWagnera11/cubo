@@ -150,6 +150,7 @@ async def create_generation(payload: GenerationCreate, user: AuthUser = Depends(
             aspect_ratio=_aspect_to_freepik(payload.aspect_ratio),
             resolution=payload.resolution, num_variations=payload.num_variations,
             enhance_skin=payload.enhance_skin, upscale=payload.upscale,
+            model=payload.model,
         )
 
     return {"id": gid, "status": "queued", "credits_used": cost}
