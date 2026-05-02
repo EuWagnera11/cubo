@@ -155,10 +155,17 @@ class FreepikClient:
             if resp.status_code >= 400:
                 try:
                     body = resp.json()
+                    # Extrai mensagem de erro estruturada pra exibir
+                    err_msg = (
+                        body.get("message")
+                        or (body.get("detail") if isinstance(body.get("detail"), str) else None)
+                        or str(body)[:200]
+                    )
                 except Exception:
                     body = resp.text
+                    err_msg = body[:200] if body else "<empty>"
                 raise FreepikError(
-                    f"Freepik {method} {path} → {resp.status_code}",
+                    f"Freepik {method} {path} → {resp.status_code}: {err_msg}",
                     status=resp.status_code, body=body,
                 )
 

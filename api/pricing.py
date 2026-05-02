@@ -130,6 +130,36 @@ VIDEO_COSTS: dict[tuple[str, str, str], int] = {
 
     # ─── Lipsync ───
     ("latent-sync",           "10s", "silent"): 90,
+
+    # ─── 🆕 IDs alinhados com a Magnific API atual (2026-05) ───
+    ("kling-v2-5-pro",        "5s",  "silent"): 700,
+    ("kling-v2-5-pro",        "10s", "silent"): 1400,
+    ("kling-v2-1-master",     "5s",  "silent"): 800,
+    ("kling-v2-1-master",     "10s", "silent"): 1600,
+    ("kling-v2-1-pro",        "5s",  "silent"): 700,
+    ("kling-v2-1-pro",        "10s", "silent"): 1400,
+    ("kling-v2-1-std",        "5s",  "silent"): 530,
+    ("kling-v2-1-std",        "10s", "silent"): 1060,
+    ("runway-4-5",            "5s",  "silent"): 1070,
+    ("runway-4-5",            "10s", "silent"): 2140,
+    ("runway-act-two",        "5s",  "silent"): 1340,
+    ("pixverse-v5",           "5s",  "silent"): 850,
+    ("pixverse-v5",           "10s", "silent"): 1700,
+    ("pixverse-v5-transition","5s",  "silent"): 1000,
+    ("ltx-2-pro",             "5s",  "silent"): 525,
+    ("ltx-2-pro",             "10s", "silent"): 1050,
+    ("wan-v2-6-1080p",        "5s",  "silent"): 1340,
+    ("wan-v2-6-1080p",        "10s", "silent"): 2680,
+    ("wan-2-5-i2v-1080p",     "5s",  "silent"): 1340,
+    ("wan-2-5-t2v-1080p",     "5s",  "silent"): 1340,
+    ("wan-2-5-t2v-720p",      "5s",  "silent"): 890,
+    ("wan-2-5-t2v-480p",      "5s",  "silent"): 530,
+    ("veo-3-1",               "5s",  "silent"): 1785,
+    ("veo-3-1",               "10s", "silent"): 3570,
+    ("veo-3-1",               "5s",  "audio"):  3570,
+    ("veo-3-1-fast",          "5s",  "silent"): 890,
+    ("veo-3-1-fast",          "10s", "silent"): 1780,
+    ("veo-3-1-fast",          "5s",  "audio"):  1340,
 }
 
 
