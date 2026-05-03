@@ -1,8 +1,12 @@
-"""Upload helpers — signed URLs pro Supabase Storage.
+"""Upload helpers.
 
-Usa a Storage REST API direto via httpx (mais robusto do que supabase-py,
-que muda assinatura de retorno entre versões — `create_signed_upload_url`
-às vezes retorna chave 'url', às vezes 'signedUrl', etc).
+POST /uploads/file        — multipart upload direto pra VPS (recomendado).
+                            Retorna URL pública servida pela própria API
+                            (Kling/Veo/etc baixam sem token).
+
+POST /uploads/signed-url  — legado: signed URL Supabase pra browser PUT direto.
+                            Mantido pra compat, mas Kling não consegue baixar
+                            URLs Supabase signed (usa /file em vez disso).
 """
 from __future__ import annotations
 
@@ -12,7 +16,7 @@ import uuid
 from typing import Literal
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from pydantic import BaseModel
 
 from ..auth_dep import get_current_user, AuthUser
@@ -21,6 +25,61 @@ router = APIRouter(prefix="/uploads", tags=["uploads"])
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
+UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "/code/uploads")
+PUBLIC_API_URL = os.environ.get("PUBLIC_API_URL", "https://cubo-api.173-212-246-67.sslip.io").rstrip("/")
+ALLOWED_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".mp4", ".webm", ".mov"}
+MAX_BYTES = 25 * 1024 * 1024  # 25 MB
+
+
+@router.post("/file")
+async def upload_file_to_vps(
+    file: UploadFile = File(...),
+    user: AuthUser = Depends(get_current_user),
+) -> dict:
+    """Recebe multipart upload, salva no disco da VPS, retorna URL pública.
+
+    URL retornada é servida via StaticFiles em /static/uploads/<user>/<file>.
+    Kling/Veo/etc conseguem baixar diretamente (sem token, sem auth).
+    """
+    name = file.filename or "file"
+    ext = os.path.splitext(name)[1].lower()
+    if ext not in ALLOWED_EXTS:
+        # Tenta inferir do content_type
+        ct = (file.content_type or "").lower()
+        if "jpeg" in ct or "jpg" in ct: ext = ".jpg"
+        elif "png" in ct: ext = ".png"
+        elif "webp" in ct: ext = ".webp"
+        elif "mp4" in ct: ext = ".mp4"
+        else: ext = ".bin"
+
+    safe_id = uuid.uuid4().hex[:16]
+    filename = f"{safe_id}{ext}"
+
+    user_dir = os.path.join(UPLOAD_DIR, str(user.user_id))
+    os.makedirs(user_dir, exist_ok=True)
+    fpath = os.path.join(user_dir, filename)
+
+    # Stream pra disco com limite de tamanho
+    total = 0
+    with open(fpath, "wb") as f:
+        while True:
+            chunk = await file.read(64 * 1024)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > MAX_BYTES:
+                f.close()
+                os.remove(fpath)
+                raise HTTPException(413, f"Arquivo > {MAX_BYTES // (1024*1024)} MB")
+            f.write(chunk)
+
+    public_url = f"{PUBLIC_API_URL}/static/uploads/{user.user_id}/{filename}"
+    return {
+        "url": public_url,
+        "path": f"{user.user_id}/{filename}",
+        "size": total,
+        "content_type": file.content_type or f"image/{ext.strip('.')}",
+    }
 
 
 class SignedUploadReq(BaseModel):

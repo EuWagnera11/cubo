@@ -126,6 +126,17 @@ app.add_middleware(
 )
 
 
+# ─────────────── Static uploads (servir arquivos do user da própria VPS) ───────────────
+# Front faz POST /uploads/file (multipart) → backend salva em UPLOAD_DIR e
+# retorna URL pública /static/uploads/<user_id>/<file>. Kling/Veo/etc baixam
+# essa URL diretamente sem token (não precisa de signed Supabase).
+from fastapi.staticfiles import StaticFiles  # noqa: E402
+
+UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "/code/uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+app.mount("/static/uploads", StaticFiles(directory=UPLOAD_DIR), name="static-uploads")
+
+
 # ─────────────── Request timing middleware ───────────────
 
 @app.middleware("http")
