@@ -14,6 +14,7 @@ from typing import Any, Callable
 IMAGE_MODEL_TO_METHOD: dict[str, str] = {
     "nano-banana-pro":       "nano_banana_pro",
     "nano-banana-pro-flash": "nano_banana_pro_flash",
+    "nano-banana-2":         "nano_banana_2",  # endpoint /gemini-2-5-flash-image-preview (refs como URLs)
     "mystic":                "mystic",
     "flux-pro-1-1":          "flux_pro",
     "flux-2-klein":          "flux_2_klein",

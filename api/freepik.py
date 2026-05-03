@@ -293,6 +293,30 @@ class FreepikClient:
             body["webhook_url"] = webhook_url
         return await self._post_task("/v1/ai/text-to-image/nano-banana-pro", body)
 
+    async def nano_banana_2(
+        self,
+        prompt: str,
+        *,
+        reference_images: list[str] | None = None,
+    ) -> str:
+        """nano-banana-2 (Gemini 2.5 Flash Image Preview).
+
+        Body MÍNIMO — só prompt + reference_images (URLs strings).
+        Sem aspect_ratio, resolution, etc — endpoint ignora extras.
+        Aspect ratio é controlado pelo PROMPT ("Aspect ratio 9:16") e pelas
+        próprias proporções das imagens de referência.
+
+        Reference_images: lista de URLs HTTP públicas (sem token).
+        A ORDEM importa — prompt usa @img1, @img2 referenciando posição.
+        """
+        body: dict[str, Any] = {"prompt": prompt}
+        if reference_images:
+            # Aceita só strings URLs. Filtra outros formatos.
+            urls = [r for r in reference_images if isinstance(r, str) and r.startswith("http")]
+            if urls:
+                body["reference_images"] = urls
+        return await self._post_task("/v1/ai/gemini-2-5-flash-image-preview", body)
+
     async def mystic(
         self,
         prompt: str,
