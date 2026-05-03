@@ -230,16 +230,9 @@ def generate_video_task(
     try:
         _update_generation(generation_id, status="processing")
 
-        # Boilerplate de fidelidade — força o modelo a usar a imagem como referência principal.
-        # Sem isso, modelos como Kling V2.5 Pro tendem a "interpretar" o prompt e gerar
-        # cenas novas ignorando a imagem. Inspirado no IDENTITY_LOCK do gen_scene.py.
-        if image_url and prompt:
-            prompt = (
-                f"{prompt}. "
-                "Use the attached input image as the absolute visual reference for the subject. "
-                "Preserve the exact subject, colors, shapes, proportions and identity from the input image. "
-                "Do NOT generate a new subject — animate THIS specific subject from the reference image."
-            )
+        # Sem boilerplate: a outra ferramenta no Lovable manda prompt cru e o
+        # Kling V2.5 Pro respeita imagem nativamente quando body usa campo "image"
+        # (não "image_url"). Boilerplate atrapalha mais do que ajuda.
 
         # URLs publicas da VPS (/static/uploads/...) Kling baixa direto.
         # Apenas converte pra data URI quando URL é Supabase signed (que Kling ignora).
