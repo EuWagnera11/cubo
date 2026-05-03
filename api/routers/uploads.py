@@ -36,48 +36,71 @@ async def upload_file_to_vps(
     file: UploadFile = File(...),
     user: AuthUser = Depends(get_current_user),
 ) -> dict:
-    """Recebe multipart upload, salva no disco da VPS, retorna URL pública.
+    """Recebe multipart upload, salva no Supabase Storage bucket público 'uploads',
+    retorna URL pública estável que Freepik/Kling/Veo/etc conseguem baixar.
 
-    URL retornada é servida via StaticFiles em /static/uploads/<user>/<file>.
-    Kling/Veo/etc conseguem baixar diretamente (sem token, sem auth).
+    Por que Supabase em vez da VPS: Freepik rejeitou URLs `*.sslip.io` da nossa
+    VPS com 'Unable to resolve image'. URLs `*.supabase.co/storage/v1/object/public/`
+    são confiáveis e baixam corretamente.
     """
     name = file.filename or "file"
     ext = os.path.splitext(name)[1].lower()
     if ext not in ALLOWED_EXTS:
-        # Tenta inferir do content_type
         ct = (file.content_type or "").lower()
         if "jpeg" in ct or "jpg" in ct: ext = ".jpg"
         elif "png" in ct: ext = ".png"
         elif "webp" in ct: ext = ".webp"
         elif "mp4" in ct: ext = ".mp4"
-        else: ext = ".bin"
+        else: ext = ".jpg"
 
+    # Lê todo o file primeiro pra checar tamanho + montar payload
+    data = await file.read()
+    if len(data) > MAX_BYTES:
+        raise HTTPException(413, f"Arquivo > {MAX_BYTES // (1024*1024)} MB")
+
+    # Filename: <uuid>.<ext> dentro do user_id (mesmo padrão da outra ferramenta)
     safe_id = uuid.uuid4().hex[:16]
-    filename = f"{safe_id}{ext}"
+    storage_path = f"{user.user_id}/{safe_id}{ext}"
+    content_type = file.content_type or f"image/{ext.strip('.').replace('jpg','jpeg')}"
 
-    user_dir = os.path.join(UPLOAD_DIR, str(user.user_id))
-    os.makedirs(user_dir, exist_ok=True)
-    fpath = os.path.join(user_dir, filename)
+    # Upload pro Supabase Storage bucket público "uploads"
+    if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
+        raise HTTPException(503, "Supabase storage não configurado")
 
-    # Stream pra disco com limite de tamanho
-    total = 0
-    with open(fpath, "wb") as f:
-        while True:
-            chunk = await file.read(64 * 1024)
-            if not chunk:
-                break
-            total += len(chunk)
-            if total > MAX_BYTES:
-                f.close()
-                os.remove(fpath)
-                raise HTTPException(413, f"Arquivo > {MAX_BYTES // (1024*1024)} MB")
-            f.write(chunk)
+    upload_endpoint = f"{SUPABASE_URL}/storage/v1/object/uploads/{storage_path}"
+    try:
+        with httpx.Client(timeout=30.0) as c:
+            r = c.post(
+                upload_endpoint,
+                headers={
+                    "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+                    "apikey": SUPABASE_SERVICE_KEY,
+                    "Content-Type": content_type,
+                    "x-upsert": "true",
+                },
+                content=data,
+            )
+        if r.status_code >= 400:
+            raise HTTPException(r.status_code, f"Supabase upload error: {r.text[:300]}")
+    except httpx.HTTPError as e:
+        raise HTTPException(500, f"Supabase HTTP error: {e}")
 
-    public_url = f"{PUBLIC_API_URL}/static/uploads/{user.user_id}/{filename}"
+    # URL pública (bucket é público — sem token)
+    public_url = f"{SUPABASE_URL}/storage/v1/object/public/uploads/{storage_path}"
+
+    # Mantém também copia local na VPS (compat — alguns motors podem preferir)
+    try:
+        user_dir = os.path.join(UPLOAD_DIR, str(user.user_id))
+        os.makedirs(user_dir, exist_ok=True)
+        with open(os.path.join(user_dir, f"{safe_id}{ext}"), "wb") as f:
+            f.write(data)
+    except Exception:
+        pass  # Best effort
+
     return {
         "url": public_url,
-        "path": f"{user.user_id}/{filename}",
-        "size": total,
+        "path": storage_path,
+        "size": len(data),
         "content_type": file.content_type or f"image/{ext.strip('.')}",
     }
 
