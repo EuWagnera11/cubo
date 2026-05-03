@@ -541,6 +541,14 @@ class FreepikClient:
 
     async def _post_task(self, path: str, body: dict) -> str:
         """Helper interno: POST + extrai task_id + registra endpoint pra polling."""
+        # DEBUG: log do body sem dados grandes (base64 truncated, urls preservadas)
+        try:
+            import json as _json
+            safe = {k: (v[:100] + "..." if isinstance(v, str) and len(v) > 200 else v)
+                    for k, v in body.items()}
+            print(f"[freepik] POST {path} body={_json.dumps(safe)[:600]}", flush=True)
+        except Exception:
+            pass
         r = await self._request("POST", path, json=body)
         tid = r.get("data", {}).get("task_id") or r.get("task_id")
         if tid:

@@ -122,14 +122,15 @@ async def create_generation(payload: GenerationCreate, user: AuthUser = Depends(
             if s:
                 prompt = f"{s.prompt_template}. {prompt}".strip(". ").strip()
 
-    # Insert generation row
+    # Insert generation row (registra source_image_path pra debug — se for video)
     with _engine.begin() as conn:
         row = conn.execute(text("""
             INSERT INTO generations
               (user_id, persona_id, template_id, learned_style_id, status,
-               prompt, aspect_ratio, resolution, num_variations, credits_used, media_type)
+               prompt, aspect_ratio, resolution, num_variations, credits_used, media_type,
+               source_image_path)
             VALUES
-              (:u, :pid, :tid, :sid, 'queued', :p, :ar, :res, :n, :c, :m)
+              (:u, :pid, :tid, :sid, 'queued', :p, :ar, :res, :n, :c, :m, :sip)
             RETURNING id
         """), {
             "u": user.user_id, "pid": str(payload.persona_id) if payload.persona_id else None,
@@ -137,6 +138,7 @@ async def create_generation(payload: GenerationCreate, user: AuthUser = Depends(
             "sid": str(payload.learned_style_id) if payload.learned_style_id else None,
             "p": prompt, "ar": payload.aspect_ratio, "res": payload.resolution,
             "n": payload.num_variations, "c": cost, "m": payload.media_type,
+            "sip": payload.image_url if payload.media_type == "video" else None,
         }).first()
         gid = str(row.id)
 
