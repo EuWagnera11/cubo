@@ -213,3 +213,65 @@ def recent_debug(_=Depends(_check_admin)) -> list[dict]:
     """Últimos POSTs feitos pro Freepik — pra debug do que está chegando."""
     from ..freepik import get_debug_buffer
     return get_debug_buffer()
+
+
+class TestPipelineReq(BaseModel):
+    image_url: str
+    prompt: str
+    engine: str = "kling-v2-5-pro"
+
+
+@router.post("/test-pipeline")
+def test_pipeline(payload: TestPipelineReq, _=Depends(_check_admin)) -> dict:
+    """Executa a MESMA cadeia do worker (download → data URI → POST Kling)
+    síncrono pra eu inspecionar o data URI hash + tamanho final."""
+    import asyncio, hashlib, time
+    from ..freepik import get_freepik
+    from ..model_router import resolve_video_method, call_with_supported_kwargs
+
+    fp = get_freepik()
+    out = {"steps": []}
+
+    def step(name, **info):
+        info["step"] = name
+        info["t"] = time.time()
+        out["steps"].append(info)
+
+    # 1. Download + convert (mesma lógica do worker)
+    async def _go():
+        data_uri = await fp._fetch_to_data_uri(payload.image_url)
+        return data_uri
+
+    loop = asyncio.new_event_loop()
+    try:
+        data_uri = loop.run_until_complete(_go())
+    finally:
+        loop.close()
+    step("data_uri_generated", len=len(data_uri),
+         sha256=hashlib.sha256(data_uri.encode()).hexdigest()[:16],
+         starts=data_uri[:60], ends=data_uri[-30:])
+
+    # 2. Resolve method e chama
+    method = resolve_video_method(payload.engine)
+    fn = getattr(fp, method, None)
+    if not fn:
+        out["error"] = f"method {method} not found"
+        return out
+    step("method_resolved", engine_id=payload.engine, method_name=method)
+
+    async def _post():
+        return await call_with_supported_kwargs(
+            fn, image_url=data_uri, prompt=payload.prompt, duration="5"
+        )
+
+    loop = asyncio.new_event_loop()
+    try:
+        task_id = loop.run_until_complete(_post())
+    finally:
+        loop.close()
+    step("posted", task_id=task_id)
+
+    out["task_id"] = task_id
+    out["data_uri_len"] = len(data_uri)
+    out["data_uri_sha256"] = hashlib.sha256(data_uri.encode()).hexdigest()
+    return out
