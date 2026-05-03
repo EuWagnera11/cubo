@@ -223,15 +223,18 @@ def generate_video_task(
     try:
         _update_generation(generation_id, status="processing")
 
-        # Kling/Veo/etc da Magnific NAO conseguem baixar URLs Supabase signed
-        # (ignoram silenciosamente e fazem text-to-video). Converte URL -> data URI
-        # antes de mandar pra API. Custo: 1 GET extra + ~70KB de base64 no body.
+        # URLs publicas da VPS (/static/uploads/...) Kling baixa direto.
+        # Apenas converte pra data URI quando URL é Supabase signed (que Kling ignora).
         if image_url and image_url.startswith("http"):
-            try:
-                image_url = _run(fp._fetch_to_data_uri(image_url))
-                print(f"[generate_video] image baixada e convertida pra data URI ({len(image_url)} chars)", flush=True)
-            except Exception as e:
-                print(f"[generate_video] falha ao baixar image_url: {e}. Tentando enviar URL original.", flush=True)
+            is_supabase_signed = "supabase.co/storage" in image_url and "?token=" in image_url
+            if is_supabase_signed:
+                try:
+                    image_url = _run(fp._fetch_to_data_uri(image_url))
+                    print(f"[generate_video] supabase signed -> data URI ({len(image_url)} chars)", flush=True)
+                except Exception as e:
+                    print(f"[generate_video] falha conversão data URI: {e}", flush=True)
+            else:
+                print(f"[generate_video] passando URL direta: {image_url[:80]}", flush=True)
 
         # Normaliza IDs com hífen (ex: "kling-v3-std") -> nome de método ("kling_v3")
         primary = resolve_video_method(engine)
