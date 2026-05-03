@@ -155,6 +155,7 @@ async def create_generation(payload: GenerationCreate, user: AuthUser = Depends(
     else:
         generate_image_task.delay(
             generation_id=gid, prompt=prompt, persona_ref_url=persona_ref,
+            user_image_url=payload.image_url,  # imagem que user anexou no front
             aspect_ratio=_aspect_to_freepik(payload.aspect_ratio),
             resolution=payload.resolution, num_variations=payload.num_variations,
             enhance_skin=payload.enhance_skin, upscale=payload.upscale,

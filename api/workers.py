@@ -109,6 +109,7 @@ def generate_image_task(
     generation_id: str,
     prompt: str,
     persona_ref_url: str | None = None,
+    user_image_url: str | None = None,
     template_prompt: str | None = None,
     aspect_ratio: str = "square_4_5",
     resolution: str = "2k",
@@ -129,7 +130,13 @@ def generate_image_task(
 
     fp = get_freepik()
     full_prompt = f"{template_prompt}. {prompt}".strip(". ").strip() if template_prompt else prompt
-    refs = [persona_ref_url] if persona_ref_url else None
+    # Refs combina persona_ref (se houver) + imagem que user anexou no front (se houver)
+    refs_list = []
+    if persona_ref_url:
+        refs_list.append(persona_ref_url)
+    if user_image_url:
+        refs_list.append(user_image_url)
+    refs = refs_list or None
 
     method_name = resolve_image_method(model)
     fn = getattr(fp, method_name, None)

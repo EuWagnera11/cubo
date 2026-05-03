@@ -250,8 +250,45 @@ class FreepikClient:
             "resolution": res,
         }
         if reference_images:
-            # Aceita lista de URLs (str) ou lista de objetos pré-formatados
-            body["reference_images"] = reference_images
+            # API espera lista de OBJETOS {image: <base64>, mime_type, text}.
+            # gen_scene.py local funciona porque manda esse formato.
+            # Strings (URLs/data URIs) são IGNORADAS silenciosamente pela API.
+            import re as _re
+            REF_TEXT = (
+                "Visual reference — preserve the exact subject, colors, shapes, "
+                "proportions, and identity shown in this image. Do NOT generate "
+                "a new subject; use THIS specific subject from the reference."
+            )
+            normalized = []
+            for ref in reference_images:
+                if isinstance(ref, dict):
+                    # Já tá no formato certo
+                    normalized.append(ref)
+                    continue
+                if not isinstance(ref, str) or not ref:
+                    continue
+                # Converte string (URL ou data URI) → objeto
+                if ref.startswith("data:"):
+                    data_uri = ref
+                elif ref.startswith("http"):
+                    try:
+                        data_uri = await self._fetch_to_data_uri(ref)
+                    except Exception as e:
+                        print(f"[nano_banana_pro] falha download ref {ref[:60]}: {e}", flush=True)
+                        continue
+                else:
+                    # base64 puro (sem prefix data:) — assume JPEG
+                    data_uri = f"data:image/jpeg;base64,{ref}"
+                # Extrai mime + b64
+                m = _re.match(r"data:([^;]+);base64,(.+)", data_uri)
+                if m:
+                    normalized.append({
+                        "image": m.group(2),
+                        "mime_type": m.group(1),
+                        "text": REF_TEXT,
+                    })
+            if normalized:
+                body["reference_images"] = normalized
         if webhook_url:
             body["webhook_url"] = webhook_url
         return await self._post_task("/v1/ai/text-to-image/nano-banana-pro", body)
