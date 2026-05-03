@@ -33,13 +33,46 @@ import httpx
 FREEPIK_BASE = "https://api.freepik.com"
 
 
-# Buffer in-memory dos últimos N requests pra debug via /admin/recent-debug.
-# Cada entry: {"path", "ts", "body_keys", "image_url_kind", "image_url_len", "task_id"}
+# Buffer compartilhado entre processos (api/worker) via Redis.
+# Em-memória como fallback se Redis indisponível.
 from collections import deque
+import json as _dbg_json
 _DEBUG_BUFFER: deque = deque(maxlen=50)
+_REDIS_DEBUG_KEY = "freepik:debug"
+
+
+def _redis_client():
+    try:
+        import redis  # type: ignore
+        url = os.environ.get("REDIS_URL", "")
+        if not url:
+            return None
+        return redis.Redis.from_url(url, socket_timeout=2.0, socket_connect_timeout=2.0)
+    except Exception:
+        return None
+
+
+def _record_debug(entry: dict) -> None:
+    """Grava entry em Redis (compartilhado) + memória local (fallback)."""
+    _DEBUG_BUFFER.append(entry)
+    cli = _redis_client()
+    if cli:
+        try:
+            cli.lpush(_REDIS_DEBUG_KEY, _dbg_json.dumps(entry, default=str))
+            cli.ltrim(_REDIS_DEBUG_KEY, 0, 49)
+        except Exception:
+            pass
 
 
 def get_debug_buffer() -> list[dict]:
+    """Retorna buffer (preferindo Redis, fallback memória)."""
+    cli = _redis_client()
+    if cli:
+        try:
+            items = cli.lrange(_REDIS_DEBUG_KEY, 0, -1)
+            return [_dbg_json.loads(i) for i in items]
+        except Exception:
+            pass
     return list(_DEBUG_BUFFER)
 
 
@@ -593,9 +626,9 @@ class FreepikClient:
             debug_entry["task_id"] = None
             debug_entry["ok"] = False
             debug_entry["error"] = str(e)[:200]
-            _DEBUG_BUFFER.append(debug_entry)
+            _record_debug(debug_entry)
             raise
-        _DEBUG_BUFFER.append(debug_entry)
+        _record_debug(debug_entry)
         if tid:
             self._task_endpoints[tid] = path
         return tid
