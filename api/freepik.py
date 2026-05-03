@@ -126,6 +126,11 @@ class FreepikClient:
         result = await client.poll_task(task_id, kind="image")
     """
 
+    # Cooldown padrão pra chave que retornou 401/402/429.
+    # Curto pra reaproveitar daily cap que reseta na virada do dia (UTC),
+    # mas longo o suficiente pra não ficar martelando key morta no mesmo request.
+    KEY_COOLDOWN_S: float = 60.0
+
     def __init__(self, api_keys: list[str], timeout: float = 120.0):
         if not api_keys:
             raise ValueError("At least one Freepik API key required")
@@ -137,6 +142,10 @@ class FreepikClient:
         # cada task cria/fecha um novo loop, e o cliente do loop antigo da
         # "Event loop is closed". Cada _request() cria seu cliente local.
         self._client = None  # mantido por compat com close()
+        # Cooldown: idx → unix timestamp em que a chave volta a poder ser usada.
+        # Quando a chave devolve 401/402/429, marcamos morta por KEY_COOLDOWN_S.
+        # Próximo _pick_key() pula chaves cujo cooldown ainda não expirou.
+        self._dead_until: dict[int, float] = {}
 
     # ─────────────── Key rotation ───────────────
 
@@ -144,8 +153,39 @@ class FreepikClient:
     def current_key(self) -> str:
         return self.api_keys[self._key_idx]
 
-    def _rotate_key(self):
-        self._key_idx = (self._key_idx + 1) % len(self.api_keys)
+    def _mark_dead(self, idx: int, *, status: int = 0) -> None:
+        """Marca a chave como morta por KEY_COOLDOWN_S segundos."""
+        self._dead_until[idx] = time.time() + self.KEY_COOLDOWN_S
+
+    def _pick_key(self) -> int | None:
+        """Retorna o índice da próxima chave viva, ou None se todas estão em cooldown.
+
+        Não rotaciona infinito — varre todas as chaves uma vez e devolve a primeira
+        que não está morta. Se nenhuma está viva, retorna None pra o caller saber
+        que não vale a pena seguir tentando neste request.
+        """
+        now = time.time()
+        n = len(self.api_keys)
+        # Tenta começando do _key_idx atual e dá uma volta completa.
+        for offset in range(n):
+            idx = (self._key_idx + offset) % n
+            if self._dead_until.get(idx, 0.0) <= now:
+                self._key_idx = idx
+                return idx
+        return None
+
+    def keys_status(self) -> list[dict]:
+        """Snapshot do estado das chaves — útil pra /admin/diag."""
+        now = time.time()
+        return [
+            {
+                "idx": i,
+                "alive": self._dead_until.get(i, 0.0) <= now,
+                "cooldown_remaining_s": max(0.0, self._dead_until.get(i, 0.0) - now),
+                "preview": (k[:8] + "…" + k[-4:]) if len(k) > 12 else "<short>",
+            }
+            for i, k in enumerate(self.api_keys)
+        ]
 
     # ─────────────── HTTP wrapper ───────────────
 
@@ -158,7 +198,13 @@ class FreepikClient:
         params: dict | None = None,
         retry_on_quota: bool = True,
     ) -> dict:
-        """HTTP request com retry/rotação em quota errors."""
+        """HTTP request com retry/rotação em quota errors.
+
+        Estratégia de keys:
+          1. _pick_key() escolhe a próxima viva (skip cooldown ativo).
+          2. Em 401/402/429 → marca como morta por KEY_COOLDOWN_S e tenta próxima.
+          3. Se _pick_key() devolve None → todas em cooldown → FreepikQuotaExceeded.
+        """
         # Curto-circuito: paths descontinuados pos rebrand Magnific
         for prefix, msg in DEPRECATED_PATHS.items():
             if path.startswith(prefix):
@@ -168,8 +214,16 @@ class FreepikClient:
         last_err: Optional[Exception] = None
 
         for attempt in range(attempts):
+            idx = self._pick_key()
+            if idx is None:
+                # Todas as chaves em cooldown — não adianta insistir
+                raise FreepikQuotaExceeded(
+                    "Todas as chaves Freepik em cooldown (quota/auth). "
+                    "Tente novamente em ~60s.",
+                    status=429,
+                )
             headers = {
-                "x-freepik-api-key": self.current_key,
+                "x-freepik-api-key": self.api_keys[idx],
                 "Content-Type": "application/json",
                 "Accept": "application/json",
             }
@@ -185,14 +239,16 @@ class FreepikClient:
                 await asyncio.sleep(1 + attempt)
                 continue
 
-            if resp.status_code == 429 or resp.status_code == 402:
-                # Daily cap / quota
-                self._rotate_key()
+            if resp.status_code in (401, 402, 429):
+                # 401 = auth ruim; 402 = sem créditos; 429 = rate limit / daily cap.
+                # Em todos os casos, queima essa key por KEY_COOLDOWN_S e tenta próxima.
+                self._mark_dead(idx, status=resp.status_code)
                 last_err = FreepikQuotaExceeded(
-                    f"Quota exceeded on key idx {self._key_idx}", status=resp.status_code,
+                    f"Key idx {idx} → {resp.status_code} (cooldown {self.KEY_COOLDOWN_S}s)",
+                    status=resp.status_code,
                     body=resp.text,
                 )
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(0.3)
                 continue
 
             if resp.status_code >= 400:
