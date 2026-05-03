@@ -33,6 +33,16 @@ import httpx
 FREEPIK_BASE = "https://api.freepik.com"
 
 
+# Buffer in-memory dos últimos N requests pra debug via /admin/recent-debug.
+# Cada entry: {"path", "ts", "body_keys", "image_url_kind", "image_url_len", "task_id"}
+from collections import deque
+_DEBUG_BUFFER: deque = deque(maxlen=50)
+
+
+def get_debug_buffer() -> list[dict]:
+    return list(_DEBUG_BUFFER)
+
+
 class FreepikError(Exception):
     """Erro retornado pela API Freepik."""
     def __init__(self, message: str, status: int = 0, body: Any = None):
@@ -554,16 +564,38 @@ class FreepikClient:
 
     async def _post_task(self, path: str, body: dict) -> str:
         """Helper interno: POST + extrai task_id + registra endpoint pra polling."""
-        # DEBUG: log do body sem dados grandes (base64 truncated, urls preservadas)
+        import time as _t
+        # Coleta info do body pra debug — sem dados pesados
+        img_val = body.get("image_url") or body.get("image") or ""
+        if isinstance(img_val, str):
+            img_kind = "data_uri" if img_val.startswith("data:") else \
+                       "http_url" if img_val.startswith("http") else \
+                       "empty" if not img_val else "raw_b64"
+            img_len = len(img_val)
+        else:
+            img_kind = type(img_val).__name__
+            img_len = 0
+        debug_entry = {
+            "ts": _t.time(),
+            "path": path,
+            "body_keys": list(body.keys()),
+            "image_kind": img_kind,
+            "image_len": img_len,
+            "prompt_preview": str(body.get("prompt", ""))[:80],
+            "duration": body.get("duration"),
+        }
         try:
-            import json as _json
-            safe = {k: (v[:100] + "..." if isinstance(v, str) and len(v) > 200 else v)
-                    for k, v in body.items()}
-            print(f"[freepik] POST {path} body={_json.dumps(safe)[:600]}", flush=True)
-        except Exception:
-            pass
-        r = await self._request("POST", path, json=body)
-        tid = r.get("data", {}).get("task_id") or r.get("task_id")
+            r = await self._request("POST", path, json=body)
+            tid = r.get("data", {}).get("task_id") or r.get("task_id")
+            debug_entry["task_id"] = tid
+            debug_entry["ok"] = True
+        except Exception as e:
+            debug_entry["task_id"] = None
+            debug_entry["ok"] = False
+            debug_entry["error"] = str(e)[:200]
+            _DEBUG_BUFFER.append(debug_entry)
+            raise
+        _DEBUG_BUFFER.append(debug_entry)
         if tid:
             self._task_endpoints[tid] = path
         return tid

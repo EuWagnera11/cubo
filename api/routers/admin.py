@@ -206,3 +206,10 @@ def trigger_regen(payload: RegenReq, _=Depends(_check_admin)) -> dict:
 @router.get("/health")
 def admin_health(_=Depends(_check_admin)) -> dict:
     return {"status": "ok", "admin": True}
+
+
+@router.get("/recent-debug")
+def recent_debug(_=Depends(_check_admin)) -> list[dict]:
+    """Últimos POSTs feitos pro Freepik — pra debug do que está chegando."""
+    from ..freepik import get_debug_buffer
+    return get_debug_buffer()
