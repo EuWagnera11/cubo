@@ -182,17 +182,32 @@ class FreepikClient:
         prompt: str,
         *,
         reference_images: list[str] | None = None,
-        aspect_ratio: str = "square_1_1",
-        size: Literal["2k", "4k"] = "2k",
+        aspect_ratio: str = "1:1",
+        size: Literal["1k", "2k", "4k"] = "2k",
+        resolution: Literal["1K", "2K", "4K"] | None = None,
         webhook_url: str | None = None,
     ) -> str:
-        """nano-banana-pro (Gemini 2.5 Flash Image) — 4K editorial."""
+        """nano-banana-pro (Gemini 2.5 Flash Image) — editorial.
+
+        API real espera:
+          aspect_ratio: "16:9", "1:1", "9:16", etc (formato simples, NAO "square_X_Y")
+          resolution: "1K", "2K", "4K" (UPPERCASE)
+          reference_images: lista de {"image": <base64>, "mime_type": "image/jpeg", "text": "..."}
+                            OU lista de URLs (algumas versoes da API aceitam)
+        """
+        # Normaliza aspect_ratio: aceita "square_4_5" (legado) → "4:5"
+        ar = aspect_ratio
+        if ar.startswith("square_"):
+            ar = ar.replace("square_", "").replace("_", ":")
+        # Normaliza resolution UPPERCASE
+        res = (resolution or size or "2k").upper().replace("K", "K")  # idempotente
         body: dict[str, Any] = {
             "prompt": prompt,
-            "aspect_ratio": aspect_ratio,
-            "size": size,
+            "aspect_ratio": ar,
+            "resolution": res,
         }
         if reference_images:
+            # Aceita lista de URLs (str) ou lista de objetos pré-formatados
             body["reference_images"] = reference_images
         if webhook_url:
             body["webhook_url"] = webhook_url
@@ -439,33 +454,29 @@ class FreepikClient:
         cfg_scale: float = 0.5,
         negative_prompt: str = "",
     ) -> str:
-        """Kling V3 — image-to-video premium."""
+        """Kling V3 Pro — image-to-video. API real espera `image_url` (não `image`)."""
         body = {
-            "image": image_url,
+            "image_url": image_url,
             "prompt": prompt,
             "duration": duration,
             "cfg_scale": cfg_scale,
             "negative_prompt": negative_prompt,
         }
-        # Kling V3 mudou pra /v1/ai/video/ (path novo). Usa "pro" como default.
         return await self._post_task("/v1/ai/video/kling-v3-pro", body)
 
     async def kling_v2_1(self, image_url: str, prompt: str, *, duration: str = "5",
                           tier: Literal["master", "pro", "std"] = "pro") -> str:
         """Kling V2.1 — fallback quando V3 daily cap esgota."""
-        return await self._post_task(f"/v1/ai/image-to-video/kling-v2-1-{tier}",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task(f"/v1/ai/image-to-video/kling-v2-1-{tier}", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def kling_v2_6(self, image_url: str, prompt: str, *, duration: str = "5") -> str:
         # API atual só tem kling-v2-5-pro (v2-6 foi removido)
-        return await self._post_task("/v1/ai/image-to-video/kling-v2-5-pro",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/image-to-video/kling-v2-5-pro", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def hailuo(self, image_url: str, prompt: str) -> str:
         """Hailuo — image-to-video alternativo."""
         # API atual só tem 1080p (768p foi removido)
-        return await self._post_task("/v1/ai/image-to-video/minimax-hailuo-02-1080p",
-                                     {"image": image_url, "prompt": prompt})
+        return await self._post_task("/v1/ai/image-to-video/minimax-hailuo-02-1080p", {"image_url": image_url, "prompt": prompt})
 
     async def wan_2_1(self, prompt: str, *, duration: int = 5, aspect_ratio: str = "16:9") -> str:
         """WAN 2.1 — text-to-video (legado, redireciona pra wan-2-5-t2v-720p)."""
@@ -474,8 +485,7 @@ class FreepikClient:
 
     async def runway(self, image_url: str, prompt: str, *, duration: int = 5) -> str:
         """Runway 4.5 (legado, mesmo endpoint)."""
-        return await self._post_task("/v1/ai/image-to-video/runway-4-5",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/image-to-video/runway-4-5", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     # ════════════════════════════════════════════════════════════════
     #                          POLLING
@@ -713,15 +723,13 @@ class FreepikClient:
     async def hailuo_2_3(self, image_url: str, prompt: str, *,
                          duration: str = "6") -> str:
         # API atual: só minimax-hailuo-2-3-1080p (sem fast/standard variants)
-        return await self._post_task("/v1/ai/image-to-video/minimax-hailuo-2-3-1080p",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/image-to-video/minimax-hailuo-2-3-1080p", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     # ─── Pixverse ───
     async def pixverse_v5(self, image_url: str, prompt: str, *,
                           duration: int = 5) -> str:
         # API atual: pixverse-v5 sem resolução no path
-        return await self._post_task("/v1/ai/image-to-video/pixverse-v5",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/image-to-video/pixverse-v5", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def pixverse_v5_transition(self, first_image_url: str, last_image_url: str, prompt: str, *,
                                      duration: int = 5) -> str:
@@ -752,21 +760,18 @@ class FreepikClient:
     async def seedance_lite(self, image_url: str, prompt: str, *,
                             duration: int = 5) -> str:
         # Lite removido — fallback pro pro 1080p
-        return await self._post_task("/v1/ai/image-to-video/seedance-pro-1080p",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/image-to-video/seedance-pro-1080p", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def seedance_1_5_pro(self, image_url: str, prompt: str, *,
                                 duration: int = 5) -> str:
         # 1.5 não existe mais — fallback pro pro 1080p
-        return await self._post_task("/v1/ai/image-to-video/seedance-pro-1080p",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/image-to-video/seedance-pro-1080p", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     # ─── WAN ───
     async def wan_2_6(self, image_url: str, prompt: str, *,
                       duration: int = 5) -> str:
         # API atual: wan-v2-6-1080p (com `v2-6` e só 1080p)
-        return await self._post_task("/v1/ai/image-to-video/wan-v2-6-1080p",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/image-to-video/wan-v2-6-1080p", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def wan_2_5_t2v(self, prompt: str, *,
                           resolution: Literal["480p", "720p", "1080p"] = "720p",
@@ -777,8 +782,7 @@ class FreepikClient:
 
     async def wan_2_5_i2v(self, image_url: str, prompt: str, *, duration: int = 5) -> str:
         """Wan 2.5 image-to-video."""
-        return await self._post_task("/v1/ai/image-to-video/wan-2-5-i2v-1080p",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/image-to-video/wan-2-5-i2v-1080p", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def wan_2_7(self, image_url: str | None, prompt: str, *, duration: int = 5,
                       mode: Literal["t2v", "i2v", "r2v"] = "i2v") -> str:
@@ -831,40 +835,33 @@ class FreepikClient:
     async def kling_v3_motion_control(self, image_url: str, prompt: str, *,
                                        quality: Literal["std", "pro"] = "pro",
                                        duration: str = "5") -> str:
-        return await self._post_task(f"/v1/ai/video/kling-v3-motion-control-{quality}",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task(f"/v1/ai/video/kling-v3-motion-control-{quality}", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def kling_v3_omni(self, image_url: str, prompt: str, *,
                              quality: Literal["std", "pro"] = "pro",
                              duration: str = "5") -> str:
-        return await self._post_task(f"/v1/ai/video/kling-v3-omni-{quality}",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task(f"/v1/ai/video/kling-v3-omni-{quality}", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def kling_v3_pro(self, image_url: str, prompt: str, *, duration: str = "5") -> str:
         """Kling V3 Pro — top de linha."""
-        return await self._post_task("/v1/ai/video/kling-v3-pro",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/video/kling-v3-pro", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def kling_v3_std(self, image_url: str, prompt: str, *, duration: str = "5") -> str:
-        return await self._post_task("/v1/ai/video/kling-v3-std",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/video/kling-v3-std", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def kling_pro_2_5_turbo(self, image_url: str, prompt: str, *, duration: str = "5") -> str:
         # 2.5 turbo removido — fallback pro v2-5-pro
-        return await self._post_task("/v1/ai/image-to-video/kling-v2-5-pro",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task("/v1/ai/image-to-video/kling-v2-5-pro", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     async def kling_o1(self, image_url: str, prompt: str, *,
                         quality: Literal["std", "pro"] = "pro",
                         duration: str = "5") -> str:
-        return await self._post_task(f"/v1/ai/image-to-video/kling-o1-{quality}",
-                                     {"image": image_url, "prompt": prompt, "duration": duration})
+        return await self._post_task(f"/v1/ai/image-to-video/kling-o1-{quality}", {"image_url": image_url, "prompt": prompt, "duration": duration})
 
     # ─── Specialty video ───
     async def omnihuman_1_5(self, image_url: str, audio_url: str) -> str:
         # API atual: path em /v1/ai/video/omni-human-1-5 (com hífen e em /video/)
-        return await self._post_task("/v1/ai/video/omni-human-1-5",
-                                     {"image": image_url, "audio": audio_url})
+        return await self._post_task("/v1/ai/video/omni-human-1-5", {"image_url": image_url, "audio": audio_url})
 
     async def veed_fabric(self, video_url: str, audio_url: str, *, fast: bool = False) -> str:
         path = "/v1/ai/lip-sync/veed-fabric-fast" if fast else "/v1/ai/lip-sync/veed-fabric"

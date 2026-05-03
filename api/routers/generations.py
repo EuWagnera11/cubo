@@ -39,10 +39,16 @@ class GenerationCreate(BaseModel):
 
 
 def _aspect_to_freepik(ratio: str) -> str:
-    return {
-        "1:1": "square_1_1", "4:5": "portrait_4_5", "3:4": "portrait_3_4",
-        "9:16": "social_story_9_16", "16:9": "widescreen_16_9",
-    }.get(ratio, "square_1_1")
+    """API atual da Magnific/Freepik aceita formato simples ('1:1', '16:9').
+    Mantém função pra retro-compat — só passa o ratio adiante."""
+    if ratio.startswith("square_") or ratio.startswith("portrait_") or ratio.startswith("social_") or ratio.startswith("widescreen_"):
+        # Já está no formato antigo; converte de volta pra simples
+        legacy = {
+            "square_1_1": "1:1", "portrait_4_5": "4:5", "portrait_3_4": "3:4",
+            "social_story_9_16": "9:16", "widescreen_16_9": "16:9",
+        }
+        return legacy.get(ratio, "1:1")
+    return ratio if ratio else "1:1"
 
 
 def _cost(payload: GenerationCreate) -> int:
