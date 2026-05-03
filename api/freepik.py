@@ -539,6 +539,19 @@ class FreepikClient:
     #              EXTENDED MODELS — Image (catálogo completo)
     # ════════════════════════════════════════════════════════════════
 
+    async def _fetch_to_data_uri(self, url: str) -> str:
+        """Baixa URL e retorna data URI. Pra endpoints (ex: Kling) que não conseguem
+        baixar URLs com tokens longos / signed Supabase."""
+        if url.startswith("data:"):
+            return url  # já é data URI, retorna como está
+        async with httpx.AsyncClient(timeout=60.0) as c:
+            r = await c.get(url, follow_redirects=True)
+            r.raise_for_status()
+            mime = r.headers.get("content-type", "image/jpeg").split(";")[0].strip()
+            import base64 as _b64
+            b64 = _b64.b64encode(r.content).decode("ascii")
+            return f"data:{mime};base64,{b64}"
+
     async def _post_task(self, path: str, body: dict) -> str:
         """Helper interno: POST + extrai task_id + registra endpoint pra polling."""
         # DEBUG: log do body sem dados grandes (base64 truncated, urls preservadas)
