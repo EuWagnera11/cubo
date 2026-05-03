@@ -232,13 +232,15 @@ def generate_video_task(
         engines_chain = [e for e in engines_chain if not (e in seen or seen.add(e))]
 
         last_err = None
+        # Normaliza duration: API Magnific aceita só "5" ou "10" (sem sufixo "s")
+        norm_duration = (duration or "5").rstrip("s ") or "5"
         for eng in engines_chain:
             fn = getattr(fp, eng, None)
             if fn is None:
                 continue
             try:
                 task_id = _run(call_with_supported_kwargs(
-                    fn, image_url=image_url, prompt=prompt, duration=duration,
+                    fn, image_url=image_url, prompt=prompt, duration=norm_duration,
                 ))
                 result = _run(fp.poll_task(task_id, kind="video", max_wait_s=600))
                 video_urls = result.get("generated") or result.get("urls") or []
