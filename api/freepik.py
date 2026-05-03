@@ -196,8 +196,7 @@ class FreepikClient:
             body["reference_images"] = reference_images
         if webhook_url:
             body["webhook_url"] = webhook_url
-        r = await self._request("POST", "/v1/ai/text-to-image/nano-banana-pro", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        return await self._post_task("/v1/ai/text-to-image/nano-banana-pro", body)
 
     async def mystic(
         self,
@@ -219,26 +218,23 @@ class FreepikClient:
         }
         if style_reference:
             body["style_reference"] = style_reference
-        r = await self._request("POST", "/v1/ai/mystic", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        return await self._post_task("/v1/ai/mystic", body)
 
     async def flux_dev(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
         """Flux Dev — fast text-to-image."""
-        body = {"prompt": prompt, "aspect_ratio": aspect_ratio}
-        r = await self._request("POST", "/v1/ai/text-to-image/flux-dev", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        return await self._post_task("/v1/ai/text-to-image/flux-dev",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
 
     async def flux_pro(self, prompt: str, *, aspect_ratio: str = "square_1_1") -> str:
         """Flux Pro 1.1 — high quality text-to-image."""
-        body = {"prompt": prompt, "aspect_ratio": aspect_ratio}
-        r = await self._request("POST", "/v1/ai/text-to-image/flux-pro-v1-1", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        return await self._post_task("/v1/ai/text-to-image/flux-pro-v1-1",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio})
 
     async def imagen3(self, prompt: str, *, aspect_ratio: str = "square_1_1", num_images: int = 1) -> str:
-        """Google Imagen 3 via Freepik."""
-        body = {"prompt": prompt, "aspect_ratio": aspect_ratio, "num_images": num_images}
-        r = await self._request("POST", "/v1/ai/text-to-image/imagen3", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        """Google Imagen 3 (legado — API atual usa imagen4)."""
+        return await self._post_task("/v1/ai/text-to-image/imagen-3",
+                                     {"prompt": prompt, "aspect_ratio": aspect_ratio,
+                                      "num_images": num_images})
 
     # ════════════════════════════════════════════════════════════════
     #                          IMAGE — TRANSFORMS
@@ -452,42 +448,34 @@ class FreepikClient:
             "negative_prompt": negative_prompt,
         }
         # Kling V3 mudou pra /v1/ai/video/ (path novo). Usa "pro" como default.
-        r = await self._request("POST", "/v1/ai/video/kling-v3-pro", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        return await self._post_task("/v1/ai/video/kling-v3-pro", body)
 
     async def kling_v2_1(self, image_url: str, prompt: str, *, duration: str = "5",
                           tier: Literal["master", "pro", "std"] = "pro") -> str:
         """Kling V2.1 — fallback quando V3 daily cap esgota."""
-        body = {"image": image_url, "prompt": prompt, "duration": duration}
-        r = await self._request("POST", f"/v1/ai/image-to-video/kling-v2-1-{tier}", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        return await self._post_task(f"/v1/ai/image-to-video/kling-v2-1-{tier}",
+                                     {"image": image_url, "prompt": prompt, "duration": duration})
 
     async def kling_v2_6(self, image_url: str, prompt: str, *, duration: str = "5") -> str:
-        body = {"image": image_url, "prompt": prompt, "duration": duration}
         # API atual só tem kling-v2-5-pro (v2-6 foi removido)
-        r = await self._request("POST", "/v1/ai/image-to-video/kling-v2-5-pro", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        return await self._post_task("/v1/ai/image-to-video/kling-v2-5-pro",
+                                     {"image": image_url, "prompt": prompt, "duration": duration})
 
     async def hailuo(self, image_url: str, prompt: str) -> str:
         """Hailuo — image-to-video alternativo."""
-        body = {"image": image_url, "prompt": prompt}
         # API atual só tem 1080p (768p foi removido)
-        r = await self._request("POST", "/v1/ai/image-to-video/minimax-hailuo-02-1080p", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        return await self._post_task("/v1/ai/image-to-video/minimax-hailuo-02-1080p",
+                                     {"image": image_url, "prompt": prompt})
 
     async def wan_2_1(self, prompt: str, *, duration: int = 5, aspect_ratio: str = "16:9") -> str:
-        """WAN 2.1 — text-to-video."""
-        body = {"prompt": prompt, "duration": duration, "aspect_ratio": aspect_ratio}
-        # Wan v2.1 saiu — fallback pra wan-2-5-t2v-720p
-        r = await self._request("POST", "/v1/ai/text-to-video/wan-2-5-t2v-720p", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        """WAN 2.1 — text-to-video (legado, redireciona pra wan-2-5-t2v-720p)."""
+        return await self._post_task("/v1/ai/text-to-video/wan-2-5-t2v-720p",
+                                     {"prompt": prompt, "duration": duration, "aspect_ratio": aspect_ratio})
 
     async def runway(self, image_url: str, prompt: str, *, duration: int = 5) -> str:
-        """Runway Gen-3 via Freepik."""
-        body = {"image": image_url, "prompt": prompt, "duration": duration}
-        # Runway atual: runway-4-5
-        r = await self._request("POST", "/v1/ai/image-to-video/runway-4-5", json=body)
-        return r.get("data", {}).get("task_id") or r.get("task_id")
+        """Runway 4.5 (legado, mesmo endpoint)."""
+        return await self._post_task("/v1/ai/image-to-video/runway-4-5",
+                                     {"image": image_url, "prompt": prompt, "duration": duration})
 
     # ════════════════════════════════════════════════════════════════
     #                          POLLING
@@ -508,12 +496,11 @@ class FreepikClient:
         if task_id in self._task_endpoints:
             return await self._request("GET", f"{self._task_endpoints[task_id]}/{task_id}")
 
-        # 3. Fallback genérico (alguns modelos tem /tasks/, outros não)
+        # 3. Fallback: nano-banana-pro (modelo default mais usado)
         try:
-            return await self._request("GET", f"/v1/ai/tasks/{task_id}")
+            return await self._request("GET", f"/v1/ai/text-to-image/nano-banana-pro/{task_id}")
         except FreepikError:
-            # Tenta o endpoint nano-banana-pro (mais comum no nosso uso)
-            return await self._request("GET", f"/v1/ai/gemini-2-5-flash-image-preview/{task_id}")
+            return await self._request("GET", f"/v1/ai/tasks/{task_id}")
 
     async def poll_task(
         self,
